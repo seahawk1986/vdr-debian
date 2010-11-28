@@ -1,6 +1,7 @@
 vdr (1.7.16-1ctvdr1) UNRELEASED; urgency=low
 
   * Dropped extensions patch
+  * Updated commands.ctvdr.conf to new upstream format
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 28 Nov 2010 19:54:03 +0100
 
