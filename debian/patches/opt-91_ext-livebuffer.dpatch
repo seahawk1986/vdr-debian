@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `livebuffer` patch within the VDR Extension patch
+#
+# Permanet Timeshift
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch LIVEBUFFER $1
+
+exit 0

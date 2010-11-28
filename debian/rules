@@ -75,7 +75,6 @@ build-stamp: configure-stamp
 	# build "productive" vdr
 	touch po/vdr.pot po/*.po
 	$(MAKE) all $(MAKE_OPTIONS) BUILDVDR=yes
-	ln -f vdr vdr-kbd
 
 	# plugins
 	mkdir -p PLUGINS/lib
@@ -84,7 +83,8 @@ build-stamp: configure-stamp
 	cp newplugin vdr-newplugin
 
 	gcc -o debian/vdr-shutdown.wrapper debian/vdr-shutdown-wrapper.c
-
+	gcc -o debian/ctvdrwrapper debian/ctvdrwrapper.c
+	
 	touch build-stamp
 
 patchinfo:
@@ -98,10 +98,10 @@ clean-patched:
 	$(MAKE) -o .dependencies clean-plugins $(MAKE_OPTIONS)
 	$(MAKE) -o .dependencies clean $(MAKE_OPTIONS)
 	rm -f vdr-dbg
-	rm -f vdr-kbd
 	rm -rf PLUGINS/lib
 	rm -f vdr-newplugin
 	rm -f debian/vdr-shutdown.wrapper
+	rm -f debian/ctvdrwrapper
 	rm -f debian/patchinfo
 	rm -f $(MANPAGES) $(TXT2MANPAGES)
 	dh_clean

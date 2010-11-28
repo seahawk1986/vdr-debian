@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `osdmaxitems` patch within the VDR Extension patch
+#
+# Text2Skin-Plugin
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch OSDMAXITEMS $1
+
+exit 0

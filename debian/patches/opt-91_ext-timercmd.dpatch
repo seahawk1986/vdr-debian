@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `timercmd` patch within the VDR Extension patch
+#
+# Adds submenu for user defined commands in timer menu
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch TIMERCMD $1
+
+exit 0

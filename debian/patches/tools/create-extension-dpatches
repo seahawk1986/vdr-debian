@@ -1,0 +1,32 @@
+#!/usr/bin/ruby
+
+#
+# Extracts a list of dpatches from the extensions patch README
+#
+
+oolist = File.new('00list', 'w')
+
+for line in IO.read('README') do
+  if line =~ /^([A-Z,0-9]+)\s+(.+)/
+    patch_id = $1
+    patch_description = $2
+    oolist.puts "# #{patch_description}"
+    oolist.puts "# opt-91_ext-#{patch_id.downcase}"
+    oolist.puts
+
+    dpatch = File.new("opt-91_ext-#{patch_id.downcase}.dpatch", 'w')
+    dpatch.puts <<EOF
+#!/bin/sh
+#
+# Enables the `#{patch_id.downcase}` patch within the VDR Extension patch
+#
+# #{patch_description}
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch #{patch_id} $1
+
+exit 0
+EOF
+  end
+end

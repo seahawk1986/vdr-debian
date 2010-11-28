@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `dvbplayer` patch within the VDR Extension patch
+#
+# Use some special mpeg-repacker features. Most usable for old recordings or software output devices.
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch DVBPLAYER $1
+
+exit 0

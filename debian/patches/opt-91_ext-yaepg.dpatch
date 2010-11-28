@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `yaepg` patch within the VDR Extension patch
+#
+# Yet Another EPG
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch YAEPG $1
+
+exit 0

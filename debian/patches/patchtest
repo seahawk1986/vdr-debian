@@ -43,6 +43,59 @@ multipatch="$standard \
     opt-52_hard_link_cutter \
     opt-53_dvbsetup \
     opt-54_deltimeshiftrec"
+extpatch="\
+    04_newplugin \
+    06_default_svdrp_port_0 \
+    14_cap-memsize \
+    16_channels.conf.terr-fix \
+    17_vdr-maintenance-1.6.0-1 \
+    18_vdr-maintenance-1.6.0-2 \
+    81_Make_config \
+    99_ncursesw-include \
+    opt-90_extensions \
+    opt-90_extensions_debian \
+    opt-91_ext-analogtv \
+    opt-91_ext-channelscan \
+    opt-91_ext-cmdsubmenu \
+    opt-91_ext-cutterlimit \
+    opt-91_ext-cutterqueue \
+    opt-91_ext-cuttime \
+    opt-91_ext-ddepgentry \
+    opt-91_ext-deltimeshiftrec \
+    opt-91_ext-dolbyinrec \
+    opt-91_ext-dvbplayer \
+    opt-91_ext-dvbsetup \
+    opt-91_ext-dvdarchive \
+    opt-91_ext-dvdchapjump \
+    opt-91_ext-dvlfriendlyfnames \
+    opt-91_ext-dvlrecscriptaddon \
+    opt-91_ext-dvlvidprefer \
+    opt-91_ext-graphtft \
+    opt-91_ext-hardlinkcutter \
+    opt-91_ext-iptv \
+    opt-91_ext-jumpplay \
+    opt-91_ext-liemikuutio \
+    opt-91_ext-lircsettings \
+    opt-91_ext-livebuffer \
+    opt-91_ext-lnbshare \
+    opt-91_ext-mainmenuhooks \
+    opt-91_ext-menuorg \
+    opt-91_ext-noepg \
+    opt-91_ext-osdmaxitems \
+    opt-91_ext-pinplugin \
+    opt-91_ext-pluginmissing \
+    opt-91_ext-rotor \
+    opt-91_ext-settime \
+    opt-91_ext-sortrecords \
+    opt-91_ext-sourcecaps \
+    opt-91_ext-syncearly \
+    opt-91_ext-timercmd \
+    opt-91_ext-timerinfo \
+    opt-91_ext-ttxtsubs \
+    opt-91_ext-validinput \
+    opt-91_ext-volctrl \
+    opt-91_ext-wareagleicon \
+    opt-91_ext-yaepg"
 testpatch="$standard \
     opt-20_liemikuutio \
     opt-24_jumpplay \
@@ -71,6 +124,7 @@ mustfail_compile="XX_patchtest-compile-error"
 patchLevels=(\
     "standard $standard"\
     "multipatch $multipatch"\
+    "extpatch $extpatch"\
     "testpatch $testpatch"\
     "mustfail_patch $mustfail_patch"\
     "mustfail_compile $mustfail_compile")

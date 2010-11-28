@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `settime` patch within the VDR Extension patch
+#
+# Set system time per script instead of syscall
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch SETTIME $1
+
+exit 0

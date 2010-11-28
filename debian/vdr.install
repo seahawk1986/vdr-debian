@@ -1,44 +1,50 @@
-vdr-kbd                   usr/bin/
-debian/scripts/vdr-daemon usr/bin/
-debian/scripts/vdr-lirc   usr/bin/
-debian/scripts/vdr-rcu    usr/bin/
+vdr                                     usr/bin/
+debian/runvdr                           usr/sbin/
 
-debian/runvdr usr/sbin/
+debian/config-loader.sh                 usr/lib/vdr
+debian/commands-loader.sh               usr/lib/vdr/
+debian/plugin-loader.sh                 usr/lib/vdr/
 
-debian/config-loader.sh   usr/lib/vdr/
-debian/plugin-loader.sh   usr/lib/vdr/
-debian/commands-loader.sh usr/lib/vdr/
-debian/vdr-groups.sh      usr/lib/vdr/
+diseqc.conf                             etc/vdr/
+keymacros.conf                          etc/vdr/
+sources.conf                            etc/vdr/
+svdrphosts.conf                         etc/vdr/
 
-epg2html.pl  usr/lib/vdr/
-svdrpsend.pl usr/lib/vdr/
+debian/order.conf                       etc/vdr/plugins/
 
-
-debian/order.conf etc/vdr/plugins/
-
-debian/order.commands.conf etc/vdr/command-hooks/
-debian/order.reccmds.conf  etc/vdr/command-hooks/
-
+debian/order.commands.conf              etc/vdr/command-hooks/
+debian/order.reccmds.conf               etc/vdr/command-hooks/
 debian/commands.custom.conf             etc/vdr/command-hooks/
 debian/reccmds.custom.conf              etc/vdr/command-hooks/
+
 debian/commands.update-recordings.conf  usr/share/vdr/command-hooks/
+debian/commands.ctvdr.conf              usr/share/vdr/command-hooks/
+debian/commands.shutdownvdr.conf        usr/share/vdr/command-hooks/
 
-diseqc.conf       etc/vdr/
-keymacros.conf    etc/vdr/
-sources.conf      etc/vdr/
-svdrphosts.conf   etc/vdr/
-debian/vdr.groups etc/vdr/
+debian/vdr-recordingaction              usr/lib/vdr/
 
-debian/vdr-recordingaction usr/lib/vdr/
-debian/R90.custom          etc/vdr/recording-hooks/
+debian/R90.custom                       etc/vdr/recording-hooks/
 
-debian/themes/*.theme       var/lib/vdr/themes/
+debian/ctvdrwrapper                     usr/lib/vdr/
+debian/ctvdrinfo                        usr/bin/
+debian/ctvdrsysinfo                     usr/bin/
+debian/poweroffvdr                      usr/bin/
 
-debian/vdr-shutdown         usr/lib/vdr/
-debian/vdr-shutdown-message usr/lib/vdr/
-debian/vdr-shutdown.wrapper usr/lib/vdr/
-debian/S90.custom           etc/vdr/shutdown-hooks/
+debian/vdraptrefresh                    usr/sbin/
 
-debian/lintian/vdr usr/share/lintian/overrides/
+epg2html.pl                             usr/lib/vdr/
+svdrpsend.pl                            usr/lib/vdr/
+
+debian/lintian/vdr                      usr/share/lintian/overrides/
+
+debian/themes/*.theme                   var/lib/vdr/themes/
+
+debian/vdr-shutdown                     usr/lib/vdr/
+debian/vdr-shutdown-message             usr/lib/vdr/
+debian/vdr-shutdown.wrapper             usr/lib/vdr/
+debian/S90.custom                       etc/vdr/shutdown-hooks/
+
+debian/vdr-groups.sh                    usr/lib/vdr/
+debian/vdr.groups                       etc/vdr/
 
 locale                                  usr/share/

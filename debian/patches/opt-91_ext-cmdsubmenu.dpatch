@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `cmdsubmenu` patch within the VDR Extension patch
+#
+# Allows the creation of submenus in the commands menu
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch CMDSUBMENU $1
+
+exit 0

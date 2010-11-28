@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `dvbplayer,` patch within the VDR Extension patch
+#
+# LIVEBUFFER, SYNCEARLY and TTXTSUBS
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch DVBPLAYER, $1
+
+exit 0

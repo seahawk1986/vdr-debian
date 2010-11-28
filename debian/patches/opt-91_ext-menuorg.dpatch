@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `menuorg` patch within the VDR Extension patch
+#
+# Menuorg-Plugin
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch MENUORG $1
+
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `dvdarchive` patch within the VDR Extension patch
+#
+# DMH DVD-Archive
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch DVDARCHIVE $1
+
+exit 0

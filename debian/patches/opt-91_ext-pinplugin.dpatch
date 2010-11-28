@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Enables the `pinplugin` patch within the VDR Extension patch
+#
+# Pin-Plugin
+#
+. debian/patches/extension-patch-helper.sh
+
+toggle_extension_patch PINPLUGIN $1
+
+exit 0
