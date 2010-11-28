@@ -1,3 +1,41 @@
+vdr (1.6.0-19.1ctvdr1) UNRELEASED; urgency=low
+
+  * Merged changes from official package
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 28 Nov 2010 16:51:00 +0100
+
+vdr (1.6.0-19.1) unstable; urgency=low
+
+  * debian/vdrleaktest
+    - Remove extra colon from LD_LIBRARY_PATH to fix CVE-2010-3387.
+      (normal, security; Closes: #598308).
+
+ -- Jari Aalto <jari.aalto@cante.net>  Thu, 21 Oct 2010 09:18:54 +0300
+
+vdr (1.6.0-19) unstable; urgency=low
+
+  * Fixed DEB_BUILD_OPTIONS export in in vdrdbg-buildpackage
+    (Closes: #596593)
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 17 Oct 2010 11:27:55 +0200
+
+vdr (1.6.0-18.1) unstable; urgency=low
+
+  * debian/vdrleaktest
+    - Asjust LD_LIBRARY_PATH use according to CVE-2010-3387.
+      (normal, security; Closes: #598308).
+
+ -- Jari Aalto <jari.aalto@cante.net>  Sat, 16 Oct 2010 20:59:56 +0300
+
+vdr (1.6.0-18) unstable; urgency=low
+
+  * Added Danish translation of the debconf templates (Thx to Joe Hansen)
+    (Closes: #592260)
+  * Minor fix to options parsing in debug version start script
+  * Standards-Version: 3.9.1
+
+ -- Tobias Grimm <etobi@debian.org>  Thu, 19 Aug 2010 00:07:33 +0200
+
 vdr (1.6.0-17ctvdr1) experimental; urgency=low
 
   * Modified runvdr to also (re)load dvb modules not depending on dvb_core*
