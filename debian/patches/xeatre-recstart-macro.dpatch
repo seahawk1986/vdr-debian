@@ -1,0 +1,45 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+##
+## DP: This allows to add a RECSTART macro to a timer, which will be replaced
+## DP: when recording starts with the current time (not the timer start time!).
+## DP:
+## DP: This way after each interrupted recording a new *.rec will be created
+## DP: This is required by the ARD MAM-system to be able to cut time-based slices
+## DP: from a loop recording.
+
+@DPATCH@
+diff --git a/recording.c b/recording.c
+index 96dc95f..3c4fe6e 100644
+--- a/recording.c
++++ b/recording.c
+@@ -625,10 +625,16 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
+      }
+   const char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
+   const char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
+-  if (macroTITLE || macroEPISODE) {
++  const char *macroRECSTART = strstr(Timer->File(), TIMERMACRO_RECSTART);
++  if (macroTITLE || macroEPISODE || macroRECSTART) {
+      name = strdup(Timer->File());
+      name = strreplace(name, TIMERMACRO_TITLE, Title);
+-     name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
++     struct tm tm_r;
++     time_t now = time(NULL);
++     localtime_r(&now, &tm_r);
++     char buffer[15];
++     strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", &tm_r);
++     name = strreplace(name, TIMERMACRO_RECSTART, buffer);
+      // avoid blanks at the end:
+      int l = strlen(name);
+      while (l-- > 2) {
+diff --git a/recording.h b/recording.h
+index 939878f..6445b5c 100644
+--- a/recording.h
++++ b/recording.h
+@@ -21,6 +21,7 @@
+ #define FOLDERDELIMCHAR '~'
+ #define TIMERMACRO_TITLE    "TITLE"
+ #define TIMERMACRO_EPISODE  "EPISODE"
++#define TIMERMACRO_RECSTART  "RECSTART"
+ 
+ extern bool VfatFileSystem;
+ extern int InstanceId;

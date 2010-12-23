@@ -78,3 +78,6 @@
 
 # Setup for AC3 transfer, QAM_256, disable primary tuner
 # opt-53_dvbsetup
+
+xeatre-recstart-macro
+

@@ -1,3 +1,10 @@
+vdr (1.7.16-1~xeatre1) unstable; urgency=low
+
+  * Added xeatre-recstart-macro.dpatch
+  * Start VDR with --iosched real-time (ionice -c1)
+
+ -- Tobias Grimm <tg@e-tobi.net>  Thu, 23 Dec 2010 23:23:36 +0100
+
 vdr (1.7.16-1) UNRELEASED; urgency=low
 
   [ Thomas Günther, Tobias Grimm ]

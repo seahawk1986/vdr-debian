@@ -84,6 +84,7 @@ startvdr()
             fi
 
             start-stop-daemon --start --quiet --startas $DAEMON --background \
+                --iosched real-time \
                 --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- \
                 -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD \
                 -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp \
