@@ -1,3 +1,9 @@
+vdr (1.7.16-1~xeatre2) unstable; urgency=low
+
+  * Added xeatre-configurable-recordbuffer-size.dpatch
+
+ -- Tobias Grimm <tg@e-tobi.net>  Fri, 24 Dec 2010 14:32:15 +0100
+
 vdr (1.7.16-1~xeatre1) unstable; urgency=low
 
   * Added xeatre-recstart-macro.dpatch

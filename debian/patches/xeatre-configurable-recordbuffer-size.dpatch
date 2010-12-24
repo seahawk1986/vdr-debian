@@ -1,0 +1,71 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+##
+## DP: This allows to configure the recorde buffer size and increases the
+## DP: default buffer size from 5 MB to 100 MB.
+## DP:
+## DP: When encountering buffer overflows, the recordbuffer size should be
+## DP: increased.
+
+@DPATCH@
+diff --git a/config.c b/config.c
+index 73b11b1..ff8cb5b 100644
+--- a/config.c
++++ b/config.c
+@@ -399,6 +399,7 @@ cSetup::cSetup(void)
+   InitialVolume = -1;
+   ChannelsWrap = 0;
+   EmergencyExit = 1;
++  RecorderBufSize = 100;
+ }
+ 
+ cSetup& cSetup::operator= (const cSetup &s)
+@@ -590,6 +591,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
+   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
+   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
+   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
++  else if (!strcasecmp(Name, "RecorderBufSize"))     RecorderBufSize    = atoi(Value);
+   else
+      return false;
+   return true;
+@@ -686,6 +688,7 @@ bool cSetup::Save(void)
+   Store("InitialVolume",      InitialVolume);
+   Store("ChannelsWrap",       ChannelsWrap);
+   Store("EmergencyExit",      EmergencyExit);
++  Store("RecorderBufSize",    RecorderBufSize);
+ 
+   Sort();
+ 
+diff --git a/config.h b/config.h
+index 7c28d41..3be9343 100644
+--- a/config.h
++++ b/config.h
+@@ -291,6 +291,7 @@ public:
+   int InitialVolume;
+   int ChannelsWrap;
+   int EmergencyExit;
++  int RecorderBufSize;
+   int __EndData__;
+   cSetup(void);
+   cSetup& operator= (const cSetup &s);
+diff --git a/recorder.c b/recorder.c
+index 60631e0..da91e3b 100644
+--- a/recorder.c
++++ b/recorder.c
+@@ -10,7 +10,7 @@
+ #include "recorder.h"
+ #include "shutdown.h"
+ 
+-#define RECORDERBUFSIZE  MEGABYTE(5)
++#define RECORDERBUFSIZE  MEGABYTE(Setup.RecorderBufSize)
+ 
+ // The maximum time we wait before assuming that a recorded video data stream
+ // is broken:
+@@ -31,6 +31,8 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
+   SpinUpDisk(FileName);
+ 
+   ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
++  dsyslog("RECORDERBUFSIZE: %d\n", RECORDERBUFSIZE);
++
+   ringBuffer->SetTimeouts(0, 100);
+ 
+   int Pid = Channel->Vpid();
