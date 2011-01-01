@@ -19,6 +19,7 @@ debian/patches/99_add-language-to-po.dpatch:98572846a526dcde511c1163ea3eacb5
 debian/patches/81_Make_config.dpatch:da281b9af48273bcbd19f3052ee993fd
 debian/patches/opt-51_cuttime.dpatch:5459582bf3c6d95895d7e0ca18b52213
 debian/patches/opt-48-x_pin.dpatch:3dd524fa2c484cd03fa2f46194ceff18
+debian/patches/99_fix-deleting.dpatch:798aa6bc4941759a9e28666798ec4fff
 debian/patches/opt-37-x_menuorg.dpatch:9fb02cc8bd848add50b3866b6f476644
 debian/patches/opt-45_yaepg.dpatch:fbac27f726253a228d7fe15c1cdabeb2
 debian/patches/opt-27_ttxtsubs.dpatch:af553c89b0f4cb7f75fb38768c0ab72a

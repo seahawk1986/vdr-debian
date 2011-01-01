@@ -1,0 +1,36 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 99_fix-deleting.dpatch by Steffen Barszus <steffenbpunkt@googlemail.com>
+## http://www.linuxtv.org/pipermail/vdr/2010-October/023774.html
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixes problem with deleting records from video.01, video.02, ...
+
+@DPATCH@
+diff -urNad vdr-1.7.16~/tools.c vdr-1.7.16/tools.c
+--- vdr-1.7.16~/tools.c	2010-08-29 17:03:08.000000000 +0200
++++ vdr-1.7.16/tools.c	2010-10-14 23:55:22.622829123 +0200
+@@ -368,7 +368,7 @@
+                     cString buffer = AddDirectory(FileName, e->d_name);
+                     if (FollowSymlinks) {
+                        struct stat st2;
+-                       if (stat(buffer, &st2) == 0) {
++                       if (lstat(buffer, &st2) == 0) {
+                           if (S_ISLNK(st2.st_mode)) {
+                              int size = st2.st_size + 1;
+                              char *l = MALLOC(char, size);
+@@ -377,14 +377,12 @@
+                                 if (errno != EINVAL)
+                                    LOG_ERROR_STR(*buffer);
+                                 }
+-                             else if (n < size) {
++                             else {
+                                 l[n] = 0;
+                                 dsyslog("removing %s", l);
+                                 if (remove(l) < 0)
+                                    LOG_ERROR_STR(l);
+                                 }
+-                             else
+-                                esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
+                              free(l);
+                              }
+                           }
