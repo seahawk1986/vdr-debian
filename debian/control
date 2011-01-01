@@ -4,19 +4,20 @@ Priority: extra
 Maintainer: Debian VDR Team <pkg-vdr-dvb-devel@lists.alioth.debian.org>
 Uploaders: Thomas Schmidt <tschmidt@debian.org>, Tobias Grimm <etobi@debian.org>, Thomas Günther <tom@toms-cafe.de>
 Origin: ctvdr
-Build-Depends: debhelper (>= 5), dpatch, libjpeg62-dev, libcap2-dev | libcap-dev,
+Build-Depends: debhelper (>= 5), dpatch, libjpeg62-dev, libcap-dev,
   libncursesw5-dev, libfreetype6-dev, libfontconfig-dev, gettext,
   txt2man, python, linux-libc-dev (>= 2.6.29), libfribidi-dev
 Standards-Version: 3.9.1
+Vcs-Git: git://git.debian.org/pkg-vdr-dvb/vdr.git
+Vcs-Browser: http://git.debian.org/?p=pkg-vdr-dvb/vdr.git
 Homepage: http://www.tvdr.de/
 
 Package: vdr
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, adduser, psmisc
 Recommends: lirc, ttf-bitstream-vera | ttf-freefont
-Provides: vdr-daemon, vdr-kbd, vdr-lirc, vdr-rcu, ${vdr:Provides}
-Conflicts: vdr-daemon, vdr-kbd, vdr-lirc, vdr-rcu, vdradmin (<< 3.4.3)
-Replaces: vdr-daemon, vdr-kbd, vdr-lirc, vdr-rcu
+Suggests: vdr-plugin-dvbsddevice
+Provides: ${vdr:Provides}
 Description: Video Disk Recorder for DVB cards
  Video Disk Recorder (VDR) is a digital sat-receiver program using
  Linux and DVB technologies. It allows one to record MPEG2 streams,
