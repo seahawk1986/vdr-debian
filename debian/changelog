@@ -1,11 +1,11 @@
-vdr (1.7.16-1.ctvdr1) UNRELEASED; urgency=low
+vdr (1.7.16-2~ctvdr1) unstable; urgency=low
 
   * Dropped extensions patch
   * Updated commands.ctvdr.conf to new upstream format
   * Added 99_fix-deleting.dpatch to fix an issue with deleting recordings
     from video.01, video.02, ...
 
- -- Tobias Grimm <etobi@debian.org>  Sun, 28 Nov 2010 19:54:03 +0100
+ -- Tobias Grimm <etobi@debian.org>  Sat, 01 Jan 2011 18:26:43 +0100
 
 vdr (1.7.16-1) UNRELEASED; urgency=low
 
