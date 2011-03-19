@@ -1,8 +1,11 @@
-vdr (1.7.16-2~ctvdr2) UNRELEASED; urgency=low
+vdr (1.7.17-1~ctvdr1) unstable; urgency=low
 
+  * New upstream release
   * Slighlty improved documentation about FF firmware upgrade
+  * Made sure po files are unmodified after clean (Closes: #593925)
+  * Dropped marks reloading from jumpplay patch (Patch modified by Udo Richter)
 
- -- Tobias Grimm <etobi@debian.org>  Thu, 27 Jan 2011 23:49:24 +0100
+ -- Tobias Grimm <etobi@debian.org>  Sun, 20 Mar 2011 00:02:15 +0100
 
 vdr (1.7.16-2~ctvdr1) unstable; urgency=low
 
@@ -16,7 +19,8 @@ vdr (1.7.16-2~ctvdr1) unstable; urgency=low
 vdr (1.7.16-1) UNRELEASED; urgency=low
 
   [ Thomas Günther, Tobias Grimm ]
-  * Updated to the latest upstream development version release (Closes: #573896)
+  * Updated to the latest upstream development version release 1.7.17
+    (Closes: #573896)
   * Updated/Removed debian/patches/*
   * Setting default SVDRP port to 6419 (this was already changed by upstrem)
   * Added BIDI define to 81_Make_config.dpatch
@@ -32,7 +36,7 @@ vdr (1.7.16-1) UNRELEASED; urgency=low
   * Added NEWS entry about vdr-plugin-dvbsddevice and a probably required 
     modified firmware
   * Updated README.Debian
-  * Added 99_add-language-to-po.dpatch (Closes: #593925)
+  * Made sure po files are unmodified after clean (Closes: #593925)
 
   [ Thomas Schmidt ]
   * Update Vcs-* fields: Move packaging from svn to git
@@ -43,8 +47,9 @@ vdr (1.7.16-1) UNRELEASED; urgency=low
     used instead
   * Dropped conflicts to vdradmin
   * Dropped moving of channels.conf from /etc/vdr/ to /var/lib/vdr/
+  * Dropped marks reloading from jumpplay patch (Patch modified by Udo Richter)
 
- -- Tobias Grimm <etobi@debian.org>  Sat, 01 Jan 2011 16:20:54 +0100
+ -- Tobias Grimm <etobi@debian.org>  Sat, 19 Mar 2011 21:10:15 +0100
 
 vdr (1.6.0-19.1ctvdr1) UNRELEASED; urgency=low
 
