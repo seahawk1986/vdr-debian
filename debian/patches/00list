@@ -9,7 +9,6 @@
 
 99_ncursesw-include
 99_vdr-workaround-broken-sys-capability
-99_fix-deleting
 
 # Patch collection (replaces enAIO).
 # opt-20_liemikuutio

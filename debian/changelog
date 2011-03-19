@@ -4,6 +4,7 @@ vdr (1.7.17-1~ctvdr1) unstable; urgency=low
   * Slighlty improved documentation about FF firmware upgrade
   * Made sure po files are unmodified after clean (Closes: #593925)
   * Dropped marks reloading from jumpplay patch (Patch modified by Udo Richter)
+  * Dropped 99_fix-deleting.dpatch (fixed upstream)
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 20 Mar 2011 00:02:15 +0100
 
