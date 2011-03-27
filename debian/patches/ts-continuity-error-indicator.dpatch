@@ -40,7 +40,7 @@ index 9147e2a..eb2f5ec 100644
             esyslog("ERROR: video data stream broken");
             ShutdownHandler.RequestEmergencyExit();
 diff --git a/recording.c b/recording.c
-index 327a300..56bd039 100644
+index 327a300..7445279 100644
 --- a/recording.c
 +++ b/recording.c
 @@ -317,6 +317,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
@@ -72,6 +72,14 @@ index 327a300..56bd039 100644
               case 'L': lifetime = atoi(t);
                         break;
               case 'P': priority = atoi(t);
+@@ -475,6 +483,7 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
+      fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
+   event->Dump(f, Prefix, true);
+   fprintf(f, "%sF %.10g\n", Prefix, framesPerSecond);
++  fprintf(f, "%sR %d\n", Prefix, errorCount);
+   fprintf(f, "%sP %d\n", Prefix, priority);
+   fprintf(f, "%sL %d\n", Prefix, lifetime);
+   if (aux)
 diff --git a/recording.h b/recording.h
 index 34cccac..97c9425 100644
 --- a/recording.h
