@@ -1,0 +1,163 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+##
+## DP: Addes an error indicator to the recording info, which counts
+## DP: the number of discontinuity errors
+
+@DPATCH@
+diff --git a/recorder.c b/recorder.c
+index 9147e2a..1f14a87 100644
+--- a/recorder.c
++++ b/recorder.c
+@@ -121,6 +121,7 @@ void cRecorder::Action(void)
+   time_t t = time(NULL);
+   bool InfoWritten = false;
+   bool FirstIframeSeen = false;
++  cTsStreamErrorCounter TsStreamErrorCounter;
+   while (Running()) {
+         int r;
+         uchar *b = ringBuffer->Get(r);
+@@ -156,6 +157,7 @@ void cRecorder::Action(void)
+                              fileSize += TS_SIZE;
+                              }
+                        }
++                    TsStreamErrorCounter.CheckTsPackets(b, Count);
+                     if (recordFile->Write(b, Count) < 0) {
+                        LOG_ERROR_STR(fileName->Name());
+                        break;
+@@ -167,6 +169,11 @@ void cRecorder::Action(void)
+               ringBuffer->Del(Count);
+               }
+            }
++        if (InfoWritten && RecordingInfo.Read()) {
++           RecordingInfo.SetErrorCount(TsStreamErrorCounter.ErrorCount());
++           RecordingInfo.Write();
++           Recordings.UpdateByName(recordingName);
++           }
+         if (time(NULL) - t > MAXBROKENTIMEOUT) {
+            esyslog("ERROR: video data stream broken");
+            ShutdownHandler.RequestEmergencyExit();
+diff --git a/recording.c b/recording.c
+index 327a300..514e345 100644
+--- a/recording.c
++++ b/recording.c
+@@ -317,6 +317,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
+   event = ownEvent ? ownEvent : Event;
+   aux = NULL;
+   framesPerSecond = DEFAULTFRAMESPERSECOND;
++  errorCount = 0;
+   priority = MAXPRIORITY;
+   lifetime = MAXLIFETIME;
+   fileName = NULL;
+@@ -449,6 +450,8 @@ bool cRecordingInfo::Read(FILE *f)
+                        break;
+              case 'F': framesPerSecond = atof(t);
+                        break;
++             case 'R': errorCount = atoi(t);
++                       break;
+              case 'L': lifetime = atoi(t);
+                        break;
+              case 'P': priority = atoi(t);
+diff --git a/recording.h b/recording.h
+index 34cccac..348f9cd 100644
+--- a/recording.h
++++ b/recording.h
+@@ -54,6 +54,7 @@ private:
+   cEvent *ownEvent;
+   char *aux;
+   double framesPerSecond;
++  int errorCount;
+   int priority;
+   int lifetime;
+   char *fileName;
+@@ -73,6 +74,8 @@ public:
+   const char *Aux(void) const { return aux; }
+   double FramesPerSecond(void) const { return framesPerSecond; }
+   void SetFramesPerSecond(double FramesPerSecond);
++  int ErrorCount(void) const { return errorCount; }
++  vit SetErrorCount(int ErrorCount);
+   bool Read(FILE *f);
+   bool Write(FILE *f, const char *Prefix = "") const;
+   bool Read(void);
+diff --git a/remux.c b/remux.c
+index f7ad86d..7861ae7 100644
+--- a/remux.c
++++ b/remux.c
+@@ -970,3 +970,44 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
+         }
+   return Processed;
+ }
++
++// --- cTsStreamErrorCounter -------------------------------------------------
++
++cTsStreamErrorCounter::cTsStreamErrorCounter(void)
++{
++  errorCount = 0;
++  for(int i=0; i < MAX_PIDS; i++) pids[i] = -1;
++  memset(counters, 0, sizeof(counters));
++}
++
++void cTsStreamErrorCounter::CheckTsPackets(uchar* Data, int Length)
++{
++  while (Length >= TS_SIZE) {
++        int pid = ((Data[1] & 0x1F) << 8) + Data[2];
++        char ctr = (Data[3] & 0x0F);
++        char adaption = (Data[3] & 0x30) >> 4;
++
++        if (adaption != 2)
++           CheckTSPacketContinuity(pid, ctr);
++
++        Length -= TS_SIZE;
++        Data += TS_SIZE;
++       }
++}
++
++void cTsStreamErrorCounter::CheckTsPacketContinuity(int pid, int counter)
++{
++  for (int i=0; i < MAX_PIDS; i++) {
++      if (pids[i] == -1) {
++         pids[i] = pid;
++         counters[i] = counter;
++         break;
++         }
++      if (pids[i] == pid) {
++         if (((counter - counters[i]) & 0x0F) != 1)
++            errorCount++;
++         counters[i] = counter;
++         break;
++         }
++      }
++}
+diff --git a/remux.h b/remux.h
+index 7140aaf..20a030b 100644
+--- a/remux.h
++++ b/remux.h
+@@ -383,4 +383,28 @@ public:
+       ///< available.
+   };
+ 
++
++// TS stream error counter:
++// Count (continuity) errors in a TS packet stream
++
++#define MAX_PIDS 20;
++
++class cTsStreamErrorCounter {
++private:
++  int errorCount;
++  int pids[MAX_PIDS];
++  uchar counters[MAX_PIDS];
++public:
++  TSChecker(void);
++  void CheckTsPackets(uchar* Data, int Length);
++      ///< Check for errors in the TS packets pointed to by Data. Length is the
++      ///< number of bytes Data points to, and must be a multiple of 188.
++  int ErrorCount(void) const { return errorCount; };
++      ///< Return the number of errors found in the analyzed TS packet stream.
++      ///< Right now, only continuity errors are reported.
++private:
++  void CheckTsPacketContinuity(int pid, int counter);
++  };
++}
++
+ #endif // __REMUX_H
+-- 
