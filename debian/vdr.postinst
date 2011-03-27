@@ -28,37 +28,32 @@ set -e
 
 case "$1" in
     configure)
-        
+
         . /usr/share/debconf/confmodule
-    
+
         # install/move channels.conf 
         if [ ! -e /var/lib/vdr/channels.conf ]; then
-                if  [ -e /etc/vdr/channels.conf ]; then
-                        printf "Note: Moving /etc/vdr/channels.conf to /var/lib/vdr/channels.conf\n"
-                        mv /etc/vdr/channels.conf /var/lib/vdr/channels.conf
-                else
-                        db_get vdr/select_dvb_card
-        
-                        case "$RET" in
-                        Satellite)
-                                gzip -dc /usr/share/doc/vdr/examples/channels.conf.gz \
-                                > /var/lib/vdr/channels.conf
-                                chmod 644 /var/lib/vdr/channels.conf
-                        ;;
-                        Terrestrial)
-                                gzip -dc /usr/share/doc/vdr/examples/channels.conf.terr.gz \
-                                > /var/lib/vdr/channels.conf
-                                chmod 644 /var/lib/vdr/channels.conf
-                        ;;
-                        Cable)
-                                gzip -dc /usr/share/doc/vdr/examples/channels.conf.cable.gz \
-                                > /var/lib/vdr/channels.conf
-                                chmod 644 /var/lib/vdr/channels.conf
-                        ;;
-                        esac
-                fi
+                db_get vdr/select_dvb_card
+
+                case "$RET" in
+                Satellite)
+                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.gz \
+                        > /var/lib/vdr/channels.conf
+                        chmod 644 /var/lib/vdr/channels.conf
+                ;;
+                Terrestrial)
+                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.terr.gz \
+                        > /var/lib/vdr/channels.conf
+                        chmod 644 /var/lib/vdr/channels.conf
+                ;;
+                Cable)
+                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.cable.gz \
+                        > /var/lib/vdr/channels.conf
+                        chmod 644 /var/lib/vdr/channels.conf
+                ;;
+                esac
         fi
-        
+
         db_get vdr/create_video_dir
         if $RET; then
                 # check if an old directory /var/lib/video exists, and 
@@ -97,7 +92,7 @@ case "$1" in
                         $USER
                 echo "...done"
         fi
-        
+
         # put vdr in group video so that it can access the DVB device nodes
         adduser $USER video > /dev/null || true
 
@@ -119,11 +114,12 @@ case "$1" in
             chmod 6750 /usr/lib/vdr/vdr-shutdown.wrapper
         fi
 
-        # Install alternatives for the different control methods
-        update-alternatives --install /usr/bin/vdr vdr /usr/bin/vdr-lirc   120
-        update-alternatives --install /usr/bin/vdr vdr /usr/bin/vdr-kbd    110
-        update-alternatives --install /usr/bin/vdr vdr /usr/bin/vdr-rcu    105
-        update-alternatives --install /usr/bin/vdr vdr /usr/bin/vdr-daemon 100
+        # Dropped alternatives from old package version
+        # (This can be dropped at squeeze +2)
+        update-alternatives --remove vdr /usr/bin/vdr-daemon
+        update-alternatives --remove vdr /usr/bin/vdr-kbd
+        update-alternatives --remove vdr /usr/bin/vdr-lirc
+        update-alternatives --remove vdr /usr/bin/vdr-rcu
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
@@ -143,7 +139,7 @@ db_stop
 
 # FIXME
 # wait for vdr to properly shutdown before it is restarted again
-sleep 5 
+sleep 5
 
 
 #DEBHELPER#

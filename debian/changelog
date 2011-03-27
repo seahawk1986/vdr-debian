@@ -1,3 +1,9 @@
+vdr (1.7.17-1~xeatre1) unstable; urgency=low
+
+  * New upstream release 1.7.17
+
+ -- Tobias Grimm <tg@e-tobi.net>  Sun, 27 Mar 2011 12:29:00 +0200
+
 vdr (1.7.16-1~xeatre2) unstable; urgency=low
 
   * Added xeatre-configurable-recordbuffer-size.dpatch
