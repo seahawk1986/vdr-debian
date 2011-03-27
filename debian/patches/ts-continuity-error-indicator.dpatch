@@ -5,7 +5,7 @@
 
 @DPATCH@
 diff --git a/recorder.c b/recorder.c
-index 9147e2a..eb2f5ec 100644
+index 9147e2a..257616e 100644
 --- a/recorder.c
 +++ b/recorder.c
 @@ -121,6 +121,7 @@ void cRecorder::Action(void)
@@ -24,21 +24,19 @@ index 9147e2a..eb2f5ec 100644
                      if (recordFile->Write(b, Count) < 0) {
                         LOG_ERROR_STR(fileName->Name());
                         break;
-@@ -167,6 +169,14 @@ void cRecorder::Action(void)
-               ringBuffer->Del(Count);
-               }
+@@ -173,4 +175,12 @@ void cRecorder::Action(void)
+            t = time(NULL);
             }
-+        if (InfoWritten) {
-+           cRecordingInfo RecordingInfo(recordingName);
-+           if (RecordingInfo.Read()) {
-+              RecordingInfo.SetErrorCount(TsStreamErrorCounter.ErrorCount());
-+              RecordingInfo.Write();
-+              Recordings.UpdateByName(recordingName);
-+              }
-+           }
-         if (time(NULL) - t > MAXBROKENTIMEOUT) {
-            esyslog("ERROR: video data stream broken");
-            ShutdownHandler.RequestEmergencyExit();
+         }
++  if (InfoWritten) {
++     cRecordingInfo RecordingInfo(recordingName);
++     if (RecordingInfo.Read()) {
++        RecordingInfo.SetErrorCount(TsStreamErrorCounter.ErrorCount());
++        RecordingInfo.Write();
++        Recordings.UpdateByName(recordingName);
++        }
++     }
+ }
 diff --git a/recording.c b/recording.c
 index 327a300..7445279 100644
 --- a/recording.c
