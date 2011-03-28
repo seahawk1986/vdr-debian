@@ -1,3 +1,10 @@
+vdr (1.7.17-1~xeatre2) unstable; urgency=low
+
+  * Record contiuity errors as they happen and add them to the already recorded
+    error count in the info file
+
+ -- Tobias Grimm <tg@e-tobi.net>  Tue, 29 Mar 2011 01:04:36 +0200
+
 vdr (1.7.17-1~xeatre1) unstable; urgency=low
 
   * New upstream release 1.7.17
