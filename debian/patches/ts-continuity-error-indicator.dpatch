@@ -5,27 +5,18 @@
 
 @DPATCH@
 diff --git a/recorder.c b/recorder.c
-index 9147e2a..fc96d21 100644
+index 9147e2a..877be30 100644
 --- a/recorder.c
 +++ b/recorder.c
-@@ -121,6 +121,8 @@ void cRecorder::Action(void)
+@@ -121,6 +121,7 @@ void cRecorder::Action(void)
    time_t t = time(NULL);
    bool InfoWritten = false;
    bool FirstIframeSeen = false;
-+  int oldErrorCount = 0;
 +  cTsStreamErrorCounter TsStreamErrorCounter;
    while (Running()) {
          int r;
          uchar *b = ringBuffer->Get(r);
-@@ -138,6 +140,7 @@ void cRecorder::Action(void)
-                           RecordingInfo.Write();
-                           Recordings.UpdateByName(recordingName);
-                           }
-+                       oldErrorCount = RecordingInfo.ErrorCount();
-                        }
-                     InfoWritten = true;
-                     }
-@@ -156,6 +159,15 @@ void cRecorder::Action(void)
+@@ -156,6 +157,16 @@ void cRecorder::Action(void)
                               fileSize += TS_SIZE;
                               }
                         }
@@ -33,9 +24,10 @@ index 9147e2a..fc96d21 100644
 +                    if (InfoWritten && TsStreamErrorCounter.ErrorCount() > 0) {
 +                       cRecordingInfo RecordingInfo(recordingName);
 +                       if (RecordingInfo.Read()) {
-+                          RecordingInfo.SetErrorCount(oldErrorCount + TsStreamErrorCounter.ErrorCount());
++                          RecordingInfo.SetErrorCount(RecordingInfo.ErrorCount() + TsStreamErrorCounter.ErrorCount());
 +                          RecordingInfo.Write();
 +                          Recordings.UpdateByName(recordingName);
++                          TsStreamErrorCounter.ResetErrorCount();
 +                          }
 +                       }
                      if (recordFile->Write(b, Count) < 0) {
@@ -153,10 +145,10 @@ index f7ad86d..abae484 100644
 +      }
 +}
 diff --git a/remux.h b/remux.h
-index 7140aaf..21c2b84 100644
+index 7140aaf..78025dc 100644
 --- a/remux.h
 +++ b/remux.h
-@@ -383,4 +383,27 @@ public:
+@@ -383,4 +383,29 @@ public:
        ///< available.
    };
  
@@ -179,6 +171,8 @@ index 7140aaf..21c2b84 100644
 +  int ErrorCount(void) const { return errorCount; };
 +      ///< Return the number of errors found in the analyzed TS packet stream.
 +      ///< Right now, only continuity errors are reported.
++  void ResetErrorCount(void) { errorCount = 0; };
++      ///< Reset error count to 0
 +private:
 +  void CheckTsPacketContinuity(int pid, int counter);
 +  };

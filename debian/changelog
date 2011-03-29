@@ -1,3 +1,9 @@
+vdr (1.7.17-1~xeatre3) unstable; urgency=low
+
+  * Minor fix
+
+ -- Tobias Grimm <tg@e-tobi.net>  Tue, 29 Mar 2011 10:17:02 +0200
+
 vdr (1.7.17-1~xeatre2) unstable; urgency=low
 
   * Record contiuity errors as they happen and add them to the already recorded
