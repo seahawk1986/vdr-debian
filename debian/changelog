@@ -1,3 +1,9 @@
+vdr (1.7.17-1~ctvdr2) unstable; urgency=low
+
+  * Reordered debian/vdr.install
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 10 Apr 2011 13:12:43 +0200
+
 vdr (1.7.17-1~ctvdr1) unstable; urgency=low
 
   * New upstream release
