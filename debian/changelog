@@ -1,3 +1,15 @@
+vdr (1.7.18-1~ctvdr1) unstable; urgency=low
+
+  * New upstream release
+  * Dropped dvb-s2api-liplianin-headers dependency from vdr-dev
+  * Disabled dvbhddevice until the driver from
+    http://powarman.dyndns.org/hg/v4l-dvb-saa716x/ gets merged into the
+    kernel
+  * Dropped 99_vdr-workaround-broken-sys-capability.dpatch
+  * Use 3.0 source formate and bz2 tarballs
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 17 Apr 2011 17:39:15 +0200
+
 vdr (1.7.17-1~ctvdr2) unstable; urgency=low
 
   * Reordered debian/vdr.install
