@@ -2,6 +2,10 @@ vdr (1.7.19-1~ctvdr1) unstable; urgency=low
 
   * New upstream release
   * Dropped 99_gcc4.6-fix.dpatch (fixed upstream)
+  * Updated opt-21_internal-cam-devices.dpatch
+  * Updated opt-27_ttxtsubs.dpatch
+  * Updated opt-39_noepg.dpatch
+  * Updated opt-44_rotor.dpatch
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 19 Jun 2011 18:55:51 +0200
 
