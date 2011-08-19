@@ -5,6 +5,7 @@ vdr (1.7.20-1~ctvdr1) unstable; urgency=low
   * Updated opt-27_ttxtsubs.dpatch
   * Updated opt-39_noepg.dpatch
   * Updated opt-44_rotor.dpatch
+  * Updated opt-52_hard_link_cutter.dpatch
 
  -- Tobias Grimm <etobi@debian.org>  Fri, 19 Aug 2011 23:16:41 +0200
 
