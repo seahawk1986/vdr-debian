@@ -11,9 +11,9 @@
 ## DP: This is useful if you get epg data of the channels from external sources.
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/config.c vdr-1.7.19/config.c
---- vdr-1.7.19~/config.c	2011-06-19 20:05:17.000000000 +0200
-+++ vdr-1.7.19/config.c	2011-06-19 20:08:33.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.c vdr/config.c
+--- vdr~/config.c	2011-08-19 23:01:19.000000000 +0200
++++ vdr/config.c	2011-08-19 23:03:55.000000000 +0200
 @@ -329,6 +329,8 @@
    SetSystemTime = 0;
    TimeSource = 0;
@@ -62,9 +62,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Store("MarginStart",        MarginStart);
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/config.h vdr-1.7.19/config.h
---- vdr-1.7.19~/config.h	2011-06-19 20:05:17.000000000 +0200
-+++ vdr-1.7.19/config.h	2011-06-19 20:06:21.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.h vdr/config.h
+--- vdr~/config.h	2011-08-19 23:01:19.000000000 +0200
++++ vdr/config.h	2011-08-19 23:02:39.000000000 +0200
 @@ -236,6 +236,7 @@
    int SetSystemTime;
    int TimeSource;
@@ -83,9 +83,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    cSetup& operator= (const cSetup &s);
    bool Load(const char *FileName);
    bool Save(void);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/eit.c vdr-1.7.19/eit.c
---- vdr-1.7.19~/eit.c	2011-06-19 20:05:17.000000000 +0200
-+++ vdr-1.7.19/eit.c	2011-06-19 20:05:17.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/eit.c vdr/eit.c
+--- vdr~/eit.c	2011-08-19 23:01:19.000000000 +0200
++++ vdr/eit.c	2011-08-19 23:01:20.000000000 +0200
 @@ -24,8 +24,28 @@
  class cEIT : public SI::EIT {
  public:
@@ -128,10 +128,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
  
    bool Empty = true;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/menu.c vdr-1.7.19/menu.c
---- vdr-1.7.19~/menu.c	2011-06-19 20:05:17.000000000 +0200
-+++ vdr-1.7.19/menu.c	2011-06-19 20:05:17.000000000 +0200
-@@ -2850,6 +2850,7 @@
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.c vdr/menu.c
+--- vdr~/menu.c	2011-08-19 23:01:19.000000000 +0200
++++ vdr/menu.c	2011-08-19 23:01:20.000000000 +0200
+@@ -2851,6 +2851,7 @@
  
  class cMenuSetupEPG : public cMenuSetupBase {
  private:
@@ -139,7 +139,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int originalNumLanguages;
    int numLanguages;
    void Setup(void);
-@@ -2872,6 +2873,9 @@
+@@ -2873,6 +2874,9 @@
  {
    int current = Current();
  
@@ -149,7 +149,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Clear();
  
    Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
-@@ -2881,6 +2885,7 @@
+@@ -2882,6 +2886,7 @@
    Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
    if (data.SetSystemTime)
       Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder, &data.TimeSource));
