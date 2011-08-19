@@ -1,17 +1,15 @@
 #! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-27_ttxtsubs.dpatch from the vdr-ttxtsubs plug-in version 0.2.2
-##
-## Thomas GÃ¼nther <tom@toms-cafe.de>:
-##   - adapted to VDR-1.7.15
+## opt-27_ttxtsubs.dpatch from the vdr-ttxtsubs plug-in version 0.2.3
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
 ## DP: This patch is needed for the ttxtsubs plugin.
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/MANUAL vdr-1.7.19/MANUAL
---- vdr-1.7.19~/MANUAL	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/MANUAL	2011-06-19 20:00:31.000000000 +0200
-@@ -730,6 +730,9 @@
+diff --git a/MANUAL b/MANUAL
+index 54e166e..57b687f 100644
+--- a/MANUAL
++++ b/MANUAL
+@@ -730,6 +730,9 @@ Version 1.6
                           background transparency. By default the values as broadcast
                           are used.
  
@@ -21,10 +19,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    LNB:
  
    SLOF               = 11700  The switching frequency (in MHz) between low and
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/Makefile vdr-1.7.19/Makefile
---- vdr-1.7.19~/Makefile	2011-05-21 14:21:40.000000000 +0200
-+++ vdr-1.7.19/Makefile	2011-06-19 20:00:31.000000000 +0200
-@@ -45,6 +45,8 @@
+diff --git a/Makefile b/Makefile
+index 18d7eb9..3da4382 100644
+--- a/Makefile
++++ b/Makefile
+@@ -45,6 +45,8 @@ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o d
         skinclassic.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
         timers.o tools.o transfer.o vdr.o videodir.o
  
@@ -33,10 +32,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  ifndef NO_KBD
  DEFINES += -DREMOTE_KBD
  endif
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/channels.c vdr-1.7.19/channels.c
---- vdr-1.7.19~/channels.c	2010-11-07 13:24:59.000000000 +0100
-+++ vdr-1.7.19/channels.c	2011-06-19 20:00:31.000000000 +0200
-@@ -378,6 +378,26 @@
+diff --git a/channels.c b/channels.c
+index c689850..76b9338 100644
+--- a/channels.c
++++ b/channels.c
+@@ -378,6 +378,26 @@ void cChannel::SetSubtitlingDescriptors(uchar *SubtitlingTypes, uint16_t *Compos
       }
  }
  
@@ -63,7 +63,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  void cChannel::SetCaIds(const int *CaIds)
  {
    if (caids[0] && caids[0] <= CA_USER_MAX)
-@@ -506,11 +526,22 @@
+@@ -506,11 +526,22 @@ cString cChannel::ToText(const cChannel *Channel)
          q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs, Channel->dtypes);
          }
       *q = 0;
@@ -87,7 +87,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       }
    return buffer;
  }
-@@ -544,8 +575,9 @@
+@@ -544,8 +575,9 @@ bool cChannel::Parse(const char *s)
       char *parambuf = NULL;
       char *vpidbuf = NULL;
       char *apidbuf = NULL;
@@ -98,7 +98,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       if (fields >= 9) {
          if (fields == 9) {
             // allow reading of old format
-@@ -644,7 +676,37 @@
+@@ -644,7 +676,37 @@ bool cChannel::Parse(const char *s)
                dpids[NumDpids] = 0;
                dtypes[NumDpids] = 0;
                }
@@ -137,7 +137,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
             if (caidbuf) {
                char *p = caidbuf;
                char *q;
-@@ -681,6 +743,7 @@
+@@ -681,6 +743,7 @@ bool cChannel::Parse(const char *s)
          free(sourcebuf);
          free(vpidbuf);
          free(apidbuf);
@@ -145,18 +145,19 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
          free(caidbuf);
          free(namebuf);
          if (!GetChannelID().Valid()) {
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/channels.h vdr-1.7.19/channels.h
---- vdr-1.7.19~/channels.h	2010-06-05 15:12:54.000000000 +0200
-+++ vdr-1.7.19/channels.h	2011-06-19 20:00:31.000000000 +0200
+diff --git a/channels.h b/channels.h
+index 51f9830..6e7367f 100644
+--- a/channels.h
++++ b/channels.h
 @@ -35,6 +35,7 @@
  #define MAXDPIDS 16 // dolby (AC3 + DTS)
  #define MAXSPIDS 32 // subtitles
- #define MAXCAIDS  8 // conditional access
+ #define MAXCAIDS 12 // conditional access
 +#define MAXTXTPAGES 8 // teletext pages
  
  #define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
  #define MAXLANGCODE2 8 // up to two 3 letter language codes, separated by '+' and zero terminated
-@@ -71,6 +72,16 @@
+@@ -71,6 +72,16 @@ public:
    static const tChannelID InvalidID;
    };
  
@@ -173,7 +174,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  class cChannel;
  
  class cLinkChannel : public cListObject {
-@@ -115,6 +126,9 @@
+@@ -115,6 +126,9 @@ private:
    uint16_t compositionPageIds[MAXSPIDS];
    uint16_t ancillaryPageIds[MAXSPIDS];
    int tpid;
@@ -183,7 +184,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int caids[MAXCAIDS + 1]; // list is zero-terminated
    int nid;
    int tid;
-@@ -164,6 +178,8 @@
+@@ -164,6 +178,8 @@ public:
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
    int Tpid(void) const { return tpid; }
@@ -192,7 +193,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    const int *Caids(void) const { return caids; }
    int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
    int Nid(void) const { return nid; }
-@@ -190,6 +206,7 @@
+@@ -190,6 +206,7 @@ public:
    void SetName(const char *Name, const char *ShortName, const char *Provider);
    void SetPortalName(const char *PortalName);
    void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
@@ -200,32 +201,34 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    void SetCaIds(const int *CaIds); // list must be zero-terminated
    void SetCaDescriptors(int Level);
    void SetLinkChannels(cLinkChannels *LinkChannels);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/ci.c vdr-1.7.19/ci.c
---- vdr-1.7.19~/ci.c	2011-05-21 17:21:33.000000000 +0200
-+++ vdr-1.7.19/ci.c	2011-06-19 20:03:39.000000000 +0200
-@@ -1914,6 +1914,8 @@
+diff --git a/ci.c b/ci.c
+index 59d62ef..b024f67 100644
+--- a/ci.c
++++ b/ci.c
+@@ -1913,6 +1913,8 @@ void cCamSlot::AddChannel(const cChannel *Channel)
+          AddPid(Channel->Sid(), *Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
           AddPid(Channel->Sid(), *Spid, STREAM_TYPE_PRIVATE);
-      }
 +     if (Channel->Tpid() && Setup.SupportTeletext)
-+        AddPid(Channel->Sid(), Channel->Tpid(), STREAM_TYPE_DOLBY);
++        AddPid(Channel->Sid(), Channel->Tpid(), STREAM_TYPE_PRIVATE);
+      }
  }
  
- #define QUERY_REPLY_WAIT  100 // ms to wait between checks for a reply
-@@ -1936,6 +1938,9 @@
+@@ -1936,6 +1938,9 @@ bool cCamSlot::CanDecrypt(const cChannel *Channel)
           CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
           CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE); 
 +     if (Channel->Tpid() && Setup.SupportTeletext) {
-+        CaPmt.AddPid(Channel->Tpid(), STREAM_TYPE_DOLBY); // FIXME: STREAM_TYPE_DOLBY should probably be renamed STREAM_TYPE_PRIVATE
++        CaPmt.AddPid(Channel->Tpid(), STREAM_TYPE_PRIVATE);
 +        }
       cas->SendPMT(&CaPmt);
       cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
       do {
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/config.c vdr-1.7.19/config.c
---- vdr-1.7.19~/config.c	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/config.c	2011-06-19 20:00:31.000000000 +0200
-@@ -333,6 +333,7 @@
+diff --git a/config.c b/config.c
+index 6767b5c..4137abb 100644
+--- a/config.c
++++ b/config.c
+@@ -333,6 +333,7 @@ cSetup::cSetup(void)
    MarginStop = 10;
    AudioLanguages[0] = -1;
    DisplaySubtitles = 0;
@@ -233,7 +236,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    SubtitleLanguages[0] = -1;
    SubtitleOffset = 0;
    SubtitleFgTransparency = 0;
-@@ -533,6 +534,7 @@
+@@ -525,6 +526,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
    else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
    else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
    else if (!strcasecmp(Name, "DisplaySubtitles"))    DisplaySubtitles   = atoi(Value);
@@ -241,7 +244,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    else if (!strcasecmp(Name, "SubtitleLanguages"))   return ParseLanguages(Value, SubtitleLanguages);
    else if (!strcasecmp(Name, "SubtitleOffset"))      SubtitleOffset     = atoi(Value);
    else if (!strcasecmp(Name, "SubtitleFgTransparency")) SubtitleFgTransparency = atoi(Value);
-@@ -637,6 +639,7 @@
+@@ -621,6 +623,7 @@ bool cSetup::Save(void)
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
    Store("DisplaySubtitles",   DisplaySubtitles);
@@ -249,10 +252,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    StoreLanguages("SubtitleLanguages", SubtitleLanguages);
    Store("SubtitleOffset",     SubtitleOffset);
    Store("SubtitleFgTransparency", SubtitleFgTransparency);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/config.h vdr-1.7.19/config.h
---- vdr-1.7.19~/config.h	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/config.h	2011-06-19 20:00:31.000000000 +0200
-@@ -239,6 +239,7 @@
+diff --git a/config.h b/config.h
+index 19f8768..c4c2bc4 100644
+--- a/config.h
++++ b/config.h
+@@ -235,6 +235,7 @@ public:
    int MarginStart, MarginStop;
    int AudioLanguages[I18N_MAX_LANGUAGES + 1];
    int DisplaySubtitles;
@@ -260,9 +264,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int SubtitleLanguages[I18N_MAX_LANGUAGES + 1];
    int SubtitleOffset;
    int SubtitleFgTransparency, SubtitleBgTransparency;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/device.c vdr-1.7.19/device.c
---- vdr-1.7.19~/device.c	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/device.c	2011-06-19 20:00:31.000000000 +0200
+diff --git a/device.c b/device.c
+index 0759993..f4b3e2a 100644
+--- a/device.c
++++ b/device.c
 @@ -18,6 +18,7 @@
  #include "receiver.h"
  #include "status.h"
@@ -271,7 +276,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
  // --- cLiveSubtitle ---------------------------------------------------------
  
-@@ -1249,6 +1250,13 @@
+@@ -1245,6 +1246,13 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                    }
                 break;
            case 0xBD: { // private stream 1
@@ -285,7 +290,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
                 int PayloadOffset = Data[8] + 9;
  
                 // Compatibility mode for old subtitles plugin:
-@@ -1408,6 +1416,7 @@
+@@ -1404,6 +1412,7 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
       tsToPesVideo.Reset();
       tsToPesAudio.Reset();
       tsToPesSubtitle.Reset();
@@ -293,7 +298,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       }
    else if (Length < TS_SIZE) {
       esyslog("ERROR: skipped %d bytes of TS fragment", Length);
-@@ -1453,6 +1462,17 @@
+@@ -1449,6 +1458,17 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
                      if (!VideoOnly || HasIBPTrickSpeed())
                         PlayTsSubtitle(Data, TS_SIZE);
                      }
@@ -311,10 +316,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
                   }
                }
             else if (Pid == patPmtParser.Ppid()) {
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/device.h vdr-1.7.19/device.h
---- vdr-1.7.19~/device.h	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/device.h	2011-06-19 20:00:31.000000000 +0200
-@@ -541,6 +541,7 @@
+diff --git a/device.h b/device.h
+index d937e5f..841a5d4 100644
+--- a/device.h
++++ b/device.h
+@@ -534,6 +534,7 @@ private:
    cTsToPes tsToPesVideo;
    cTsToPes tsToPesAudio;
    cTsToPes tsToPesSubtitle;
@@ -322,10 +328,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    bool isPlayingVideo;
  protected:
    const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/menu.c vdr-1.7.19/menu.c
---- vdr-1.7.19~/menu.c	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/menu.c	2011-06-19 20:00:31.000000000 +0200
-@@ -2999,6 +2999,7 @@
+diff --git a/menu.c b/menu.c
+index 3978514..8831fb4 100644
+--- a/menu.c
++++ b/menu.c
+@@ -2797,6 +2797,7 @@ void cMenuSetupDVB::Setup(void)
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
       }
@@ -333,9 +340,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
    SetCurrent(Get(current));
    Display();
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/pat.c vdr-1.7.19/pat.c
---- vdr-1.7.19~/pat.c	2011-04-17 15:45:25.000000000 +0200
-+++ vdr-1.7.19/pat.c	2011-06-19 20:00:31.000000000 +0200
+diff --git a/pat.c b/pat.c
+index b7493ec..9262491 100644
+--- a/pat.c
++++ b/pat.c
 @@ -13,6 +13,7 @@
  #include "libsi/section.h"
  #include "libsi/descriptor.h"
@@ -344,7 +352,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
  #define PMT_SCAN_TIMEOUT  10 // seconds
  
-@@ -343,6 +344,8 @@
+@@ -343,6 +344,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          char DLangs[MAXDPIDS][MAXLANGCODE2] = { "" };
          char SLangs[MAXSPIDS][MAXLANGCODE2] = { "" };
          int Tpid = 0;
@@ -353,7 +361,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
          int NumApids = 0;
          int NumDpids = 0;
          int NumSpids = 0;
-@@ -434,8 +437,21 @@
+@@ -434,8 +437,21 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      NumSpids++;
                                      }
                                   break;
@@ -376,7 +384,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
                                   break;
                              case SI::ISO639LanguageDescriptorTag: {
                                   SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-@@ -537,6 +553,12 @@
+@@ -537,6 +553,12 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
              }
          if (Setup.UpdateChannels >= 2) {
             Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, Dtypes, DLangs, Spids, SLangs, Tpid);
@@ -389,10 +397,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
             Channel->SetCaIds(CaDescriptors->CaIds());
             Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
             }
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/ca_ES.po vdr-1.7.19/po/ca_ES.po
---- vdr-1.7.19~/po/ca_ES.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/ca_ES.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/ca_ES.po b/po/ca_ES.po
+index 835f93d..0e973fa 100644
+--- a/po/ca_ES.po
++++ b/po/ca_ES.po
+@@ -944,6 +944,9 @@ msgstr "Transpar
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparència fons subtítols"
  
@@ -402,10 +411,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "Configuració de l'LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/cs_CZ.po vdr-1.7.19/po/cs_CZ.po
---- vdr-1.7.19~/po/cs_CZ.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/cs_CZ.po	2011-06-19 20:00:31.000000000 +0200
-@@ -943,6 +943,9 @@
+diff --git a/po/cs_CZ.po b/po/cs_CZ.po
+index e6ebdfd..bfc8085 100644
+--- a/po/cs_CZ.po
++++ b/po/cs_CZ.po
+@@ -943,6 +943,9 @@ msgstr "PrÅ¯hlednost pÃ­sma titulkÅ¯"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "PrÅ¯hlednost pozadÃ­ titulkÅ¯"
  
@@ -415,10 +425,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/da_DK.po vdr-1.7.19/po/da_DK.po
---- vdr-1.7.19~/po/da_DK.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/da_DK.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/da_DK.po b/po/da_DK.po
+index c837986..a7c0230 100644
+--- a/po/da_DK.po
++++ b/po/da_DK.po
+@@ -941,6 +941,9 @@ msgstr "Undertekst forgrundsgennemsigtighed"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Undertekst baggrundsgennemsigtighed"
  
@@ -428,10 +439,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/de_DE.po vdr-1.7.19/po/de_DE.po
---- vdr-1.7.19~/po/de_DE.po	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/po/de_DE.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/de_DE.po b/po/de_DE.po
+index 75dc3a6..b4f459c 100644
+--- a/po/de_DE.po
++++ b/po/de_DE.po
+@@ -941,6 +941,9 @@ msgstr "Untertitel-Transparenz Vordergrund"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Untertitel-Transparenz Hintergrund"
  
@@ -441,10 +453,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/el_GR.po vdr-1.7.19/po/el_GR.po
---- vdr-1.7.19~/po/el_GR.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/el_GR.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/el_GR.po b/po/el_GR.po
+index a35fa3b..46fdac5 100644
+--- a/po/el_GR.po
++++ b/po/el_GR.po
+@@ -941,6 +941,9 @@ msgstr ""
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr ""
  
@@ -454,10 +467,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/es_ES.po vdr-1.7.19/po/es_ES.po
---- vdr-1.7.19~/po/es_ES.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/es_ES.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/es_ES.po b/po/es_ES.po
+index 88b693e..afcf548 100644
+--- a/po/es_ES.po
++++ b/po/es_ES.po
+@@ -942,6 +942,9 @@ msgstr "Transparencia primer plano subt
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparencia fondo subtítulos"
  
@@ -467,10 +481,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/et_EE.po vdr-1.7.19/po/et_EE.po
---- vdr-1.7.19~/po/et_EE.po	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/po/et_EE.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/et_EE.po b/po/et_EE.po
+index 8c8ad1f..07d92f8 100644
+--- a/po/et_EE.po
++++ b/po/et_EE.po
+@@ -941,6 +941,9 @@ msgstr "Subtiitri l
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Subtiitri tausta läbipaistvus"
  
@@ -480,10 +495,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/fi_FI.po vdr-1.7.19/po/fi_FI.po
---- vdr-1.7.19~/po/fi_FI.po	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/po/fi_FI.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/fi_FI.po b/po/fi_FI.po
+index 1b06c3f..0fda001 100644
+--- a/po/fi_FI.po
++++ b/po/fi_FI.po
+@@ -944,6 +944,9 @@ msgstr "Tekstityksen lÃ¤pinÃ¤kyvyys"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Tekstityksen taustan lÃ¤pinÃ¤kyvyys"
  
@@ -493,10 +509,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/fr_FR.po vdr-1.7.19/po/fr_FR.po
---- vdr-1.7.19~/po/fr_FR.po	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/po/fr_FR.po	2011-06-19 20:00:31.000000000 +0200
-@@ -947,6 +947,9 @@
+diff --git a/po/fr_FR.po b/po/fr_FR.po
+index 68a581c..7a7d948 100644
+--- a/po/fr_FR.po
++++ b/po/fr_FR.po
+@@ -947,6 +947,9 @@ msgstr "Transparence de l'avant-plan"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparence du fond"
  
@@ -506,10 +523,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/hr_HR.po vdr-1.7.19/po/hr_HR.po
---- vdr-1.7.19~/po/hr_HR.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/hr_HR.po	2011-06-19 20:00:31.000000000 +0200
-@@ -943,6 +943,9 @@
+diff --git a/po/hr_HR.po b/po/hr_HR.po
+index 69104b4..aea74c6 100644
+--- a/po/hr_HR.po
++++ b/po/hr_HR.po
+@@ -943,6 +943,9 @@ msgstr "Transparentnost titla"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparentnost pozadine titla"
  
@@ -519,10 +537,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/hu_HU.po vdr-1.7.19/po/hu_HU.po
---- vdr-1.7.19~/po/hu_HU.po	2011-05-21 14:29:39.000000000 +0200
-+++ vdr-1.7.19/po/hu_HU.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/hu_HU.po b/po/hu_HU.po
+index b7cf1a7..125ffe6 100644
+--- a/po/hu_HU.po
++++ b/po/hu_HU.po
+@@ -944,6 +944,9 @@ msgstr "Felirat transzparenci
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Felirat hátterének transzparenciája"
  
@@ -532,10 +551,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/it_IT.po vdr-1.7.19/po/it_IT.po
---- vdr-1.7.19~/po/it_IT.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/it_IT.po	2011-06-19 20:00:31.000000000 +0200
-@@ -948,6 +948,9 @@
+diff --git a/po/it_IT.po b/po/it_IT.po
+index 24e5412..02b33bd 100644
+--- a/po/it_IT.po
++++ b/po/it_IT.po
+@@ -948,6 +948,9 @@ msgstr "Trasparenza sottotitoli"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Trasparenza sfondo sottotitoli"
  
@@ -545,10 +565,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/lt_LT.po vdr-1.7.19/po/lt_LT.po
---- vdr-1.7.19~/po/lt_LT.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/lt_LT.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/lt_LT.po b/po/lt_LT.po
+index a8dfcb9..adbac95 100644
+--- a/po/lt_LT.po
++++ b/po/lt_LT.po
+@@ -941,6 +941,9 @@ msgstr "SubtitrÅ³ fonto permatomumas"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "SubtitrÅ³ fono permatomumas"
  
@@ -558,10 +579,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "Konverteris (LNB)"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/nl_NL.po vdr-1.7.19/po/nl_NL.po
---- vdr-1.7.19~/po/nl_NL.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/nl_NL.po	2011-06-19 20:00:31.000000000 +0200
-@@ -945,6 +945,9 @@
+diff --git a/po/nl_NL.po b/po/nl_NL.po
+index 66febc5..4fa7d9f 100644
+--- a/po/nl_NL.po
++++ b/po/nl_NL.po
+@@ -945,6 +945,9 @@ msgstr "Transparantie voorgrond ondertiteling"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparantie achtergrond ondertiteling"
  
@@ -571,10 +593,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/nn_NO.po vdr-1.7.19/po/nn_NO.po
---- vdr-1.7.19~/po/nn_NO.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/nn_NO.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/nn_NO.po b/po/nn_NO.po
+index a49ab6b..24e697d 100644
+--- a/po/nn_NO.po
++++ b/po/nn_NO.po
+@@ -942,6 +942,9 @@ msgstr ""
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr ""
  
@@ -584,10 +607,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/pl_PL.po vdr-1.7.19/po/pl_PL.po
---- vdr-1.7.19~/po/pl_PL.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/pl_PL.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/pl_PL.po b/po/pl_PL.po
+index e56f3bf..3202caf 100644
+--- a/po/pl_PL.po
++++ b/po/pl_PL.po
+@@ -942,6 +942,9 @@ msgstr "Prze
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Prze¼rocze podtytu³ów: T³o"
  
@@ -597,10 +621,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/pt_PT.po vdr-1.7.19/po/pt_PT.po
---- vdr-1.7.19~/po/pt_PT.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/pt_PT.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/pt_PT.po b/po/pt_PT.po
+index 2eae063..39319b9 100644
+--- a/po/pt_PT.po
++++ b/po/pt_PT.po
+@@ -942,6 +942,9 @@ msgstr "Transpar
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparência de fundo das legendas"
  
@@ -610,10 +635,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/ro_RO.po vdr-1.7.19/po/ro_RO.po
---- vdr-1.7.19~/po/ro_RO.po	2011-05-21 14:29:39.000000000 +0200
-+++ vdr-1.7.19/po/ro_RO.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/ro_RO.po b/po/ro_RO.po
+index cd1a4d0..d4bd3db 100644
+--- a/po/ro_RO.po
++++ b/po/ro_RO.po
+@@ -944,6 +944,9 @@ msgstr "Transparen
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparenþa fundalului subtitrãrii"
  
@@ -623,10 +649,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/ru_RU.po vdr-1.7.19/po/ru_RU.po
---- vdr-1.7.19~/po/ru_RU.po	2011-06-19 20:00:31.000000000 +0200
-+++ vdr-1.7.19/po/ru_RU.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/ru_RU.po b/po/ru_RU.po
+index 57210f0..ac7b507 100644
+--- a/po/ru_RU.po
++++ b/po/ru_RU.po
+@@ -942,6 +942,9 @@ msgstr "
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "¿àÞ×àÐçÝÞáâì äÞÝÐ áãÑâØâàÞÒ"
  
@@ -636,10 +663,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "ºÞÝÒÕàâÕà"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/sk_SK.po vdr-1.7.19/po/sk_SK.po
---- vdr-1.7.19~/po/sk_SK.po	2011-05-21 14:29:39.000000000 +0200
-+++ vdr-1.7.19/po/sk_SK.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/sk_SK.po b/po/sk_SK.po
+index a8faa76..e46ae57 100644
+--- a/po/sk_SK.po
++++ b/po/sk_SK.po
+@@ -941,6 +941,9 @@ msgstr "Prieh
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Priehµadnos» pozadia titulkov"
  
@@ -649,10 +677,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/sl_SI.po vdr-1.7.19/po/sl_SI.po
---- vdr-1.7.19~/po/sl_SI.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/sl_SI.po	2011-06-19 20:00:31.000000000 +0200
-@@ -942,6 +942,9 @@
+diff --git a/po/sl_SI.po b/po/sl_SI.po
+index 2e6667d..8cc86bd 100644
+--- a/po/sl_SI.po
++++ b/po/sl_SI.po
+@@ -942,6 +942,9 @@ msgstr "Transparentnost podnapisov"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparentnost ozadja podnapisov"
  
@@ -662,10 +691,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/sv_SE.po vdr-1.7.19/po/sv_SE.po
---- vdr-1.7.19~/po/sv_SE.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/sv_SE.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/sv_SE.po b/po/sv_SE.po
+index 41b6592..99e166b 100644
+--- a/po/sv_SE.po
++++ b/po/sv_SE.po
+@@ -944,6 +944,9 @@ msgstr "Transparent f
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparent bakgrund textremsa"
  
@@ -675,10 +705,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/tr_TR.po vdr-1.7.19/po/tr_TR.po
---- vdr-1.7.19~/po/tr_TR.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/tr_TR.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/tr_TR.po b/po/tr_TR.po
+index b0ad00f..2831961 100644
+--- a/po/tr_TR.po
++++ b/po/tr_TR.po
+@@ -941,6 +941,9 @@ msgstr "Altyaz
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Altyazý arka þeffaflýk"
  
@@ -688,10 +719,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "LNB"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/uk_UA.po vdr-1.7.19/po/uk_UA.po
---- vdr-1.7.19~/po/uk_UA.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/uk_UA.po	2011-06-19 20:00:31.000000000 +0200
-@@ -941,6 +941,9 @@
+diff --git a/po/uk_UA.po b/po/uk_UA.po
+index f316e29..5e7c5ea 100644
+--- a/po/uk_UA.po
++++ b/po/uk_UA.po
+@@ -941,6 +941,9 @@ msgstr "ÐŸÑ€Ð¾Ð·Ð¾Ñ€Ñ–ÑÑ‚ÑŒ Ð¿ÐµÑ€ÐµÐ´Ð½ÑŒÐ¾Ð³Ð¾ Ð¿Ð»Ð°Ð½Ñƒ ÑÑƒÐ±Ñ‚Ð¸Ñ‚Ñ€Ñ–Ð²"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "ÐŸÑ€Ð¾Ð·Ð¾Ñ€Ñ–ÑÑ‚ÑŒ Ð·Ð°Ð´Ð½ÑŒÐ¾Ð³Ð¾ Ð¿Ð»Ð°Ð½Ñƒ ÑÑƒÐ±Ñ‚Ð¸Ñ‚Ñ€Ñ–Ð²"
  
@@ -701,10 +733,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "ÐšÐ¾Ð½Ð²ÐµÑ€Ñ‚ÐµÑ€"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/po/zh_CN.po vdr-1.7.19/po/zh_CN.po
---- vdr-1.7.19~/po/zh_CN.po	2011-05-21 14:29:38.000000000 +0200
-+++ vdr-1.7.19/po/zh_CN.po	2011-06-19 20:00:31.000000000 +0200
-@@ -944,6 +944,9 @@
+diff --git a/po/zh_CN.po b/po/zh_CN.po
+index 11ccd84..49bb638 100644
+--- a/po/zh_CN.po
++++ b/po/zh_CN.po
+@@ -944,6 +944,9 @@ msgstr "å­—å¹•å‰æ™¯é€æ˜Žåº¦"
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "å­—å¹•èƒŒæ™¯é€æ˜Žåº¦"
  
@@ -714,10 +747,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "LNB"
  msgstr "åˆ‡æ¢å™¨è®¾ç½®"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/receiver.c vdr-1.7.19/receiver.c
---- vdr-1.7.19~/receiver.c	2010-12-13 00:16:25.000000000 +0100
-+++ vdr-1.7.19/receiver.c	2011-06-19 20:00:31.000000000 +0200
-@@ -81,7 +81,8 @@
+diff --git a/receiver.c b/receiver.c
+index 6a9ba04..a5c8967 100644
+--- a/receiver.c
++++ b/receiver.c
+@@ -81,7 +81,8 @@ bool cReceiver::SetPids(const cChannel *Channel)
              (Channel->Ppid() == Channel->Vpid() || AddPid(Channel->Ppid())) &&
              AddPids(Channel->Apids()) &&
              AddPids(Channel->Dpids()) &&
@@ -727,10 +761,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       }
  return true;
  }
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/remux.c vdr-1.7.19/remux.c
---- vdr-1.7.19~/remux.c	2011-06-12 16:24:09.000000000 +0200
-+++ vdr-1.7.19/remux.c	2011-06-19 20:00:31.000000000 +0200
-@@ -216,6 +216,29 @@
+diff --git a/remux.c b/remux.c
+index f174f61..0c1b361 100644
+--- a/remux.c
++++ b/remux.c
+@@ -219,6 +219,29 @@ int cPatPmtGenerator::MakeSubtitlingDescriptor(uchar *Target, const char *Langua
    return i;
  }
  
@@ -760,7 +795,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language)
  {
    int i = 0;
-@@ -303,6 +326,7 @@
+@@ -306,6 +329,7 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
    if (Channel) {
       int Vpid = Channel->Vpid();
       int Ppid = Channel->Ppid();
@@ -768,7 +803,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       uchar *p = buf;
       int i = 0;
       p[i++] = 0x02; // table id
-@@ -335,6 +359,10 @@
+@@ -338,6 +362,10 @@ void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
           i += MakeStream(buf + i, 0x06, Channel->Spid(n));
           i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
           }
@@ -779,7 +814,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
       int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
       buf[SectionLength] |= (sl >> 8) & 0x0F;
-@@ -408,6 +436,7 @@
+@@ -411,6 +439,7 @@ void cPatPmtParser::Reset(void)
    pmtPid = -1;
    vpid = vtype = 0;
    ppid = 0;
@@ -787,7 +822,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  }
  
  void cPatPmtParser::ParsePat(const uchar *Data, int Length)
-@@ -493,11 +522,13 @@
+@@ -496,11 +525,13 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
       int NumSpids = 0;
       vpid = vtype = 0;
       ppid = 0;
@@ -801,7 +836,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
       SI::PMT::Stream stream;
       for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
           dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
-@@ -596,6 +627,28 @@
+@@ -599,6 +630,28 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                                      spids[NumSpids]= 0;
                                      }
                                   break;
@@ -830,10 +865,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
                              case SI::ISO639LanguageDescriptorTag: {
                                   SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
                                   dbgpatpmt(" '%s'", ld->languageCode);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/remux.h vdr-1.7.19/remux.h
---- vdr-1.7.19~/remux.h	2011-06-12 14:49:17.000000000 +0200
-+++ vdr-1.7.19/remux.h	2011-06-19 20:00:31.000000000 +0200
-@@ -174,6 +174,7 @@
+diff --git a/remux.h b/remux.h
+index 3204bb4..d6b0274 100644
+--- a/remux.h
++++ b/remux.h
+@@ -174,6 +174,7 @@ protected:
    int MakeStream(uchar *Target, uchar Type, int Pid);
    int MakeAC3Descriptor(uchar *Target, uchar Type);
    int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
@@ -841,7 +877,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int MakeLanguageDescriptor(uchar *Target, const char *Language);
    int MakeCRC(uchar *Target, const uchar *Data, int Length);
    void GeneratePmtPid(const cChannel *Channel);
-@@ -219,6 +220,7 @@
+@@ -219,6 +220,7 @@ private:
    int vpid;
    int ppid;
    int vtype;
@@ -849,7 +885,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int apids[MAXAPIDS + 1]; // list is zero-terminated
    int atypes[MAXAPIDS + 1]; // list is zero-terminated
    char alangs[MAXAPIDS][MAXLANGCODE2];
-@@ -231,6 +233,8 @@
+@@ -231,6 +233,8 @@ private:
    uint16_t compositionPageIds[MAXSPIDS];
    uint16_t ancillaryPageIds[MAXSPIDS];
    bool updatePrimaryDevice;
@@ -858,7 +894,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  protected:
    int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
  public:
-@@ -263,6 +267,9 @@
+@@ -263,6 +267,9 @@ public:
    int Vtype(void) const { return vtype; }
         ///< Returns the video stream type as defined by the current PMT, or 0 if no video
         ///< stream type has been detected, yet.
@@ -868,7 +904,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    const int *Apids(void) const { return apids; }
    const int *Dpids(void) const { return dpids; }
    const int *Spids(void) const { return spids; }
-@@ -277,6 +284,8 @@
+@@ -277,6 +284,8 @@ public:
    uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
@@ -877,10 +913,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    };
  
  // TS to PES converter:
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/vdr.5 vdr-1.7.19/vdr.5
---- vdr-1.7.19~/vdr.5	2011-04-03 12:21:36.000000000 +0200
-+++ vdr-1.7.19/vdr.5	2011-06-19 20:00:31.000000000 +0200
-@@ -214,6 +214,13 @@
+diff --git a/vdr.5 b/vdr.5
+index 6274c1a..dff559d 100644
+--- a/vdr.5
++++ b/vdr.5
+@@ -214,6 +214,13 @@ if there is an audio type.
  .TP
  .B TPID
  The teletext PID.
@@ -894,9 +931,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  .TP
  .B Conditional access
  A hexadecimal integer defining how this channel can be accessed:
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/vdrttxtsubshooks.c vdr-1.7.19/vdrttxtsubshooks.c
---- vdr-1.7.19~/vdrttxtsubshooks.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.7.19/vdrttxtsubshooks.c	2011-06-19 20:00:31.000000000 +0200
+diff --git a/vdrttxtsubshooks.c b/vdrttxtsubshooks.c
+new file mode 100644
+index 0000000..2471788
+--- /dev/null
++++ b/vdrttxtsubshooks.c
 @@ -0,0 +1,63 @@
 +/*
 + * vdr-ttxtsubs - A plugin for the Linux Video Disk Recorder
@@ -961,9 +1000,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
 +  return &gProxy;
 +}
 +
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/vdrttxtsubshooks.h vdr-1.7.19/vdrttxtsubshooks.h
---- vdr-1.7.19~/vdrttxtsubshooks.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.7.19/vdrttxtsubshooks.h	2011-06-19 20:00:31.000000000 +0200
+diff --git a/vdrttxtsubshooks.h b/vdrttxtsubshooks.h
+new file mode 100644
+index 0000000..2f97969
+--- /dev/null
++++ b/vdrttxtsubshooks.h
 @@ -0,0 +1,46 @@
 +/*
 + * vdr-ttxtsubs - A plugin for the Linux Video Disk Recorder
