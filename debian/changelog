@@ -1,6 +1,7 @@
 vdr (1.7.20-1~ctvdr1) unstable; urgency=low
 
   * New upstream release
+  * Updated opt-20_liemikuutio.dpatch
 
  -- Tobias Grimm <etobi@debian.org>  Fri, 19 Aug 2011 23:16:41 +0200
 
