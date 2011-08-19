@@ -13,9 +13,9 @@
 ## DP: This patch is needed for the rotor plugin.
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/device.h vdr-1.7.19/device.h
---- vdr-1.7.19~/device.h	2011-06-19 20:09:49.000000000 +0200
-+++ vdr-1.7.19/device.h	2011-06-19 20:09:50.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/device.h vdr/device.h
+--- vdr~/device.h	2011-08-19 23:05:56.000000000 +0200
++++ vdr/device.h	2011-08-19 23:05:56.000000000 +0200
 @@ -24,6 +24,8 @@
  #include "spu.h"
  #include "thread.h"
@@ -33,9 +33,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
  // PID handle facilities
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/dvbdevice.c vdr-1.7.19/dvbdevice.c
---- vdr-1.7.19~/dvbdevice.c	2011-06-11 16:34:24.000000000 +0200
-+++ vdr-1.7.19/dvbdevice.c	2011-06-19 20:12:51.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/dvbdevice.c vdr/dvbdevice.c
+--- vdr~/dvbdevice.c	2011-06-19 19:27:39.000000000 +0200
++++ vdr/dvbdevice.c	2011-08-19 23:08:31.000000000 +0200
 @@ -258,6 +258,7 @@
  class cDvbTuner : public cThread {
  private:
@@ -52,15 +52,12 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    void ClearEventQueue(void) const;
    bool GetFrontendStatus(fe_status_t &Status) const;
    bool SetFrontend(void);
-@@ -283,6 +285,7 @@
-   uint32_t SubsystemId(void) const { return subsystemId; }
-   bool IsTunedTo(const cChannel *Channel) const;
-   void Set(const cChannel *Channel);
-+  bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
+@@ -286,10 +288,12 @@
    bool Locked(int TimeoutMs = 0);
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
-@@ -290,6 +293,7 @@
++  bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
+   };
  
  cDvbTuner::cDvbTuner(int Device, int Fd_Frontend, int Adapter, int Frontend, fe_delivery_system FrontendType)
  {
@@ -68,8 +65,8 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    device = Device;
    fd_frontend = Fd_Frontend;
    adapter = Adapter;
-@@ -357,6 +361,17 @@
-      }
+@@ -475,6 +479,18 @@
+   return -1;
  }
  
 +bool cDvbTuner::SendDiseqcCmd(dvb_diseqc_master_cmd cmd)
@@ -83,10 +80,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
 +  return true;
 +}
 +
- bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
++
+ static unsigned int FrequencyToHz(unsigned int f)
  {
-   ClearEventQueue();
-@@ -647,6 +662,10 @@
+   while (f && f < 1000000)
+@@ -647,6 +663,10 @@
          if (GetFrontendStatus(NewStatus))
             Status = NewStatus;
          cMutexLock MutexLock(&mutex);
@@ -97,7 +95,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
          switch (tunerStatus) {
            case tsIdle:
                 break;
-@@ -1118,6 +1137,11 @@
+@@ -1118,6 +1138,11 @@
    return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
  }
  
@@ -109,9 +107,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  void cDvbDevice::SetTransferModeForDolbyDigital(int Mode)
  {
    setTransferModeForDolbyDigital = Mode;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.19~/dvbdevice.h vdr-1.7.19/dvbdevice.h
---- vdr-1.7.19~/dvbdevice.h	2011-06-02 15:20:05.000000000 +0200
-+++ vdr-1.7.19/dvbdevice.h	2011-06-19 20:09:50.000000000 +0200
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/dvbdevice.h vdr/dvbdevice.h
+--- vdr~/dvbdevice.h	2011-06-19 19:27:39.000000000 +0200
++++ vdr/dvbdevice.h	2011-08-19 23:05:56.000000000 +0200
 @@ -149,6 +149,7 @@
    virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
  public:
