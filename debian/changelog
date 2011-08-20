@@ -2,6 +2,7 @@ vdr (1.7.20-1~ctvdr1) unstable; urgency=low
 
   * New upstream release
   * Added 99_fix-recording-problem-vdr-1.7.20.dpatch
+  * Build-depend on libjpeg-dev instead of libjpeg62-dev
   * Updated opt-20_liemikuutio.dpatch
   * Updated opt-27_ttxtsubs.dpatch
   * Updated opt-39_noepg.dpatch
