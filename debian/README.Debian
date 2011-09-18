@@ -82,7 +82,7 @@ LIRC=<lirc_device>
 
     Default: /dev/lircd
 
-    Allows to change the LIRC device or disable LIRC alltogether by
+    Allows one to change the LIRC device or disable LIRC alltogether by
     setting it to /dev/null which might be required if you use a
     different frontend, like XBMC or xineliboutput.
 
