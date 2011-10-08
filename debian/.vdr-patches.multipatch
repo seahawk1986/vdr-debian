@@ -16,6 +16,7 @@ debian/patches/opt-31-x_reelchannelscan.dpatch:f8c06ac51888248f68badcab8533c2be
 debian/patches/81_Make_config.dpatch:da281b9af48273bcbd19f3052ee993fd
 debian/patches/opt-37-x_menuorg.dpatch:9fb02cc8bd848add50b3866b6f476644
 debian/patches/opt-45_yaepg.dpatch:77fdabd83bdf4187d7040faaf1c758c7
+debian/patches/opt-27_ttxtsubs.dpatch:7b3188bebdbf83806320876c0884dd9b
 debian/patches/99_ncursesw-include.dpatch:90810d58108ff8d9afd768fec67be904
 debian/patches/opt-39_noepg.dpatch:9f154a51a570bce2189056ea85b5ad91
 debian/patches/04_newplugin.dpatch:e99f8d21734a19b3eb93d9e3f11b680a
