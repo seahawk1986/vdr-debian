@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 2.8 2010/12/12 13:41:09 kls Exp $
+ * $Id: menuitems.c 2.10 2011/08/12 13:19:40 kls Exp $
  */
 
 #include "menuitems.h"
@@ -713,7 +713,19 @@ void cMenuEditStraItem::Set(void)
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value, const char *NoneString)
 :cMenuEditIntItem(Name, Value, NoneString ? 0 : 1, Channels.MaxNumber())
 {
+  channelID = NULL;
   noneString = NoneString;
+  dummyValue = 0;
+  Set();
+}
+
+cMenuEditChanItem::cMenuEditChanItem(const char *Name, cString *ChannelID, const char *NoneString)
+:cMenuEditIntItem(Name, &dummyValue, NoneString ? 0 : 1, Channels.MaxNumber())
+{
+  channelID = ChannelID;
+  noneString = NoneString;
+  cChannel *channel = Channels.GetByChannelID(tChannelID::FromString(*ChannelID));
+  dummyValue = channel ? channel->Number() : 0;
   Set();
 }
 
@@ -724,9 +736,14 @@ void cMenuEditChanItem::Set(void)
      cChannel *channel = Channels.GetByNumber(*value);
      snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
      SetValue(buf);
+     if (channelID)
+        *channelID = channel->GetChannelID().ToString();
      }
-  else if (noneString)
+  else if (noneString) {
      SetValue(noneString);
+     if (channelID)
+        *channelID = "";
+     }
 }
 
 eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
@@ -744,6 +761,8 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
                       *value = channel->Number();
                    else if (delta < 0 && noneString)
                       *value = 0;
+                   if (channelID)
+                      *channelID = channel ? channel->GetChannelID().ToString() : "";
                    Set();
                  }
                  break;

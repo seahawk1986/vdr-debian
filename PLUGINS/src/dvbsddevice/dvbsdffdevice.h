@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.h 2.11 2010/01/04 11:01:14 kls Exp $
+ * $Id: dvbsdffdevice.h 2.13 2011/08/27 11:32:42 kls Exp $
  */
 
 #ifndef __DVBSDFFDEVICE_H
@@ -17,12 +17,14 @@
 class cDvbSdFfDevice : public cDvbDevice {
 private:
   int fd_osd, fd_audio, fd_video, fd_stc;
+  bool outputOnly;
 protected:
   virtual void MakePrimaryDevice(bool On);
 public:
-  cDvbSdFfDevice(int Adapter, int Frontend);
+  cDvbSdFfDevice(int Adapter, int Frontend, bool OutputOnly);
   virtual ~cDvbSdFfDevice();
   virtual bool HasDecoder(void) const;
+  virtual bool AvoidRecording(void) const;
 
 // SPU facilities
 
@@ -33,6 +35,8 @@ public:
 
 // Channel facilities
 
+public:
+  virtual bool ProvidesSource(int Source) const;
 private:
   void TurnOffLiveMode(bool LiveView);
 protected:
@@ -100,7 +104,11 @@ public:
   };
 
 class cDvbSdFfDeviceProbe : public cDvbDeviceProbe {
+private:
+  bool outputOnly;
 public:
+  cDvbSdFfDeviceProbe(void);
+  void SetOutputOnly(bool On) { outputOnly = On; }
   virtual bool Probe(int Adapter, int Frontend);
   };
  

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 2.1 2009/06/06 15:12:31 kls Exp $
+ * $Id: skins.c 2.3 2011/08/21 11:21:19 kls Exp $
  */
 
 #include "skins.h"
@@ -136,14 +136,14 @@ cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Curren
      if (Marks) {
         bool Start = true;
         for (const cMark *m = Marks->First(); m; m = Marks->Next(m)) {
-            int p1 = Pos(m->position);
+            int p1 = Pos(m->Position());
             if (Start) {
                const cMark *m2 = Marks->Next(m);
-               int p2 = Pos(m2 ? m2->position : total);
+               int p2 = Pos(m2 ? m2->Position() : total);
                int h = Height / 3;
                DrawRectangle(p1, h, p2, Height - h, ColorSelected);
                }
-            Mark(p1, Start, m->position == Current, ColorMark, ColorCurrent);
+            Mark(p1, Start, m->Position() == Current, ColorMark, ColorCurrent);
             Start = !Start;
             }
         }
@@ -223,6 +223,10 @@ bool cSkins::SetCurrent(const char *Name)
 
 eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
 {
+  if (!cThread::IsMainThread()) {
+     dsyslog("cSkins::Message() called from background thread - ignored! (Use cSkins::QueueMessage() instead)");
+     return kNone;
+     }
   switch (Type) {
     case mtInfo:    isyslog("info: %s", s); break;
     case mtWarning: isyslog("warning: %s", s); break;

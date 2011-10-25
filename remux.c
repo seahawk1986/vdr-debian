@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 2.51 2011/02/26 15:51:04 kls Exp $
+ * $Id: remux.c 2.62 2011/09/04 13:09:06 kls Exp $
  */
 
 #include "remux.h"
@@ -12,6 +12,7 @@
 #include "libsi/si.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
+#include "recording.h"
 #include "shutdown.h"
 #include "tools.h"
 
@@ -134,8 +135,11 @@ void TsSetTeiOnBrokenPackets(uchar *p, int l)
         if (!Processed[Pid]) {
            if (!TsPayloadStart(p))
               p[1] |= TS_ERROR;
-           else
+           else {
               Processed[Pid] = true;
+              int offs = TsPayloadOffset(p);
+              cRemux::SetBrokenLink(p + offs, TS_SIZE - offs);
+              }
            }
         l -= TS_SIZE;
         p += TS_SIZE;
@@ -783,9 +787,11 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   synced = false;
   newFrame = independentFrame = false;
   numPtsValues = 0;
+  numFrames = 0;
   numIFrames = 0;
   framesPerSecond = 0;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
+  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
 }
@@ -807,8 +813,28 @@ void cFrameDetector::SetPid(int Pid, int Type)
 void cFrameDetector::Reset(void)
 {
   newFrame = independentFrame = false;
+  payloadUnitOfFrame = 0;
   scanning = false;
   scanner = EMPTY_SCANNER;
+}
+
+int cFrameDetector::SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset)
+{
+  if (!synced)
+     dbgframes("%d>", FrameTypeOffset);
+  while (Length >= TS_SIZE) {
+        // switch to the next TS packet, but skip those that have a different PID:
+        Data += TS_SIZE;
+        Length -= TS_SIZE;
+        Processed += TS_SIZE;
+        if (TsPid(Data) == pid)
+           break;
+        else if (Length < TS_SIZE)
+           esyslog("ERROR: out of data while skipping TS packets in cFrameDetector");
+        }
+  FrameTypeOffset -= TS_SIZE;
+  FrameTypeOffset += TsPayloadOffset(Data);
+  return FrameTypeOffset;
 }
 
 int cFrameDetector::Analyze(const uchar *Data, int Length)
@@ -833,17 +859,18 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     return Processed;
                  if (Length < MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE)
                     return Processed; // need more data, in case the frame type is not stored in the first TS packet
-                 if (!framesPerSecond) {
+                 if (framesPerSecond <= 0.0) {
                     // frame rate unknown, so collect a sequence of PTS values:
-                    if (numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
+                    if (numPtsValues < 2 || numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
                        const uchar *Pes = Data + TsPayloadOffset(Data);
-                       if (PesHasPts(Pes)) {
+                       if (numIFrames && PesHasPts(Pes)) {
                           ptsValues[numPtsValues] = PesGetPts(Pes);
                           // check for rollover:
                           if (numPtsValues && ptsValues[numPtsValues - 1] > 0xF0000000 && ptsValues[numPtsValues] < 0x10000000) {
                              dbgframes("#");
                              numPtsValues = 0;
                              numIFrames = 0;
+                             numFrames = 0;
                              }
                           else
                              numPtsValues++;
@@ -863,18 +890,31 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              framesPerSecond = 25.0;
                           else if (Delta % 3003 == 0)
                              framesPerSecond = 30.0 / 1.001;
-                          else if (abs(Delta - 1800) <= 1)
-                             framesPerSecond = 50.0;
+                          else if (abs(Delta - 1800) <= 1) {
+                             if (numFrames > 50) {
+                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
+                                framesPerSecond = 25.0;
+                                framesPerPayloadUnit = -2;
+                                }
+                             else
+                                framesPerSecond = 50.0;
+                             }
                           else if (Delta == 1501)
-                             framesPerSecond = 60.0 / 1.001;
+                             if (numFrames > 50) {
+                                // this is a "best guess": if there are more than 50 frames between two I-frames, we assume each "frame" actually contains a "field", so two "fields" make one "frame"
+                                framesPerSecond = 30.0 / 1.001;
+                                framesPerPayloadUnit = -2;
+                                }
+                             else
+                                framesPerSecond = 60.0 / 1.001;
                           else {
-                             framesPerSecond = 25.0;
-                             dsyslog("unknown frame delta (%d), assuming 25 fps", Delta);
+                             framesPerSecond = DEFAULTFRAMESPERSECOND;
+                             dsyslog("unknown frame delta (%d), assuming %5.2f fps", Delta, DEFAULTFRAMESPERSECOND);
                              }
                           }
                        else // audio
                           framesPerSecond = 90000.0 / Delta; // PTS of audio frames is always increasing
-                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d\n", Delta, framesPerSecond, framesPerPayloadUnit);
+                       dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numFrames);
                        }
                     }
                  scanner = EMPTY_SCANNER;
@@ -899,8 +939,12 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               int FrameTypeOffset = i + 2;
+                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
+                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               independentFrame = ((Data[i + 2] >> 3) & 0x07) == 1; // I-Frame
+                               uchar FrameType = (Data[FrameTypeOffset] >> 3) & 0x07;
+                               independentFrame = FrameType == 1; // I-Frame
                                if (synced) {
                                   if (framesPerPayloadUnit <= 1)
                                      scanning = false;
@@ -909,7 +953,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                   framesInPayloadUnit++;
                                   if (independentFrame)
                                      numIFrames++;
-                                  dbgframes("%d ", (Data[i + 2] >> 3) & 0x07);
+                                  if (numIFrames == 1)
+                                     numFrames++;
+                                  dbgframes("%u ", FrameType);
                                   }
                                if (synced)
                                   return Processed + TS_SIZE; // flag this new frame
@@ -920,9 +966,20 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                scanner = EMPTY_SCANNER;
                                if (synced && !SeenPayloadStart && Processed)
                                   return Processed; // flush everything before this new frame
+                               int FrameTypeOffset = i + 1;
+                               if (FrameTypeOffset >= TS_SIZE) // the byte to check is in the next TS packet
+                                  i = SkipPackets(Data, Length, Processed, FrameTypeOffset);
                                newFrame = true;
-                               independentFrame = Data[i + 1] == 0x10;
+                               uchar FrameType = Data[FrameTypeOffset];
+                               independentFrame = FrameType == 0x10;
                                if (synced) {
+                                  if (framesPerPayloadUnit < 0) {
+                                     payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
+                                     if (payloadUnitOfFrame != 0 && independentFrame)
+                                        payloadUnitOfFrame = 0;
+                                     if (payloadUnitOfFrame)
+                                        newFrame = false;
+                                     }
                                   if (framesPerPayloadUnit <= 1)
                                      scanning = false;
                                   }
@@ -930,7 +987,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                   framesInPayloadUnit++;
                                   if (independentFrame)
                                      numIFrames++;
-                                  dbgframes("%02X ", Data[i + 1]);
+                                  if (numIFrames == 1)
+                                     numFrames++;
+                                  dbgframes("%02X ", FrameType);
                                   }
                                if (synced)
                                   return Processed + TS_SIZE; // flag this new frame
@@ -953,9 +1012,9 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                                 pid = 0; // let's just ignore any further data
                        }
                      }
-                 if (!synced && framesPerSecond && independentFrame) {
+                 if (!synced && framesPerSecond > 0.0 && independentFrame) {
                     synced = true;
-                    dbgframes("*");
+                    dbgframes("*\n");
                     Reset();
                     return Processed + TS_SIZE;
                     }

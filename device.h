@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.23 2010/10/24 12:11:16 kls Exp $
+ * $Id: device.h 2.27 2011/08/26 12:52:29 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -197,6 +197,9 @@ public:
          ///< Returns the number of this device (0 ... numDevices).
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
+  virtual bool AvoidRecording(void) const { return false; }
+         ///< Returns true if this device should only be used for recording
+         ///< if no other device is available.
 
 // Device hooks
 
@@ -244,12 +247,26 @@ public:
          ///< function itself actually returns true.
          ///< The default implementation always returns false, so a derived cDevice
          ///< class that can provide channels must implement this function.
+  virtual bool ProvidesEIT(void) const;
+         ///< Returns true if this device provides EIT data and thus wants to be tuned
+         ///< to the channels it can receive regularly to update the data.
+         ///< The default implementation returns false.
   virtual int NumProvidedSystems(void) const;
          ///< Returns the number of individual "delivery systems" this device provides.
          ///< The default implementation returns 0, so any derived class that can
          ///< actually provide channels must implement this function.
          ///< The result of this function is used when selecting a device, in order
          ///< to avoid devices that provide more than one system.
+  virtual int SignalStrength(void) const;
+         ///< Returns the "strength" of the currently received signal.
+         ///< This is a value in the range 0 (no signal at all) through
+         ///< 100 (best possible signal). A value of -1 indicates that this
+         ///< device has no concept of a "signal strength".
+  virtual int SignalQuality(void) const;
+         ///< Returns the "quality" of the currently received signal.
+         ///< This is a value in the range 0 (worst quality) through
+         ///< 100 (best possible quality). A value of -1 indicates that this
+         ///< device has no concept of a "signal quality".
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
          ///< Returns a pointer to the currently tuned transponder.
          ///< This is not one of the channels in the global cChannels list, but rather
@@ -405,10 +422,9 @@ public:
          ///< (default is PAL).
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
          ///< Returns the With, Height and VideoAspect ratio of the currently
-         ///< displayed video material. The data returned by this function is
-         ///< only used for informational purposes (if any). Width and
-         ///< Height are given in pixel (e.g. 720x576) and VideoAspect is
-         ///< e.g. 1.33333 for a 4:3 broadcast, or 1.77778 for 16:9.
+         ///< displayed video material. Width and Height are given in pixel
+         ///< (e.g. 720x576) and VideoAspect is e.g. 1.33333 for a 4:3 broadcast,
+         ///< or 1.77778 for 16:9.
          ///< The default implementation returns 0 for Width and Height
          ///< and 1.0 for VideoAspect.
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.14 2011/02/27 09:59:11 kls Exp $
+# $Id: Makefile 2.18 2011/05/21 12:21:40 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -19,9 +19,10 @@ DESTDIR ?=
 PREFIX  ?= /usr/local
 MANDIR   = $(PREFIX)/share/man
 BINDIR   = $(PREFIX)/bin
+INCDIR   = $(PREFIX)/include
 LOCDIR   = ./locale
-LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
-INCLUDES ?= $(shell pkg-config --cflags freetype2)
+LIBS     = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
+INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
@@ -54,9 +55,9 @@ ifdef VDR_USER
 DEFINES += -DVDR_USER=\"$(VDR_USER)\"
 endif
 ifdef BIDI
-INCLUDES += -I/usr/include/fribidi
+INCLUDES += $(shell pkg-config --cflags fribidi)
 DEFINES += -DBIDI
-LIBS += -lfribidi
+LIBS += $(shell pkg-config --libs fribidi)
 endif
 
 LIRC_DEVICE ?= /dev/lircd
@@ -114,7 +115,7 @@ I18Npot   = $(PODIR)/vdr.pot
 	msgfmt -c -o $@ $<
 
 $(I18Npot): $(wildcard *.c)
-	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ $^
+	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ `ls $^`
 
 %.po: $(I18Npot)
 	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<
@@ -162,7 +163,7 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins install-i18n
+install: install-bin install-conf install-doc install-plugins install-i18n install-includes
 
 # VDR binary:
 
@@ -192,6 +193,12 @@ install-doc:
 install-plugins: plugins
 	@mkdir -p $(DESTDIR)$(PLUGINLIBDIR)
 	@cp --remove-destination $(PLUGINDIR)/lib/lib*-*.so.$(APIVERSION) $(DESTDIR)$(PLUGINLIBDIR)
+
+# Includes:
+
+install-includes: include-dir
+	@mkdir -p $(DESTDIR)$(INCDIR)
+	@cp -pLR include/vdr include/libsi $(DESTDIR)$(INCDIR)
 
 # Source documentation:
 

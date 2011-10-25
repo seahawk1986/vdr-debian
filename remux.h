@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 2.27 2010/11/01 11:24:20 kls Exp $
+ * $Id: remux.h 2.32 2011/09/04 12:48:26 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -84,15 +84,18 @@ inline bool TsIsScrambled(const uchar *p)
 
 inline int TsPayloadOffset(const uchar *p)
 {
-  int o = (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+  int o = TsHasAdaptationField(p) ? p[4] + 5 : 4;
   return o <= TS_SIZE ? o : TS_SIZE;
 }
 
 inline int TsGetPayload(const uchar **p)
 {
-  int o = TsPayloadOffset(*p);
-  *p += o;
-  return TS_SIZE - o;
+  if (TsHasPayload(*p)) {
+     int o = TsPayloadOffset(*p);
+     *p += o;
+     return TS_SIZE - o;
+     }
+  return 0;
 }
 
 inline int TsContinuityCounter(const uchar *p)
@@ -294,7 +297,7 @@ public:
   ~cTsToPes();
   void PutTs(const uchar *Data, int Length);
        ///< Puts the payload data of the single TS packet at Data into the converter.
-       ///< Length is always 188.
+       ///< Length is always TS_SIZE.
        ///< If the given TS packet starts a new PES payload packet, the converter
        ///< will be automatically reset. Any packets before the first one that starts
        ///< a new PES payload packet will be ignored.
@@ -333,7 +336,7 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 // Frame detector:
 
-#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 2
+#define MIN_TS_PACKETS_FOR_FRAME_DETECTOR 5
 
 class cFrameDetector {
 private:
@@ -345,14 +348,18 @@ private:
   bool independentFrame;
   uint32_t ptsValues[MaxPtsValues]; // 32 bit is enough - we only need the delta
   int numPtsValues;
+  int numFrames;
   int numIFrames;
   bool isVideo;
   double framesPerSecond;
   int framesInPayloadUnit;
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
-                            // while others put an entire GOP into one payload unit (> 1).
+                            // some put an entire GOP into one payload unit (> 1), and
+                            // some spread a single frame over several payload units (< 0).
+  int payloadUnitOfFrame;
   bool scanning;
   uint32_t scanner;
+  int SkipPackets(const uchar *&Data, int &Length, int &Processed, int &FrameTypeOffset);
 public:
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.
@@ -365,7 +372,7 @@ public:
       ///< the frame detector for actual work.
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
-      ///< bytes Data points to, and must be a multiple of 188.
+      ///< bytes Data points to, and must be a multiple of TS_SIZE.
       ///< Returns the number of bytes that have been analyzed.
       ///< If the return value is 0, the data was not sufficient for analyzing and
       ///< Analyze() needs to be called again with more actual data.

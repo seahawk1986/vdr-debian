@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.38 2011/02/25 15:12:03 kls Exp $
+ * $Id: device.c 2.42 2011/08/26 12:56:00 kls Exp $
  */
 
 #include "device.h"
@@ -286,10 +286,10 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
-             imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
              imp <<= 1; imp |= NumUsableSlots ? 0 : device[i]->HasCi();                                              // avoid cards with Common Interface for FTA channels
-             imp <<= 1; imp |= device[i]->HasDecoder();                                                              // avoid full featured cards
+             imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
              imp <<= 1; imp |= NumUsableSlots ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), j + 1) : 0; // prefer CAMs that are known to decrypt this channel
+             imp <<= 1; imp |= device[i]->IsPrimaryDevice();                                                         // avoid the primary device
              if (imp < Impact) {
                 // This device has less impact than any previous one, so we take it.
                 Impact = imp;
@@ -613,9 +613,24 @@ bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Needs
   return false;
 }
 
+bool cDevice::ProvidesEIT(void) const
+{
+  return false;
+}
+
 int cDevice::NumProvidedSystems(void) const
 {
   return 0;
+}
+
+int cDevice::SignalStrength(void) const
+{
+  return -1;
+}
+
+int cDevice::SignalQuality(void) const
+{
+  return -1;
 }
 
 const cChannel *cDevice::GetCurrentlyTunedTransponder(void) const

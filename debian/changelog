@@ -1,3 +1,9 @@
+vdr (1.7.21-1~xeatre1) unstable; urgency=low
+
+  * Merged changes from official VDR package
+
+ -- Tobias Grimm <tg@e-tobi.net>  Tue, 25 Oct 2011 10:17:02 +0200
+
 vdr (1.7.17-1~xeatre3) unstable; urgency=low
 
   * Minor fix
@@ -56,7 +62,14 @@ vdr (1.7.16-1) UNRELEASED; urgency=low
   * Update Vcs-* fields: Move packaging from svn to git
   * Fixed some lintian warnings 
 
- -- Thomas Schmidt <tschmidt@debian.org>  Mon, 29 Nov 2010 21:15:39 +0100
+  [ Tobias Grimm ]
+  * Removed vdr-kbd, vdr-daemon, vdr-lirc and vdr-rcu - /usr/bin/vdr should be
+    used instead
+  * Dropped conflicts to vdradmin
+  * Dropped moving of channels.conf from /etc/vdr/ to /var/lib/vdr/
+  * Dropped marks reloading from jumpplay patch (Patch modified by Udo Richter)
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 10 Apr 2011 12:56:07 +0200
 
 vdr (1.6.0-19.1) unstable; urgency=low
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.16 2011/02/27 12:48:21 kls Exp $
+ * $Id: recording.h 2.25 2011/08/21 13:10:39 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -21,6 +21,8 @@
 #define FOLDERDELIMCHAR '~'
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
+
+#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
 
 extern bool VfatFileSystem;
 extern int InstanceId;
@@ -57,6 +59,7 @@ private:
   int lifetime;
   char *fileName;
   cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
+  bool Read(FILE *f);
   void SetData(const char *Title, const char *ShortText, const char *Description);
   void SetAux(const char *Aux);
 public:
@@ -72,7 +75,6 @@ public:
   const char *Aux(void) const { return aux; }
   double FramesPerSecond(void) const { return framesPerSecond; }
   void SetFramesPerSecond(double FramesPerSecond);
-  bool Read(FILE *f);
   bool Write(FILE *f, const char *Prefix = "") const;
   bool Read(void);
   bool Write(void) const;
@@ -87,6 +89,7 @@ private:
   mutable char *fileName;
   mutable char *name;
   mutable int fileSizeMB;
+  mutable int numFrames;
   int channel;
   int instanceId;
   bool isPesRecording;
@@ -97,14 +100,21 @@ private:
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
+#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
 public:
+#endif
   time_t start;
   int priority;
   int lifetime;
   time_t deleted;
+public:
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
   virtual ~cRecording();
+  time_t Start(void) const { return start; }
+  int Priority(void) const { return priority; }
+  int Lifetime(void) const { return lifetime; }
+  time_t Deleted(void) const { return deleted; }
   virtual int Compare(const cListObject &ListObject) const;
   const char *Name(void) const { return name; }
   const char *FileName(void) const;
@@ -114,21 +124,34 @@ public:
   int HierarchyLevels(void) const;
   void ResetResume(void) const;
   double FramesPerSecond(void) const { return framesPerSecond; }
+  int NumFrames(void) const;
+       ///< Returns the number of frames in this recording.
+       ///< If the number of frames is unknown, -1 will be returned.
+  int LengthInSeconds(void) const;
+       ///< Returns the length (in seconds) of this recording, or -1 in case of error.
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
   void ReadInfo(void);
   bool WriteInfo(void);
+  void SetStartTime(time_t Start);
+       ///< Sets the start time of this recording to the given value.
+       ///< If a filename has already been set for this recording, it will be
+       ///< deleted and a new one will be generated (using the new start time)
+       ///< at the next call to FileName().
+       ///< Use this function with care - it does not check whether a recording with
+       ///< this new name already exists, and if there is one, results may be
+       ///< unexpected!
   bool Delete(void);
-       // Changes the file name so that it will no longer be visible in the "Recordings" menu
-       // Returns false in case of error
+       ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
+       ///< Returns false in case of error
   bool Remove(void);
-       // Actually removes the file from the disk
-       // Returns false in case of error
+       ///< Actually removes the file from the disk
+       ///< Returns false in case of error
   bool Undelete(void);
-       // Changes the file name so that it will be visible in the "Recordings" menu again and
-       // not processed by cRemoveDeletedRecordingsThread.
-       // Returns false in case of error
+       ///< Changes the file name so that it will be visible in the "Recordings" menu again and
+       ///< not processed by cRemoveDeletedRecordingsThread.
+       ///< Returns false in case of error
   };
 
 class cRecordings : public cList<cRecording>, public cThread {
@@ -176,13 +199,21 @@ extern cRecordings DeletedRecordings;
 #define DEFAULTFRAMESPERSECOND 25.0
 
 class cMark : public cListObject {
+  friend class cMarks; // for sorting
 private:
   double framesPerSecond;
+#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
 public:
+#endif
   int position;
-  char *comment;
+  cString comment;
+public:
   cMark(int Position = 0, const char *Comment = NULL, double FramesPerSecond = DEFAULTFRAMESPERSECOND);
   virtual ~cMark();
+  int Position(void) const { return position; }
+  const char *Comment(void) const { return comment; }
+  void SetPosition(int Position) { position = Position; }
+  void SetComment(const char *Comment) { comment = Comment; }
   cString ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
@@ -192,8 +223,9 @@ class cMarks : public cConfig<cMark> {
 private:
   cString fileName;
   double framesPerSecond;
-  time_t lastUpdate;
+  time_t nextUpdate;
   time_t lastFileTime;
+  time_t lastChange;
 public:
   bool Load(const char *RecordingFileName, double FramesPerSecond = DEFAULTFRAMESPERSECOND, bool IsPesRecording = false);
   bool Update(void);
@@ -235,13 +267,14 @@ class cIndexFileGenerator;
 class cIndexFile {
 private:
   int f;
-  char *fileName;
+  cString fileName;
   int size, last;
   tIndexTs *index;
   bool isPesRecording;
   cResumeFile resumeFile;
   cIndexFileGenerator *indexFileGenerator;
   cMutex mutex;
+  static cString IndexFileName(const char *FileName, bool IsPesRecording);
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
   void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
@@ -258,6 +291,9 @@ public:
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
   bool IsStillRecording(void);
   void Delete(void);
+  static int GetLength(const char *FileName, bool IsPesRecording = false);
+       ///< Calculates the recording length (numer of frames) without actually reading the index file.
+       ///< Returns -1 in case of error.
   };
 
 class cFileName {

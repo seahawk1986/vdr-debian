@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.26 2011/02/27 13:35:20 kls Exp $
+ * $Id: recording.c 2.38 2011/09/04 09:32:25 kls Exp $
  */
 
 #include "recording.h"
@@ -12,6 +12,8 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#define __STDC_FORMAT_MACROS // Required for format specifiers
+#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,6 +60,7 @@
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
+#define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 
 #define MAX_SUBTITLE_LENGTH  40
 
@@ -92,7 +95,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
      bool deleted = false;
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
      for (cRecording *r = DeletedRecordings.First(); r; ) {
-         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+         if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings.Next(r);
             r->Remove();
             DeletedRecordings.Del(r);
@@ -118,7 +121,7 @@ void RemoveDeletedRecordings(void)
      if (!RemoveDeletedRecordingsThread.Active()) {
         cThreadLock DeletedRecordingsLock(&DeletedRecordings);
         for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
-            if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
                RemoveDeletedRecordingsThread.Start();
                break;
                }
@@ -151,7 +154,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
-                    if (!r0 || r->start < r0->start)
+                    if (!r0 || r->Start() < r0->Start())
                        r0 = r;
                     }
                  r = DeletedRecordings.Next(r);
@@ -178,11 +181,11 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r0 = NULL;
            while (r) {
                  if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
-                    if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
-                       if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                           (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
+                    if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
+                       if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
+                           (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
                           if (r0) {
-                             if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                             if (r->Priority() < r0->Priority() || (r->Priority() == r0->Priority() && r->Start() < r0->Start()))
                                 r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
                              }
                           else
@@ -301,9 +304,10 @@ bool cResumeFile::Save(int Index)
 void cResumeFile::Delete(void)
 {
   if (fileName) {
-     if (remove(fileName) < 0 && errno != ENOENT)
+     if (remove(fileName) == 0)
+        Recordings.ResetResume(fileName);
+     else if (errno != ENOENT)
         LOG_ERROR_STR(fileName);
-     Recordings.ResetResume(fileName);
      }
 }
 
@@ -614,6 +618,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   instanceId = InstanceId;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
@@ -673,6 +678,7 @@ cRecording::cRecording(const char *FileName)
   lifetime = MAXLIFETIME;
   isPesRecording = false;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  numFrames = -1;
   deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
@@ -867,13 +873,16 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%c%s",
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%d:%02d%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,
+                            Delimiter,
+                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 3600 : 0,
+                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 60 % 60 : 0,
                             New,
                             Delimiter,
                             s));
@@ -955,6 +964,13 @@ bool cRecording::WriteInfo(void)
   return true;
 }
 
+void cRecording::SetStartTime(time_t Start) 
+{
+  start = Start;
+  free(fileName);
+  fileName = NULL;
+}
+
 bool cRecording::Delete(void)
 {
   bool result = true;
@@ -1019,6 +1035,25 @@ bool cRecording::Undelete(void)
 void cRecording::ResetResume(void) const
 {
   resume = RESUME_NOT_INITIALIZED;
+}
+
+int cRecording::NumFrames(void) const
+{
+  if (numFrames < 0) {
+     int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
+     if (time(NULL) - LastModifiedTime(FileName()) < MININDEXAGE)
+        return nf; // check again later for ongoing recordings
+     numFrames = nf;
+     }
+  return numFrames;
+}
+
+int cRecording::LengthInSeconds(void) const
+{
+  int nf = NumFrames();
+  if (nf >= 0)
+     return int((nf / FramesPerSecond() + 30) / 60) * 60;
+  return -1;
 }
 
 // --- cRecordings -----------------------------------------------------------
@@ -1092,6 +1127,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
                     cRecording *r = new cRecording(buffer);
                     if (r->Name()) {
+                       r->NumFrames(); // initializes the numFrames member
                        Lock();
                        Add(r);
                        ChangeState();
@@ -1230,23 +1266,21 @@ cMutex MutexMarkFramesPerSecond;
 cMark::cMark(int Position, const char *Comment, double FramesPerSecond)
 {
   position = Position;
-  comment = Comment ? strdup(Comment) : NULL;
+  comment = Comment;
   framesPerSecond = FramesPerSecond;
 }
 
 cMark::~cMark()
 {
-  free(comment);
 }
 
 cString cMark::ToText(void)
 {
-  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), comment ? " " : "", comment ? comment : "");
+  return cString::sprintf("%s%s%s\n", *IndexToHMSF(position, true, framesPerSecond), Comment() ? " " : "", Comment() ? Comment() : "");
 }
 
 bool cMark::Parse(const char *s)
 {
-  free(comment);
   comment = NULL;
   framesPerSecond = MarkFramesPerSecond;
   position = HMSFToIndex(s, framesPerSecond);
@@ -1270,19 +1304,31 @@ bool cMarks::Load(const char *RecordingFileName, double FramesPerSecond, bool Is
 {
   fileName = AddDirectory(RecordingFileName, IsPesRecording ? MARKSFILESUFFIX ".vdr" : MARKSFILESUFFIX);
   framesPerSecond = FramesPerSecond;
-  lastUpdate = 0;
+  nextUpdate = 0;
   lastFileTime = -1; // the first call to Load() must take place!
+  lastChange = 0;
   return Update();
 }
 
 bool cMarks::Update(void)
 {
   time_t t = time(NULL);
-  if (t - lastUpdate > MARKSUPDATEDELTA) {
-     lastUpdate = t;
-     t = LastModifiedTime(fileName);
-     if (t > lastFileTime) {
-        lastFileTime = t;
+  if (t > nextUpdate) {
+     time_t LastModified = LastModifiedTime(fileName);
+     if (LastModified != lastFileTime) // change detected, or first run
+        lastChange = LastModified > 0 ? LastModified : t;
+     int d = t - lastChange;
+     if (d < 60)
+        d = 1; // check frequently if the file has just been modified
+     else if (d < 3600)
+        d = 10; // older files are checked less frequently
+     else
+        d /= 360; // phase out checking for very old files
+     nextUpdate = t + d;
+     if (LastModified != lastFileTime) { // change detected, or first run
+        lastFileTime = LastModified;
+        if (lastFileTime == t)
+           lastFileTime--; // make sure we don't miss updates in the remaining second
         cMutexLock MutexLock(&MutexMarkFramesPerSecond);
         MarkFramesPerSecond = framesPerSecond;
         if (cConfig<cMark>::Load(fileName)) {
@@ -1298,7 +1344,7 @@ void cMarks::Sort(void)
 {
   for (cMark *m1 = First(); m1; m1 = Next(m1)) {
       for (cMark *m2 = Next(m1); m2; m2 = Next(m2)) {
-          if (m2->position < m1->position) {
+          if (m2->Position() < m1->Position()) {
              swap(m1->position, m2->position);
              swap(m1->comment, m2->comment);
              }
@@ -1319,7 +1365,7 @@ cMark *cMarks::Add(int Position)
 cMark *cMarks::Get(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position == Position)
+      if (mi->Position() == Position)
          return mi;
       }
   return NULL;
@@ -1328,7 +1374,7 @@ cMark *cMarks::Get(int Position)
 cMark *cMarks::GetPrev(int Position)
 {
   for (cMark *mi = Last(); mi; mi = Prev(mi)) {
-      if (mi->position < Position)
+      if (mi->Position() < Position)
          return mi;
       }
   return NULL;
@@ -1337,7 +1383,7 @@ cMark *cMarks::GetPrev(int Position)
 cMark *cMarks::GetNext(int Position)
 {
   for (cMark *mi = First(); mi; mi = Next(mi)) {
-      if (mi->position > Position)
+      if (mi->Position() > Position)
          return mi;
       }
   return NULL;
@@ -1487,9 +1533,6 @@ void cIndexFileGenerator::Action(void)
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds
 
-// The minimum age of an index file for considering it no longer to be written:
-#define MININDEXAGE    3600 // seconds
-
 struct tIndexPes {
   uint32_t offset;
   uchar type;
@@ -1518,84 +1561,75 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
 :resumeFile(FileName, IsPesRecording)
 {
   f = -1;
-  fileName = NULL;
   size = 0;
   last = -1;
   index = NULL;
   isPesRecording = IsPesRecording;
   indexFileGenerator = NULL;
   if (FileName) {
-     const char *Suffix = isPesRecording ? INDEXFILESUFFIX ".vdr" : INDEXFILESUFFIX;
-     fileName = MALLOC(char, strlen(FileName) + strlen(Suffix) + 1);
-     if (fileName) {
-        strcpy(fileName, FileName);
-        char *pFileExt = fileName + strlen(fileName);
-        strcpy(pFileExt, Suffix);
-        int delta = 0;
-        if (!Record && access(fileName, R_OK) != 0) {
-           // Index file doesn't exist, so try to regenerate it:
-           if (!isPesRecording) { // sorry, can only do this for TS recordings
-              resumeFile.Delete(); // just in case
-              indexFileGenerator = new cIndexFileGenerator(FileName);
-              // Wait until the index file exists:
-              time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
-              do {
-                 cCondWait::SleepMs(INDEXFILECHECKINTERVAL); // start with a sleep, to give it a head start
-                 } while (access(fileName, R_OK) != 0 && time(NULL) < tmax);
-              }
-           }
-        if (access(fileName, R_OK) == 0) {
-           struct stat buf;
-           if (stat(fileName, &buf) == 0) {
-              delta = int(buf.st_size % sizeof(tIndexTs));
-              if (delta) {
-                 delta = sizeof(tIndexTs) - delta;
-                 esyslog("ERROR: invalid file size (%lld) in '%s'", buf.st_size, fileName);
-                 }
-              last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
-              if (!Record && last >= 0) {
-                 size = last + 1;
-                 index = MALLOC(tIndexTs, size);
-                 if (index) {
-                    f = open(fileName, O_RDONLY);
-                    if (f >= 0) {
-                       if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
-                          esyslog("ERROR: can't read from file '%s'", fileName);
-                          free(index);
-                          index = NULL;
-                          close(f);
-                          f = -1;
-                          }
-                       // we don't close f here, see CatchUp()!
-                       else if (isPesRecording)
-                          ConvertFromPes(index, size);
-                       }
-                    else
-                       LOG_ERROR_STR(fileName);
-                    }
-                 else
-                    esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), fileName);
-                 }
-              }
-           else
-              LOG_ERROR;
-           }
-        else if (!Record)
-           isyslog("missing index file %s", fileName);
-        if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, DEFFILEMODE)) >= 0) {
-              if (delta) {
-                 esyslog("ERROR: padding index file with %d '0' bytes", delta);
-                 while (delta--)
-                       writechar(f, 0);
-                 }
-              }
-           else
-              LOG_ERROR_STR(fileName);
+     fileName = IndexFileName(FileName, isPesRecording);
+     int delta = 0;
+     if (!Record && access(fileName, R_OK) != 0) {
+        // Index file doesn't exist, so try to regenerate it:
+        if (!isPesRecording) { // sorry, can only do this for TS recordings
+           resumeFile.Delete(); // just in case
+           indexFileGenerator = new cIndexFileGenerator(FileName);
+           // Wait until the index file exists:
+           time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
+           do {
+              cCondWait::SleepMs(INDEXFILECHECKINTERVAL); // start with a sleep, to give it a head start
+              } while (access(fileName, R_OK) != 0 && time(NULL) < tmax);
            }
         }
-     else
-        esyslog("ERROR: can't copy file name '%s'", FileName);
+     if (access(fileName, R_OK) == 0) {
+        struct stat buf;
+        if (stat(fileName, &buf) == 0) {
+           delta = int(buf.st_size % sizeof(tIndexTs));
+           if (delta) {
+              delta = sizeof(tIndexTs) - delta;
+              esyslog("ERROR: invalid file size (%"PRId64") in '%s'", buf.st_size, *fileName);
+              }
+           last = int((buf.st_size + delta) / sizeof(tIndexTs) - 1);
+           if (!Record && last >= 0) {
+              size = last + 1;
+              index = MALLOC(tIndexTs, size);
+              if (index) {
+                 f = open(fileName, O_RDONLY);
+                 if (f >= 0) {
+                    if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
+                       esyslog("ERROR: can't read from file '%s'", *fileName);
+                       free(index);
+                       index = NULL;
+                       close(f);
+                       f = -1;
+                       }
+                    // we don't close f here, see CatchUp()!
+                    else if (isPesRecording)
+                       ConvertFromPes(index, size);
+                    }
+                 else
+                    LOG_ERROR_STR(*fileName);
+                 }
+              else
+                 esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), *fileName);
+              }
+           }
+        else
+           LOG_ERROR;
+        }
+     else if (!Record)
+        isyslog("missing index file %s", *fileName);
+     if (Record) {
+        if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, DEFFILEMODE)) >= 0) {
+           if (delta) {
+              esyslog("ERROR: padding index file with %d '0' bytes", delta);
+              while (delta--)
+                    writechar(f, 0);
+              }
+           }
+        else
+           LOG_ERROR_STR(*fileName);
+        }
      }
 }
 
@@ -1603,9 +1637,13 @@ cIndexFile::~cIndexFile()
 {
   if (f >= 0)
      close(f);
-  free(fileName);
   free(index);
   delete indexFileGenerator;
+}
+
+cString cIndexFile::IndexFileName(const char *FileName, bool IsPesRecording)
+{
+  return cString::sprintf("%s%s", FileName, IsPesRecording ? INDEXFILESUFFIX ".vdr" : INDEXFILESUFFIX);
 }
 
 void cIndexFile::ConvertFromPes(tIndexTs *IndexTs, int Count)
@@ -1674,7 +1712,7 @@ bool cIndexFile::CatchUp(int Index)
                      last = newLast;
                      }
                   else
-                     LOG_ERROR_STR(fileName);
+                     LOG_ERROR_STR(*fileName);
                   }
                else {
                   esyslog("ERROR: can't realloc() index");
@@ -1683,7 +1721,7 @@ bool cIndexFile::CatchUp(int Index)
                }
             }
          else
-            LOG_ERROR_STR(fileName);
+            LOG_ERROR_STR(*fileName);
          if (Index < last - (i ? 2 * INDEXSAFETYLIMIT : 0) || Index > 10 * INDEXSAFETYLIMIT) // keep off the end in case of "Pause live video"
             break;
          cCondWait::SleepMs(1000);
@@ -1699,7 +1737,7 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
      if (isPesRecording)
         ConvertToPes(&i, 1);
      if (safe_write(f, &i, sizeof(i)) < 0) {
-        LOG_ERROR_STR(fileName);
+        LOG_ERROR_STR(*fileName);
         close(f);
         f = -1;
         return false;
@@ -1789,14 +1827,23 @@ bool cIndexFile::IsStillRecording()
 
 void cIndexFile::Delete(void)
 {
-  if (fileName) {
-     dsyslog("deleting index file '%s'", fileName);
+  if (*fileName) {
+     dsyslog("deleting index file '%s'", *fileName);
      if (f >= 0) {
         close(f);
         f = -1;
         }
      unlink(fileName);
      }
+}
+
+int cIndexFile::GetLength(const char *FileName, bool IsPesRecording)
+{
+  struct stat buf;
+  cString s = IndexFileName(FileName, IsPesRecording);
+  if (*s && stat(s, &buf) == 0)
+     return buf.st_size / (IsPesRecording ? sizeof(tIndexTs) : sizeof(tIndexPes));
+  return -1;
 }
 
 bool GenerateIndex(const char *FileName) 

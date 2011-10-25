@@ -15,3 +15,11 @@ VDR Plugin 'dvbsddevice' Revision History
 
 - The PCR pid is now recorded for channels where this is different from the
   video PID.
+
+2011-04-17: Version 0.0.4
+
+- Removed an obsolete local variable in dvbsdffosd.c (thanks to Paul Menzel).
+
+2011-08-27: Version 0.0.5
+
+- Added option --outputonly to use the device only for output (thanks to Udo Richter).

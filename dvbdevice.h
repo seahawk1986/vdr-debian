@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 2.14 2010/04/11 10:29:37 kls Exp $
+ * $Id: dvbdevice.h 2.16 2011/08/26 12:55:45 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -140,7 +140,10 @@ public:
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual bool ProvidesEIT(void) const;
   virtual int NumProvidedSystems(void) const;
+  virtual int SignalStrength(void) const;
+  virtual int SignalQuality(void) const;
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
   virtual bool IsTunedToTransponder(const cChannel *Channel);
 protected:
@@ -196,6 +199,7 @@ class cDvbDeviceProbe : public cListObject {
 public:
   cDvbDeviceProbe(void);
   virtual ~cDvbDeviceProbe();
+  static uint32_t GetSubsystemId(int Adapter, int Frontend);
   virtual bool Probe(int Adapter, int Frontend) = 0;
      ///< Probes for a DVB device at the given Adapter and creates the appropriate
      ///< object derived from cDvbDevice if applicable.

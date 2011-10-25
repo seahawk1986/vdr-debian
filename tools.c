@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 2.12 2011/02/25 14:58:31 kls Exp $
+ * $Id: tools.c 2.17 2011/08/15 13:35:23 kls Exp $
  */
 
 #include "tools.h"
@@ -261,13 +261,28 @@ int numdigits(int n)
 
 bool isnumber(const char *s)
 {
-  if (!*s)
+  if (!s || !*s)
      return false;
   do {
      if (!isdigit(*s))
         return false;
      } while (*++s);
   return true;
+}
+
+int64_t StrToNum(const char *s)
+{
+  char *t = NULL;
+  int64_t n = strtoll(s, &t, 10);
+  if (t) {
+     switch (*t) {
+       case 'T': n *= 1024;
+       case 'G': n *= 1024;
+       case 'M': n *= 1024;
+       case 'K': n *= 1024;
+       }
+     }
+  return n;
 }
 
 cString AddDirectory(const char *DirName, const char *FileName)
@@ -556,7 +571,10 @@ time_t LastModifiedTime(const char *FileName)
 
 cTimeMs::cTimeMs(int Ms)
 {
-  Set(Ms);
+  if (Ms >= 0)
+     Set(Ms);
+  else
+     begin = 0;
 }
 
 uint64_t cTimeMs::Now(void)
@@ -906,6 +924,8 @@ cString &cString::operator=(const cString &String)
 
 cString &cString::operator=(const char *String)
 {
+  if (s == String)
+    return *this;
   free(s);
   s = String ? strdup(String) : NULL;
   return *this;
@@ -1575,9 +1595,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
      cachedstart = min(cachedstart, curpos);
 #endif
      ssize_t bytesRead = safe_read(fd, Data, Size);
-#ifdef USE_FADVISE
      if (bytesRead > 0) {
         curpos += bytesRead;
+#ifdef USE_FADVISE
         cachedend = max(cachedend, curpos);
 
         // Read ahead:
@@ -1597,8 +1617,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
            }
         else
            ahead = curpos; // jumped -> we really don't want any readahead, otherwise e.g. fast-rewind gets in trouble.
+#endif
         }
-
+#ifdef USE_FADVISE
      if (cachedstart < cachedend) {
         if (curpos - cachedstart > READCHUNK * 2) {
            // current position has moved forward enough, shrink tail window.

@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 2.9 2010/12/27 11:35:46 kls Exp $
+ * $Id: recorder.c 2.15 2011/09/04 09:26:44 kls Exp $
  */
 
 #include "recorder.h"
 #include "shutdown.h"
 
-#define RECORDERBUFSIZE  MEGABYTE(5)
+#define RECORDERBUFSIZE  (MEGABYTE(5) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
 
 // The maximum time we wait before assuming that a recorded video data stream
 // is broken:
@@ -131,7 +131,7 @@ void cRecorder::Action(void)
                  if (!InfoWritten) {
                     cRecordingInfo RecordingInfo(recordingName);
                     if (RecordingInfo.Read()) {
-                       if (frameDetector->FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
+                       if (frameDetector->FramesPerSecond() > 0 && DoubleEqual(RecordingInfo.FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(RecordingInfo.FramesPerSecond(), frameDetector->FramesPerSecond())) {
                           RecordingInfo.SetFramesPerSecond(frameDetector->FramesPerSecond());
                           RecordingInfo.Write();
                           Recordings.UpdateByName(recordingName);

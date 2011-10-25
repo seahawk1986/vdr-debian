@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 2.21 2010/12/24 15:19:21 kls Exp $
+.\" $Id: vdr.5 2.23 2011/08/21 14:06:50 kls Exp $
 .\"
 .TH vdr 5 "10 Feb 2008" "1.6" "Video Disk Recorder Files"
 .SH NAME
@@ -214,6 +214,17 @@ if there is an audio type.
 .TP
 .B TPID
 The teletext PID.
+If this channel also carries DVB subtitles, the DVB subtitling PIDs follow the
+teletext PID, separated by a semicolon, as in
+
+.B ...:201;2001,2002:...
+
+If certain subtitling PIDs broadcast in specific languages, the language
+codes for these can be appended to the individual subtitling PID, separated
+by an '=' sign, as in
+
+.B ...:201;2001=deu,2002=eng:...
+
 .TP
 .B Conditional access
 A hexadecimal integer defining how this channel can be accessed:
@@ -807,7 +818,7 @@ l l.
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
 <genre>        @is a two digit hex code, as defined in  ETSI EN 300 468, table 28 (up to 4 genre codes are supported)
 <parental rating>@is the minimum age of the intended audience
-<stream>       @is the stream content (1 = video, 2 = audio, 3 = subtitles, 4 = AC3)
+<stream>       @is the stream content (1 = MPEG2 video, 2 = MP2 audio, 3 = subtitles, 4 = AC3 audio, 5 = H.264 video, 6 = HEAAC audio)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component

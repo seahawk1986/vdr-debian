@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2010-06-06 12:52+0200\n"
+"POT-Creation-Date: 2011-08-27 11:54+0200\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Blogi kanalo nustatymai ***"
@@ -902,6 +902,12 @@ msgstr "pridėti naujus siųstuvus"
 msgid "DVB"
 msgstr "DVB"
 
+msgid "Button$Audio"
+msgstr "Garsas"
+
+msgid "Button$Subtitles"
+msgstr "Subtitrai"
+
 msgid "Setup.DVB$Primary DVB interface"
 msgstr "Pirminiė DVB įvestis"
 
@@ -1129,9 +1135,6 @@ msgstr "VDR"
 msgid " Stop replaying"
 msgstr " Sustabdyti kartojimą"
 
-msgid "Button$Audio"
-msgstr "Garsas"
-
 msgid "Button$Pause"
 msgstr "Pristabdyti"
 
@@ -1156,9 +1159,6 @@ msgstr "Garsas nepateikiamas!"
 
 msgid "No subtitles"
 msgstr "Nėra subtitrų"
-
-msgid "Button$Subtitles"
-msgstr "Subtitrai"
 
 msgid "No subtitles available!"
 msgstr "Subtitrai nepateikiami!"

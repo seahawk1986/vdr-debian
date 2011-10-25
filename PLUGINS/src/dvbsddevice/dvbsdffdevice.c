@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbsdffdevice.c 2.27 2010/09/19 12:43:33 kls Exp $
+ * $Id: dvbsdffdevice.c 2.30 2011/08/27 11:33:57 kls Exp $
  */
 
 #include "dvbsdffdevice.h"
@@ -23,12 +23,13 @@
 
 int cDvbSdFfDevice::devVideoOffset = -1;
 
-cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend)
+cDvbSdFfDevice::cDvbSdFfDevice(int Adapter, int Frontend, bool OutputOnly)
 :cDvbDevice(Adapter, Frontend)
 {
   spuDecoder = NULL;
   digitalAudio = false;
   playMode = pmNone;
+  outputOnly = OutputOnly;
 
   // Devices that are only present on cards with decoders:
 
@@ -86,6 +87,11 @@ void cDvbSdFfDevice::MakePrimaryDevice(bool On)
 }
 
 bool cDvbSdFfDevice::HasDecoder(void) const
+{
+  return true;
+}
+
+bool cDvbSdFfDevice::AvoidRecording(void) const
 {
   return true;
 }
@@ -350,6 +356,14 @@ bool cDvbSdFfDevice::SetPid(cPidHandle *Handle, int Type, bool On)
         }
      }
   return true;
+}
+
+bool cDvbSdFfDevice::ProvidesSource(int Source) const
+{
+  if (outputOnly)
+     return false;
+  else
+     return cDvbDevice::ProvidesSource(Source);
 }
 
 void cDvbSdFfDevice::TurnOffLiveMode(bool LiveView)
@@ -756,6 +770,11 @@ int cDvbSdFfDevice::PlayTsAudio(const uchar *Data, int Length)
 
 // --- cDvbSdFfDeviceProbe ---------------------------------------------------
 
+cDvbSdFfDeviceProbe::cDvbSdFfDeviceProbe(void)
+{
+  outputOnly = false;
+}
+
 bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
 {
   static uint32_t SubsystemIds[] = {
@@ -772,26 +791,11 @@ bool cDvbSdFfDeviceProbe::Probe(int Adapter, int Frontend)
     0x13C21002, // Technotrend/Hauppauge WinTV DVB-S rev1.3 SE
     0x00000000
     };
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
-  uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
-     }
+  uint32_t SubsystemId = GetSubsystemId(Adapter, Frontend);
   for (uint32_t *sid = SubsystemIds; *sid; sid++) {
       if (*sid == SubsystemId) {
          dsyslog("creating cDvbSdFfDevice");
-         new cDvbSdFfDevice(Adapter, Frontend);
+         new cDvbSdFfDevice(Adapter, Frontend, outputOnly);
          return true;
          }
       }
