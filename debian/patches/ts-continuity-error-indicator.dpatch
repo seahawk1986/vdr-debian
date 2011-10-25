@@ -4,11 +4,10 @@
 ## DP: the number of discontinuity errors
 
 @DPATCH@
-diff --git a/recorder.c b/recorder.c
-index 9147e2a..877be30 100644
---- a/recorder.c
-+++ b/recorder.c
-@@ -121,6 +121,7 @@ void cRecorder::Action(void)
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recorder.c vdr1.7+/recorder.c
+--- vdr1.7+~/recorder.c	2011-10-25 22:11:37.000000000 +0200
++++ vdr1.7+/recorder.c	2011-10-25 22:11:37.000000000 +0200
+@@ -121,6 +121,7 @@
    time_t t = time(NULL);
    bool InfoWritten = false;
    bool FirstIframeSeen = false;
@@ -16,7 +15,7 @@ index 9147e2a..877be30 100644
    while (Running()) {
          int r;
          uchar *b = ringBuffer->Get(r);
-@@ -156,6 +157,16 @@ void cRecorder::Action(void)
+@@ -156,6 +157,16 @@
                               fileSize += TS_SIZE;
                               }
                         }
@@ -33,11 +32,10 @@ index 9147e2a..877be30 100644
                      if (recordFile->Write(b, Count) < 0) {
                         LOG_ERROR_STR(fileName->Name());
                         break;
-diff --git a/recording.c b/recording.c
-index 327a300..7445279 100644
---- a/recording.c
-+++ b/recording.c
-@@ -317,6 +317,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recording.c vdr1.7+/recording.c
+--- vdr1.7+~/recording.c	2011-10-25 22:11:37.000000000 +0200
++++ vdr1.7+/recording.c	2011-10-25 22:11:37.000000000 +0200
+@@ -321,6 +321,7 @@
    event = ownEvent ? ownEvent : Event;
    aux = NULL;
    framesPerSecond = DEFAULTFRAMESPERSECOND;
@@ -45,7 +43,7 @@ index 327a300..7445279 100644
    priority = MAXPRIORITY;
    lifetime = MAXLIFETIME;
    fileName = NULL;
-@@ -410,6 +411,11 @@ void cRecordingInfo::SetFramesPerSecond(double FramesPerSecond)
+@@ -414,6 +415,11 @@
    framesPerSecond = FramesPerSecond;
  }
  
@@ -57,7 +55,7 @@ index 327a300..7445279 100644
  bool cRecordingInfo::Read(FILE *f)
  {
    if (ownEvent) {
-@@ -449,6 +455,8 @@ bool cRecordingInfo::Read(FILE *f)
+@@ -453,6 +459,8 @@
                         break;
               case 'F': framesPerSecond = atof(t);
                         break;
@@ -66,7 +64,7 @@ index 327a300..7445279 100644
               case 'L': lifetime = atoi(t);
                         break;
               case 'P': priority = atoi(t);
-@@ -475,6 +483,7 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
+@@ -479,6 +487,7 @@
       fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
    event->Dump(f, Prefix, true);
    fprintf(f, "%sF %.10g\n", Prefix, framesPerSecond);
@@ -74,11 +72,10 @@ index 327a300..7445279 100644
    fprintf(f, "%sP %d\n", Prefix, priority);
    fprintf(f, "%sL %d\n", Prefix, lifetime);
    if (aux)
-diff --git a/recording.h b/recording.h
-index 34cccac..97c9425 100644
---- a/recording.h
-+++ b/recording.h
-@@ -54,6 +54,7 @@ private:
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recording.h vdr1.7+/recording.h
+--- vdr1.7+~/recording.h	2011-10-25 22:11:37.000000000 +0200
++++ vdr1.7+/recording.h	2011-10-25 22:12:56.000000000 +0200
+@@ -56,6 +56,7 @@
    cEvent *ownEvent;
    char *aux;
    double framesPerSecond;
@@ -86,20 +83,19 @@ index 34cccac..97c9425 100644
    int priority;
    int lifetime;
    char *fileName;
-@@ -73,6 +74,8 @@ public:
+@@ -76,6 +77,8 @@
    const char *Aux(void) const { return aux; }
    double FramesPerSecond(void) const { return framesPerSecond; }
    void SetFramesPerSecond(double FramesPerSecond);
 +  int ErrorCount(void) const { return errorCount; }
 +  void SetErrorCount(int ErrorCount);
-   bool Read(FILE *f);
    bool Write(FILE *f, const char *Prefix = "") const;
    bool Read(void);
-diff --git a/remux.c b/remux.c
-index f7ad86d..abae484 100644
---- a/remux.c
-+++ b/remux.c
-@@ -970,3 +970,44 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
+   bool Write(void) const;
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/remux.c vdr1.7+/remux.c
+--- vdr1.7+~/remux.c	2011-10-25 22:04:26.000000000 +0200
++++ vdr1.7+/remux.c	2011-10-25 22:11:37.000000000 +0200
+@@ -1029,3 +1029,44 @@
          }
    return Processed;
  }
@@ -144,11 +140,10 @@ index f7ad86d..abae484 100644
 +         }
 +      }
 +}
-diff --git a/remux.h b/remux.h
-index 7140aaf..78025dc 100644
---- a/remux.h
-+++ b/remux.h
-@@ -383,4 +383,29 @@ public:
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/remux.h vdr1.7+/remux.h
+--- vdr1.7+~/remux.h	2011-10-25 22:04:26.000000000 +0200
++++ vdr1.7+/remux.h	2011-10-25 22:11:37.000000000 +0200
+@@ -390,4 +390,29 @@
        ///< available.
    };
  
@@ -178,4 +173,3 @@ index 7140aaf..78025dc 100644
 +  };
 +
  #endif // __REMUX_H
--- 

@@ -1,4 +1,4 @@
-debian/patches/ts-continuity-error-indicator.dpatch:615c2f80b595e208727af2a34f180f79
+debian/patches/ts-continuity-error-indicator.dpatch:fbd26f2e6affcd61b24756f272eabca1
 debian/patches/81_Make_config.dpatch:da281b9af48273bcbd19f3052ee993fd
 debian/patches/12_osdbase-maxitems.dpatch:e45d1b62f7d66c3e5d279e3561034107
 debian/patches/11_sortrecordings.dpatch:9ed4cd1e144ee59dab34d4df4aa9af51
