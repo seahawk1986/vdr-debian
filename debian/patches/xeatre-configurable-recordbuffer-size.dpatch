@@ -7,11 +7,10 @@
 ## DP: increased.
 
 @DPATCH@
-diff --git a/config.c b/config.c
-index 73b11b1..ff8cb5b 100644
---- a/config.c
-+++ b/config.c
-@@ -399,6 +399,7 @@ cSetup::cSetup(void)
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/config.c vdr1.7+/config.c
+--- vdr1.7+~/config.c	2011-10-25 22:04:26.000000000 +0200
++++ vdr1.7+/config.c	2011-10-25 22:06:47.000000000 +0200
+@@ -399,6 +399,7 @@
    InitialVolume = -1;
    ChannelsWrap = 0;
    EmergencyExit = 1;
@@ -19,7 +18,7 @@ index 73b11b1..ff8cb5b 100644
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -590,6 +591,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
+@@ -591,6 +592,7 @@
    else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
    else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
@@ -27,7 +26,7 @@ index 73b11b1..ff8cb5b 100644
    else
       return false;
    return true;
-@@ -686,6 +688,7 @@ bool cSetup::Save(void)
+@@ -687,6 +689,7 @@
    Store("InitialVolume",      InitialVolume);
    Store("ChannelsWrap",       ChannelsWrap);
    Store("EmergencyExit",      EmergencyExit);
@@ -35,32 +34,30 @@ index 73b11b1..ff8cb5b 100644
  
    Sort();
  
-diff --git a/config.h b/config.h
-index 7c28d41..3be9343 100644
---- a/config.h
-+++ b/config.h
-@@ -291,6 +291,7 @@ public:
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/config.h vdr1.7+/config.h
+--- vdr1.7+~/config.h	2011-10-25 22:04:26.000000000 +0200
++++ vdr1.7+/config.h	2011-10-25 22:06:47.000000000 +0200
+@@ -290,6 +290,7 @@
    int InitialVolume;
    int ChannelsWrap;
    int EmergencyExit;
 +  int RecorderBufSize;
    int __EndData__;
+   cString InitialChannel;
    cSetup(void);
-   cSetup& operator= (const cSetup &s);
-diff --git a/recorder.c b/recorder.c
-index 60631e0..da91e3b 100644
---- a/recorder.c
-+++ b/recorder.c
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recorder.c vdr1.7+/recorder.c
+--- vdr1.7+~/recorder.c	2011-10-25 22:04:26.000000000 +0200
++++ vdr1.7+/recorder.c	2011-10-25 22:08:48.000000000 +0200
 @@ -10,7 +10,7 @@
  #include "recorder.h"
  #include "shutdown.h"
  
--#define RECORDERBUFSIZE  MEGABYTE(5)
-+#define RECORDERBUFSIZE  MEGABYTE(Setup.RecorderBufSize)
+-#define RECORDERBUFSIZE  (MEGABYTE(5) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
++#define RECORDERBUFSIZE  (MEGABYTE(Setup.RecorderBufSize) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
  
  // The maximum time we wait before assuming that a recorded video data stream
  // is broken:
-@@ -31,6 +31,8 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
+@@ -32,6 +32,8 @@
    SpinUpDisk(FileName);
  
    ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");

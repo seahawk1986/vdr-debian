@@ -8,4 +8,4 @@ debian/patches/06_default_svdrp_port_0.dpatch:653e14e8ab093c456f9bbd8faa5e1ff7
 debian/patches/xeatre-recstart-macro.dpatch:aba79bae792658ec1dd4678f8f20ad8f
 debian/patches/99_ncursesw-include.dpatch:90810d58108ff8d9afd768fec67be904
 debian/patches/82_valgrind.dpatch:503ddba49c243fff798a36a1c12bb5ae
-debian/patches/xeatre-configurable-recordbuffer-size.dpatch:57521d6a3a58fde425cfd0dc7275c6d3
+debian/patches/xeatre-configurable-recordbuffer-size.dpatch:25754e8fe5fdfdf299f97964d5591b83
