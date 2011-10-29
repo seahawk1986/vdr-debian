@@ -1,3 +1,10 @@
+vdr (1.7.21-1~ctvdr3) unstable; urgency=low
+
+  * Need to change the multipatch ABI-version
+  * Renamed 99_dvbc-unitiymedia-fix.dpatch -> 99_dvbc-unitymedia-fix.dpatch
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 29 Oct 2011 21:21:53 +0200
+
 vdr (1.7.21-1~ctvdr2) unstable; urgency=low
 
   * Added updated opt-27_ttxtsubs.dpatch again
