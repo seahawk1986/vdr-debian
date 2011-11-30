@@ -1,0 +1,31 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## opt-90_xeatre_svdrpextensions.dpatch by Tobias Grimm <etobi@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Required for the SVDRP extensions plugin.
+
+@DPATCH@
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/menu.h vdr1.7+/menu.h
+--- vdr1.7+~/menu.h	2010-12-23 22:14:33.000000000 +0100
++++ vdr1.7+/menu.h	2011-11-30 18:46:16.000000000 +0100
+@@ -265,16 +265,17 @@
+   void TimeSearchProcess(eKeys Key);
+   void TimeSearch(void);
+   void ShowTimed(int Seconds = 0);
+-  static cReplayControl *currentReplayControl;
+   static char *fileName;
+   static char *title;
+   void ShowMode(void);
+   bool ShowProgress(bool Initial);
++  void EditCut(void);
++  void EditTest(void);
++public:
++  static cReplayControl *currentReplayControl;
+   void MarkToggle(void);
+   void MarkJump(bool Forward);
+   void MarkMove(bool Forward);
+-  void EditCut(void);
+-  void EditTest(void);
+ public:
+   cReplayControl(void);
+   virtual ~cReplayControl();

@@ -1,3 +1,9 @@
+vdr (1.7.21-1~xeatre2) unstable; urgency=low
+
+  * Added svdrpextensions patch
+
+ -- Tobias Grimm <tg@e-tobi.net>  Wed, 30 Nov 2011 19:14:40 +0100
+
 vdr (1.7.21-1~xeatre1) unstable; urgency=low
 
   * Merged changes from official VDR package
