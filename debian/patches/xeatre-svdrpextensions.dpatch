@@ -7,8 +7,8 @@
 @DPATCH@
 diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.h vdr/menu.h
 --- vdr~/menu.h	2010-12-23 22:14:33.000000000 +0100
-+++ vdr/menu.h	2011-12-06 01:51:04.000000000 +0100
-@@ -265,7 +265,6 @@
++++ vdr/menu.h	2011-12-06 02:46:05.000000000 +0100
+@@ -265,14 +265,10 @@
    void TimeSearchProcess(eKeys Key);
    void TimeSearch(void);
    void ShowTimed(int Seconds = 0);
@@ -16,10 +16,20 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    static char *fileName;
    static char *title;
    void ShowMode(void);
-@@ -284,6 +283,7 @@
+   bool ShowProgress(bool Initial);
+-  void MarkToggle(void);
+-  void MarkJump(bool Forward);
+-  void MarkMove(bool Forward);
+   void EditCut(void);
+   void EditTest(void);
+ public:
+@@ -284,6 +280,10 @@
    virtual void Show(void);
    virtual void Hide(void);
    bool Visible(void) { return visible; }
++  void MarkToggle(void);
++  void MarkJump(bool Forward);
++  void MarkMove(bool Forward);
 +  static cReplayControl *currentReplayControl;
    static void SetRecording(const char *FileName, const char *Title);
    static const char *NowReplaying(void);
