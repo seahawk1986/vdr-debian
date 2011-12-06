@@ -1,6 +1,7 @@
 vdr (1.7.21-1~xeatre3) unstable; urgency=low
 
   * Minor cleanup svdrpextensions patch
+  * Added svdrpdebug patch
 
  -- Tobias Grimm <tg@e-tobi.net>  Tue, 06 Dec 2011 01:51:23 +0100
 
