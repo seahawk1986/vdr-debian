@@ -5,6 +5,7 @@ vdr (1.7.22-1~ctvdr1) unstable; urgency=low
   * Dropped multipatch patches - these are available in the etobi-branch
     of the Git repository
   * Updated opt-39_noepg.dpatch and opt-44_rotor.dpatch
+  * Upgraded opt-20_liemikuutio.dpatch to version 1.33
 
  -- Tobias Grimm <etobi@debian.org>  Sat, 10 Dec 2011 21:51:31 +0100
 
