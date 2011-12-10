@@ -12,9 +12,9 @@
 
 @DPATCH@
 diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.c vdr/config.c
---- vdr~/config.c	2011-08-19 23:01:19.000000000 +0200
-+++ vdr/config.c	2011-08-19 23:03:55.000000000 +0200
-@@ -329,6 +329,8 @@
+--- vdr~/config.c	2011-12-10 22:22:38.000000000 +0100
++++ vdr/config.c	2011-12-10 22:25:38.000000000 +0100
+@@ -392,6 +392,8 @@
    SetSystemTime = 0;
    TimeSource = 0;
    TimeTransponder = 0;
@@ -23,8 +23,8 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    MarginStart = 2;
    MarginStop = 10;
    AudioLanguages[0] = -1;
-@@ -414,10 +416,17 @@
-   MenuCmdPosition = 0;
+@@ -473,11 +475,18 @@
+   EmergencyExit = 1;
  }
  
 +cSetup::~cSetup()
@@ -36,12 +36,13 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  {
    memcpy(&__BeginData__, &s.__BeginData__, (char *)&s.__EndData__ - (char *)&s.__BeginData__);
    InitialChannel = s.InitialChannel;
+   DeviceBondings = s.DeviceBondings;
 +  free(noEPGList);
 +  noEPGList = strdup(s.noEPGList);
    return *this;
  }
  
-@@ -534,6 +543,11 @@
+@@ -594,6 +603,11 @@
    else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
    else if (!strcasecmp(Name, "TimeSource"))          TimeSource         = cSource::FromString(Value);
    else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
@@ -53,7 +54,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
    else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
    else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
-@@ -643,6 +657,8 @@
+@@ -699,6 +713,8 @@
    Store("SetSystemTime",      SetSystemTime);
    Store("TimeSource",         cSource::ToString(TimeSource));
    Store("TimeTransponder",    TimeTransponder);
@@ -63,9 +64,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
 diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.h vdr/config.h
---- vdr~/config.h	2011-08-19 23:01:19.000000000 +0200
-+++ vdr/config.h	2011-08-19 23:02:39.000000000 +0200
-@@ -236,6 +236,7 @@
+--- vdr~/config.h	2011-12-10 22:22:38.000000000 +0100
++++ vdr/config.h	2011-12-10 22:24:42.000000000 +0100
+@@ -255,6 +255,7 @@
    int SetSystemTime;
    int TimeSource;
    int TimeTransponder;
@@ -73,10 +74,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int MarginStart, MarginStop;
    int AudioLanguages[I18N_MAX_LANGUAGES + 1];
    int DisplaySubtitles;
-@@ -305,7 +306,9 @@
-   int ShowRecDate, ShowRecTime, ShowRecLength, ShowProgressBar, MenuCmdPosition;
+@@ -324,7 +325,9 @@
    int __EndData__;
    cString InitialChannel;
+   cString DeviceBondings;
 +  char *noEPGList; // pointer not to be flat-copied
    cSetup(void);
 +  ~cSetup();
@@ -84,8 +85,8 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    bool Load(const char *FileName);
    bool Save(void);
 diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/eit.c vdr/eit.c
---- vdr~/eit.c	2011-08-19 23:01:19.000000000 +0200
-+++ vdr/eit.c	2011-08-19 23:01:20.000000000 +0200
+--- vdr~/eit.c	2011-12-10 22:22:38.000000000 +0100
++++ vdr/eit.c	2011-12-10 22:22:38.000000000 +0100
 @@ -24,8 +24,28 @@
  class cEIT : public SI::EIT {
  public:
@@ -129,9 +130,9 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
    bool Empty = true;
 diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.c vdr/menu.c
---- vdr~/menu.c	2011-08-19 23:01:19.000000000 +0200
-+++ vdr/menu.c	2011-08-19 23:01:20.000000000 +0200
-@@ -2851,6 +2851,7 @@
+--- vdr~/menu.c	2011-12-10 22:22:38.000000000 +0100
++++ vdr/menu.c	2011-12-10 22:22:38.000000000 +0100
+@@ -2810,6 +2810,7 @@
  
  class cMenuSetupEPG : public cMenuSetupBase {
  private:
@@ -139,7 +140,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int originalNumLanguages;
    int numLanguages;
    void Setup(void);
-@@ -2873,6 +2874,9 @@
+@@ -2832,6 +2833,9 @@
  {
    int current = Current();
  
@@ -149,7 +150,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Clear();
  
    Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
-@@ -2882,6 +2886,7 @@
+@@ -2840,6 +2844,7 @@
    Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
    if (data.SetSystemTime)
       Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder, &data.TimeSource));
