@@ -1,14 +1,7 @@
-#!/bin/sh /usr/share/dpatch/dpatch-run
+Description: Show if there is a valid setup value left or right with < and >.
+Author: ravemax at vdrportal.de
+Origin: http://vdrportal.de/board/thread.php?threadid=25984
 
-## opt-35_setup-show-valid.dpatch by ravemax at vdrportal.de
-##
-## downloaded from http://vdrportal.de/board/thread.php?threadid=25984
-## original file: setup_option-show_valid_input.patch.bz2
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Show if there is a valid setup value left or right with < and >.
-
-@DPATCH@
 diff -ur vdr_orig/menuitems.c vdr_patched/menuitems.c
 --- vdr_orig/menuitems.c	2004-12-05 17:59:12.452421104 +0100
 +++ vdr_patched/menuitems.c	2004-12-05 18:01:54.726751656 +0100

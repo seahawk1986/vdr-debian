@@ -1,17 +1,15 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-24_jumpplay.dpatch by Torsten Kunkel <vdr@tkunkel.de>, Thomas Günther <tom@toms-cafe.de>
-## http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Play after jump to next mark. Automatically jump over commercial breaks.
-## DP: See README.jumpplay and MANUAL for details.
-## DP: 2011-03-19: Remove marks reloading for VDR-1.7.17, by Udo Richter <udo_richter@gmx.de>
+Description: Play after jump to next mark. Automatically jump over commercial breaks.
+ See README.jumpplay and MANUAL for details.
+ .
+ 2011-03-19: Remove marks reloading for VDR-1.7.17, by Udo Richter <udo_richter@gmx.de>
+Author: Torsten Kunkel <vdr@tkunkel.de>, Thomas Günther <tom@toms-cafe.de>
+Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
-@DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/MANUAL vdr/MANUAL
---- vdr~/MANUAL	2011-09-18 13:27:07.000000000 +0200
-+++ vdr/MANUAL	2011-09-18 13:27:31.000000000 +0200
-@@ -856,6 +856,25 @@
+Index: vdr/MANUAL
+===================================================================
+--- vdr.orig/MANUAL	2011-12-10 22:22:04.000000000 +0100
++++ vdr/MANUAL	2011-12-11 02:29:23.000000000 +0100
+@@ -862,6 +862,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -37,9 +35,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Miscellaneous:
  
    Min. event timeout = 30
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/README.jumpplay vdr/README.jumpplay
---- vdr~/README.jumpplay	1970-01-01 01:00:00.000000000 +0100
-+++ vdr/README.jumpplay	2011-09-18 13:27:31.000000000 +0200
+Index: vdr/README.jumpplay
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr/README.jumpplay	2011-12-11 02:29:23.000000000 +0100
 @@ -0,0 +1,92 @@
 +JumpPlay patch for VDR
 +----------------------
@@ -133,10 +132,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
 +    Play&Jump:
 +      - set resume position to 0 if replay stops at the first mark
 +    Added French language texts (thanks to Michaël Nival)
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.c vdr/config.c
---- vdr~/config.c	2011-09-18 13:27:07.000000000 +0200
-+++ vdr/config.c	2011-09-18 13:27:31.000000000 +0200
-@@ -392,6 +392,9 @@
+Index: vdr/config.c
+===================================================================
+--- vdr.orig/config.c	2011-12-10 22:22:04.000000000 +0100
++++ vdr/config.c	2011-12-11 02:29:23.000000000 +0100
+@@ -455,6 +455,9 @@
    MultiSpeedMode = 0;
    ShowReplayMode = 0;
    ResumeID = 0;
@@ -146,7 +146,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    CurrentChannel = -1;
    CurrentVolume = MAXVOLUME;
    CurrentDolby = 0;
-@@ -584,6 +587,9 @@
+@@ -649,6 +652,9 @@
    else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
    else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
    else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -156,7 +156,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
    else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
    else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-@@ -680,6 +686,9 @@
+@@ -746,6 +752,9 @@
    Store("MultiSpeedMode",     MultiSpeedMode);
    Store("ShowReplayMode",     ShowReplayMode);
    Store("ResumeID",           ResumeID);
@@ -166,19 +166,20 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Store("CurrentChannel",     CurrentChannel);
    Store("CurrentVolume",      CurrentVolume);
    Store("CurrentDolby",       CurrentDolby);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.h vdr/config.h
---- vdr~/config.h	2011-09-18 13:27:31.000000000 +0200
-+++ vdr/config.h	2011-09-18 13:27:31.000000000 +0200
+Index: vdr/config.h
+===================================================================
+--- vdr.orig/config.h	2011-12-11 02:29:03.000000000 +0100
++++ vdr/config.h	2011-12-11 02:29:23.000000000 +0100
 @@ -38,6 +38,8 @@
  
- #define LIEMIKUUTIO  131
+ #define LIEMIKUUTIO  133
  
 +#define JUMPPLAYVERSNUM 100
 +
  #define MAXPRIORITY 99
  #define MAXLIFETIME 99
  
-@@ -286,6 +288,9 @@
+@@ -305,6 +307,9 @@
    int MultiSpeedMode;
    int ShowReplayMode;
    int ResumeID;
@@ -188,9 +189,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int CurrentChannel;
    int CurrentVolume;
    int CurrentDolby;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/dvbplayer.c vdr/dvbplayer.c
---- vdr~/dvbplayer.c	2011-09-18 13:27:07.000000000 +0200
-+++ vdr/dvbplayer.c	2011-09-18 13:27:31.000000000 +0200
+Index: vdr/dvbplayer.c
+===================================================================
+--- vdr.orig/dvbplayer.c	2011-12-10 22:22:04.000000000 +0100
++++ vdr/dvbplayer.c	2011-12-11 02:29:23.000000000 +0100
 @@ -204,6 +204,7 @@
    cNonBlockingFileReader *nonBlockingFileReader;
    cRingBufferFrame *ringBuffer;
@@ -328,10 +330,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
            // Handle hitting begin/end of recording:
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.c vdr/menu.c
---- vdr~/menu.c	2011-09-18 13:27:31.000000000 +0200
-+++ vdr/menu.c	2011-09-18 13:31:37.000000000 +0200
-@@ -3253,6 +3253,9 @@
+Index: vdr/menu.c
+===================================================================
+--- vdr.orig/menu.c	2011-12-11 02:29:15.000000000 +0100
++++ vdr/menu.c	2011-12-11 02:29:23.000000000 +0100
+@@ -3297,6 +3297,9 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -341,7 +344,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4832,8 +4835,10 @@
+@@ -4896,8 +4899,10 @@
          ShowTimed(2);
          bool Play, Forward;
          int Speed;
@@ -353,7 +356,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
          }
       marks.Save();
       }
-@@ -4846,8 +4851,17 @@
+@@ -4910,8 +4915,17 @@
       if (GetIndex(Current, Total)) {
          cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
          if (m) {
@@ -373,7 +376,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
             }
          }
       }
-@@ -4903,7 +4917,7 @@
+@@ -4967,7 +4981,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {
@@ -382,10 +385,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
             m = marks.Next(m);
          if (m) {
             Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/po/de_DE.po vdr/po/de_DE.po
---- vdr~/po/de_DE.po	2011-09-18 13:27:31.000000000 +0200
-+++ vdr/po/de_DE.po	2011-09-18 13:27:31.000000000 +0200
-@@ -1064,6 +1064,15 @@
+Index: vdr/po/de_DE.po
+===================================================================
+--- vdr.orig/po/de_DE.po	2011-12-11 02:29:03.000000000 +0100
++++ vdr/po/de_DE.po	2011-12-11 02:29:23.000000000 +0100
+@@ -1071,6 +1071,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
  
@@ -401,10 +405,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  msgid "Setup.Replay$Multi speed mode"
  msgstr "Mehrstufiger Vor-/Rücklauf"
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/po/fr_FR.po vdr/po/fr_FR.po
---- vdr~/po/fr_FR.po	2011-09-18 13:27:31.000000000 +0200
-+++ vdr/po/fr_FR.po	2011-09-18 13:27:31.000000000 +0200
-@@ -1070,6 +1070,15 @@
+Index: vdr/po/fr_FR.po
+===================================================================
+--- vdr.orig/po/fr_FR.po	2011-12-11 02:29:03.000000000 +0100
++++ vdr/po/fr_FR.po	2011-12-11 02:29:23.000000000 +0100
+@@ -1077,6 +1077,15 @@
  msgid "Replay"
  msgstr "Lecture"
  

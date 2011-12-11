@@ -1,11 +1,7 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-20_liemikuutio.dpatch by Rolf Ahrenberg <Rolf.Ahrenberg AT sci.fi>
-## http://www.saunalahti.fi/~rahrenbe/vdr/patches/vdr-1.7.22-liemikuutio-1.33.patch.gz
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Patch collection - see HISTORY-liemikuutio for details.
+Description: Patch collection - see HISTORY-liemikuutio for details.
+Author: Rolf Ahrenberg <Rolf.Ahrenberg AT sci.fi>
+Origin: http://www.saunalahti.fi/~rahrenbe/vdr/patches/vdr-1.7.22-liemikuutio-1.33.patch.gz
 
-@DPATCH@
 diff -Nru vdr-1.7.22-vanilla/config.h vdr-1.7.22-liemikuutio/config.h
 --- vdr-1.7.22-vanilla/config.h	2011-12-04 18:37:58.000000000 +0200
 +++ vdr-1.7.22-liemikuutio/config.h	2011-12-04 18:39:13.000000000 +0200

@@ -1,14 +1,7 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-29_syncearly.dpatch by Reinhard Nissl <rnissl@gmx.de>
-##
-## vdr-freak at vdrportal.de:
-##   - extracted from extensions patch
-##     http://vdrportal.de/board/thread.php?postid=668434#post668434
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Speed up zapping channels.
+Description: Speed up zapping channels.
+Author: vdr-freak at vdrportal.de:
+Origin: http://vdrportal.de/board/thread.php?postid=668434#post668434
 
-@DPATCH@
 diff -ruN vdr-1.5.11/config.c vdr-1.5.11-syncearly/config.c
 --- vdr-1.5.11/config.c	2007-10-06 16:28:58.000000000 +0200
 +++ vdr-1.5.11-syncearly/config.c	2007-11-11 19:44:35.000000000 +0100

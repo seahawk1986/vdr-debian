@@ -1,15 +1,12 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-32-x_recordshowfree.dpatch by Walter Koch <koch@u32.de>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Shows remaining recording capacity in recordings menu.
-## DP: (Requires timer-info patch)
+Description: Shows remaining recording capacity in recordings menu.
+ (Requires timer-info patch)
+Author: Walter Koch <koch@u32.de>
 
-@DPATCH@
-diff -urNad vdr-1.5.15~/menu.c vdr-1.5.15/menu.c
---- vdr-1.5.15~/menu.c	2008-02-17 22:09:26.000000000 +0100
-+++ vdr-1.5.15/menu.c	2008-02-17 22:10:29.000000000 +0100
-@@ -2317,6 +2317,19 @@
+Index: vdr/menu.c
+===================================================================
+--- vdr.orig/menu.c	2011-12-11 02:29:47.000000000 +0100
++++ vdr/menu.c	2011-12-11 02:29:50.000000000 +0100
+@@ -2589,6 +2589,19 @@
           }
        }
    free(LastItemText);

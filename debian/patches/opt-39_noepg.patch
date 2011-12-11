@@ -1,19 +1,12 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-39_noepg.dpatch from version the vdr-noepgmenu plugin 0.0.6.beta3
-## http://winni.vdr-developer.org/noepgmenu/downloads/beta
-##
-## Thomas Günther <tom@toms-cafe.de>:
-##   - adapted to VDR-1.7.8
-##   - solved conflicts with other patches
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: The patch allows to disable normal epg update for specified channels.
-## DP: This is useful if you get epg data of the channels from external sources.
+Description: The patch allows to disable normal epg update for specified channels.
+ This is useful if you get epg data of the channels from external sources.
+Author:
+Origin: http://winni.vdr-developer.org/noepgmenu/downloads/beta
 
-@DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.c vdr/config.c
---- vdr~/config.c	2011-12-10 22:22:38.000000000 +0100
-+++ vdr/config.c	2011-12-10 22:25:38.000000000 +0100
+Index: vdr/config.c
+===================================================================
+--- vdr.orig/config.c	2011-12-11 02:29:35.000000000 +0100
++++ vdr/config.c	2011-12-11 02:29:40.000000000 +0100
 @@ -392,6 +392,8 @@
    SetSystemTime = 0;
    TimeSource = 0;
@@ -63,9 +56,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Store("MarginStart",        MarginStart);
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/config.h vdr/config.h
---- vdr~/config.h	2011-12-10 22:22:38.000000000 +0100
-+++ vdr/config.h	2011-12-10 22:24:42.000000000 +0100
+Index: vdr/config.h
+===================================================================
+--- vdr.orig/config.h	2011-12-11 02:29:35.000000000 +0100
++++ vdr/config.h	2011-12-11 02:29:40.000000000 +0100
 @@ -255,6 +255,7 @@
    int SetSystemTime;
    int TimeSource;
@@ -84,9 +78,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    cSetup& operator= (const cSetup &s);
    bool Load(const char *FileName);
    bool Save(void);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/eit.c vdr/eit.c
---- vdr~/eit.c	2011-12-10 22:22:38.000000000 +0100
-+++ vdr/eit.c	2011-12-10 22:22:38.000000000 +0100
+Index: vdr/eit.c
+===================================================================
+--- vdr.orig/eit.c	2011-12-11 02:29:35.000000000 +0100
++++ vdr/eit.c	2011-12-11 02:29:40.000000000 +0100
 @@ -24,8 +24,28 @@
  class cEIT : public SI::EIT {
  public:
@@ -129,10 +124,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
  
    bool Empty = true;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.c vdr/menu.c
---- vdr~/menu.c	2011-12-10 22:22:38.000000000 +0100
-+++ vdr/menu.c	2011-12-10 22:22:38.000000000 +0100
-@@ -2810,6 +2810,7 @@
+Index: vdr/menu.c
+===================================================================
+--- vdr.orig/menu.c	2011-12-11 02:29:35.000000000 +0100
++++ vdr/menu.c	2011-12-11 02:29:40.000000000 +0100
+@@ -2831,6 +2831,7 @@
  
  class cMenuSetupEPG : public cMenuSetupBase {
  private:
@@ -140,7 +136,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    int originalNumLanguages;
    int numLanguages;
    void Setup(void);
-@@ -2832,6 +2833,9 @@
+@@ -2853,6 +2854,9 @@
  {
    int current = Current();
  
@@ -150,7 +146,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    Clear();
  
    Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
-@@ -2840,6 +2844,7 @@
+@@ -2861,6 +2865,7 @@
    Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
    if (data.SetSystemTime)
       Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder, &data.TimeSource));

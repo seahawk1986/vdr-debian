@@ -1,21 +1,11 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-44_rotor.dpatch by Thomas Bergwinkl <Bergwinkl.Thomas@vr-web.de>
-## extracted from the rotor plugin 0.1.4-vdr1.5
-## original filename: vdr-1.5.5-rotor.diff
-##
-## Thomas Günther <tom@toms-cafe.de>:
-##   - made compatible to VDR-1.4.7
-##   - adapted to VDR-1.7.8
-##   - adapted to VDR-1.7.11
-##   - adapted to VDR-1.7.13
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: This patch is needed for the rotor plugin.
+Description: This patch is needed for the rotor plugin.
+Author: Thomas Bergwinkl <Bergwinkl.Thomas@vr-web.de>
+Origin: extracted from the rotor plugin 0.1.4-vdr1.5
 
-@DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/device.h vdr/device.h
---- vdr~/device.h	2011-12-10 22:26:30.000000000 +0100
-+++ vdr/device.h	2011-12-10 22:26:30.000000000 +0100
+Index: vdr/device.h
+===================================================================
+--- vdr.orig/device.h	2011-12-11 02:29:26.000000000 +0100
++++ vdr/device.h	2011-12-11 02:29:53.000000000 +0100
 @@ -24,6 +24,8 @@
  #include "spu.h"
  #include "thread.h"
@@ -33,9 +23,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  
  // PID handle facilities
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/dvbdevice.c vdr/dvbdevice.c
---- vdr~/dvbdevice.c	2011-12-10 21:59:26.000000000 +0100
-+++ vdr/dvbdevice.c	2011-12-10 22:28:03.000000000 +0100
+Index: vdr/dvbdevice.c
+===================================================================
+--- vdr.orig/dvbdevice.c	2011-12-10 21:59:26.000000000 +0100
++++ vdr/dvbdevice.c	2011-12-11 02:29:53.000000000 +0100
 @@ -261,6 +261,7 @@
  private:
    static cMutex bondMutex;
@@ -109,9 +100,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  void cDvbDevice::SetTransferModeForDolbyDigital(int Mode)
  {
    setTransferModeForDolbyDigital = Mode;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/dvbdevice.h vdr/dvbdevice.h
---- vdr~/dvbdevice.h	2011-12-10 21:59:26.000000000 +0100
-+++ vdr/dvbdevice.h	2011-12-10 22:26:30.000000000 +0100
+Index: vdr/dvbdevice.h
+===================================================================
+--- vdr.orig/dvbdevice.h	2011-12-10 21:59:26.000000000 +0100
++++ vdr/dvbdevice.h	2011-12-11 02:29:53.000000000 +0100
 @@ -181,6 +181,7 @@
    virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
  public:

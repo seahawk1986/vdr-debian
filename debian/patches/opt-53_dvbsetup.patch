@@ -1,17 +1,7 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-53_dvbsetup.dpatch by Tobias Grimm <tg@e-tobi.net>
-##
-## Thomas Günther <tom@toms-cafe.de>:
-##   - updated to version of extensions patch 72
-##   - adapted to VDR-1.7.8 with noepg patch
-##   - solved conflicts with other patches
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Setup for AC3 transfer and Channel Blocker
-## DP: Taken from the Zulu extensions patch 72
-## DP: See http://www.zulu-entertainment.de/download.php?group=VDR
+Description: Setup for AC3 transfer and Channel Blocker
+ Taken from the Zulu extensions patch 72
+Origin: http://www.zulu-entertainment.de/download.php?group=VDR
 
-@DPATCH@
 diff -Naurp vdr-1.7.8-noepg/config.c vdr-1.7.8-noepg-dvbsetup/config.c
 --- vdr-1.7.8-noepg/config.c	2009-06-15 21:04:42.000000000 +0000
 +++ vdr-1.7.8-noepg-dvbsetup/config.c	2009-06-15 21:52:59.000000000 +0000

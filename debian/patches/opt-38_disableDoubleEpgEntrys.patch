@@ -1,26 +1,12 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-38_disableDoubleEpgEntrys.dpatch by Emanuel Wontorra <hoerzu2vdr@wontorra.net>
-## http://vdrportal.de/board/thread.php?postid=317214#post317214
-##
-## Thomas Günther <tom@toms-cafe.de>:
-##   - adapted to VDR-1.5.1
-##   - adapted to VDR-1.5.7
-##     http://toms-cafe.de/vdr/download/vdr-disableDoubleEpgEntrys_0.7.3b-1.5.7.diff
-## Tobias Grimm <tg@e-tobi.net>:
-##   - added buffer overflow fix from:
-##     http://vdrportal.de/board/thread.php?postid=683477#post683477
-## Thomas Günther <tom@toms-cafe.de>:
-##   - added French language texts (thanks to Michaël Nival)
-##     http://toms-cafe.de/vdr/download/vdr-disableDoubleEpgEntrys_0.7.3b-1.6.0.diff
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: This patch suppresses double EPG entries.
+Description: This patch suppresses double EPG entries.
+Author: Emanuel Wontorra <hoerzu2vdr@wontorra.net>
+Origin: http://vdrportal.de/board/thread.php?postid=317214#post317214
 
-@DPATCH@
-diff -Naurp vdr-1.6.0/config.c vdr-1.6.0-disableDoubleEpgEntrys/config.c
---- vdr-1.6.0/config.c	2008-02-17 13:39:00.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/config.c	2009-03-29 23:25:00.000000000 +0000
-@@ -241,6 +241,10 @@ cSetup::cSetup(void)
+Index: vdr/config.c
+===================================================================
+--- vdr.orig/config.c	2011-12-11 02:29:26.000000000 +0100
++++ vdr/config.c	2011-12-11 02:29:35.000000000 +0100
+@@ -402,6 +402,10 @@
    SubtitleFgTransparency = 0;
    SubtitleBgTransparency = 0;
    EPGLanguages[0] = -1;
@@ -31,7 +17,7 @@ diff -Naurp vdr-1.6.0/config.c vdr-1.6.0-disableDoubleEpgEntrys/config.c
    EPGScanTimeout = 5;
    EPGBugfixLevel = 3;
    EPGLinger = 0;
-@@ -414,6 +418,10 @@ bool cSetup::Parse(const char *Name, con
+@@ -600,6 +604,10 @@
    else if (!strcasecmp(Name, "SubtitleFgTransparency")) SubtitleFgTransparency = atoi(Value);
    else if (!strcasecmp(Name, "SubtitleBgTransparency")) SubtitleBgTransparency = atoi(Value);
    else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
@@ -42,7 +28,7 @@ diff -Naurp vdr-1.6.0/config.c vdr-1.6.0-disableDoubleEpgEntrys/config.c
    else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
    else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
    else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
-@@ -497,6 +505,10 @@ bool cSetup::Save(void)
+@@ -701,6 +709,10 @@
    Store("SubtitleFgTransparency", SubtitleFgTransparency);
    Store("SubtitleBgTransparency", SubtitleBgTransparency);
    StoreLanguages("EPGLanguages", EPGLanguages);
@@ -53,10 +39,11 @@ diff -Naurp vdr-1.6.0/config.c vdr-1.6.0-disableDoubleEpgEntrys/config.c
    Store("EPGScanTimeout",     EPGScanTimeout);
    Store("EPGBugfixLevel",     EPGBugfixLevel);
    Store("EPGLinger",          EPGLinger);
-diff -Naurp vdr-1.6.0/config.h vdr-1.6.0-disableDoubleEpgEntrys/config.h
---- vdr-1.6.0/config.h	2008-03-23 10:26:10.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/config.h	2009-03-29 23:25:00.000000000 +0000
-@@ -225,6 +225,10 @@ public:
+Index: vdr/config.h
+===================================================================
+--- vdr.orig/config.h	2011-12-11 02:29:26.000000000 +0100
++++ vdr/config.h	2011-12-11 02:29:35.000000000 +0100
+@@ -263,6 +263,10 @@
    int SubtitleOffset;
    int SubtitleFgTransparency, SubtitleBgTransparency;
    int EPGLanguages[I18N_MAX_LANGUAGES + 1];
@@ -67,12 +54,13 @@ diff -Naurp vdr-1.6.0/config.h vdr-1.6.0-disableDoubleEpgEntrys/config.h
    int EPGScanTimeout;
    int EPGBugfixLevel;
    int EPGLinger;
-diff -Naurp vdr-1.6.0/eit.c vdr-1.6.0-disableDoubleEpgEntrys/eit.c
---- vdr-1.6.0/eit.c	2007-08-26 10:56:33.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/eit.c	2009-03-29 23:25:00.000000000 +0000
-@@ -72,7 +72,83 @@ cEIT::cEIT(cSchedules *Schedules, int So
-          // not be overwritten.
-          if (pEvent->TableID() == 0x00) {
+Index: vdr/eit.c
+===================================================================
+--- vdr.orig/eit.c	2011-12-10 22:22:04.000000000 +0100
++++ vdr/eit.c	2011-12-11 02:29:35.000000000 +0100
+@@ -83,7 +83,83 @@
+          uchar TableID = pEvent->TableID();
+          if (TableID == 0x00) {
              if (pEvent->Version() == getVersionNumber())
 -               continue;
 +          {
@@ -155,7 +143,7 @@ diff -Naurp vdr-1.6.0/eit.c vdr-1.6.0-disableDoubleEpgEntrys/eit.c
              HasExternalData = ExternalData = true;
              }
           // If the new event has a higher table ID, let's skip it.
-@@ -97,7 +173,7 @@ cEIT::cEIT(cSchedules *Schedules, int So
+@@ -108,7 +184,7 @@
        if (newEvent)
           pSchedule->AddEvent(newEvent);
        if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
@@ -164,7 +152,7 @@ diff -Naurp vdr-1.6.0/eit.c vdr-1.6.0-disableDoubleEpgEntrys/eit.c
              pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
           }
        if (OnlyRunningStatus)
-@@ -259,6 +335,80 @@ cEIT::cEIT(cSchedules *Schedules, int So
+@@ -297,6 +373,80 @@
        if (LinkChannels)
           channel->SetLinkChannels(LinkChannels);
        Modified = true;
@@ -243,12 +231,13 @@ diff -Naurp vdr-1.6.0/eit.c vdr-1.6.0-disableDoubleEpgEntrys/eit.c
 +       	}
 +       }
        }
-   if (Empty && Tid == 0x4E && getSectionNumber() == 0)
-      // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
-diff -Naurp vdr-1.6.0/epg.c vdr-1.6.0-disableDoubleEpgEntrys/epg.c
---- vdr-1.6.0/epg.c	2008-02-16 16:09:12.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/epg.c	2009-03-29 23:25:00.000000000 +0000
-@@ -742,6 +742,29 @@ const cEvent *cSchedule::GetEventAround(
+   if (Tid == 0x4E) {
+      if (Empty && getSectionNumber() == 0)
+Index: vdr/epg.c
+===================================================================
+--- vdr.orig/epg.c	2011-12-10 22:22:04.000000000 +0100
++++ vdr/epg.c	2011-12-11 02:29:35.000000000 +0100
+@@ -939,6 +939,29 @@
    return pe;
  }
  
@@ -278,10 +267,11 @@ diff -Naurp vdr-1.6.0/epg.c vdr-1.6.0-disableDoubleEpgEntrys/epg.c
  void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
  {
    hasRunning = false;
-diff -Naurp vdr-1.6.0/epg.h vdr-1.6.0-disableDoubleEpgEntrys/epg.h
---- vdr-1.6.0/epg.h	2006-10-07 13:47:19.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/epg.h	2009-03-29 23:25:00.000000000 +0000
-@@ -137,6 +137,7 @@ public:
+Index: vdr/epg.h
+===================================================================
+--- vdr.orig/epg.h	2011-12-10 22:22:04.000000000 +0100
++++ vdr/epg.h	2011-12-11 02:29:35.000000000 +0100
+@@ -163,6 +163,7 @@
    void DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
    void Cleanup(time_t Time);
    void Cleanup(void);
@@ -289,10 +279,11 @@ diff -Naurp vdr-1.6.0/epg.h vdr-1.6.0-disableDoubleEpgEntrys/epg.h
    cEvent *AddEvent(cEvent *Event);
    void DelEvent(cEvent *Event);
    void HashEvent(cEvent *Event);
-diff -Naurp vdr-1.6.0/menu.c vdr-1.6.0-disableDoubleEpgEntrys/menu.c
---- vdr-1.6.0/menu.c	2008-03-16 11:15:28.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/menu.c	2009-03-29 23:25:00.000000000 +0000
-@@ -2388,6 +2388,10 @@ void cMenuSetupEPG::Setup(void)
+Index: vdr/menu.c
+===================================================================
+--- vdr.orig/menu.c	2011-12-11 02:29:31.000000000 +0100
++++ vdr/menu.c	2011-12-11 02:29:35.000000000 +0100
+@@ -2866,6 +2866,10 @@
    for (int i = 0; i < numLanguages; i++)
        // TRANSLATORS: note the singular!
        Add(new cMenuEditStraItem(tr("Setup.EPG$Preferred language"),    &data.EPGLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
@@ -303,10 +294,11 @@ diff -Naurp vdr-1.6.0/menu.c vdr-1.6.0-disableDoubleEpgEntrys/menu.c
  
    SetCurrent(Get(current));
    Display();
-diff -Naurp vdr-1.6.0/po/de_DE.po vdr-1.6.0-disableDoubleEpgEntrys/po/de_DE.po
---- vdr-1.6.0/po/de_DE.po	2008-03-23 10:31:29.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/po/de_DE.po	2009-03-29 23:25:00.000000000 +0000
-@@ -558,6 +558,18 @@ msgstr "EPG"
+Index: vdr/po/de_DE.po
+===================================================================
+--- vdr.orig/po/de_DE.po	2011-12-11 02:29:26.000000000 +0100
++++ vdr/po/de_DE.po	2011-12-11 02:29:35.000000000 +0100
+@@ -849,6 +849,18 @@
  msgid "Button$Scan"
  msgstr "Scan"
  
@@ -325,10 +317,11 @@ diff -Naurp vdr-1.6.0/po/de_DE.po vdr-1.6.0-disableDoubleEpgEntrys/po/de_DE.po
  msgid "Setup.EPG$EPG scan timeout (h)"
  msgstr "Zeit bis zur EPG-Aktualisierung (h)"
  
-diff -Naurp vdr-1.6.0/po/fr_FR.po vdr-1.6.0-disableDoubleEpgEntrys/po/fr_FR.po
---- vdr-1.6.0/po/fr_FR.po	2008-03-23 10:31:29.000000000 +0000
-+++ vdr-1.6.0-disableDoubleEpgEntrys/po/fr_FR.po	2009-03-29 23:25:58.000000000 +0000
-@@ -564,6 +564,18 @@ msgstr "Guide des programmes"
+Index: vdr/po/fr_FR.po
+===================================================================
+--- vdr.orig/po/fr_FR.po	2011-12-11 02:29:26.000000000 +0100
++++ vdr/po/fr_FR.po	2011-12-11 02:29:35.000000000 +0100
+@@ -855,6 +855,18 @@
  msgid "Button$Scan"
  msgstr "Scan"
  
