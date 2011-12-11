@@ -78,6 +78,7 @@ clean:
 	$(MAKE) -o .dependencies clean-plugins $(MAKE_OPTIONS)
 	$(MAKE) -o .dependencies clean $(MAKE_OPTIONS)
 	rm -f vdr-dbg
+	rm -f vdr
 	rm -rf PLUGINS/lib
 	rm -f vdr-newplugin
 	rm -f debian/vdr-shutdown.wrapper
