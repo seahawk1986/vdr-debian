@@ -10,6 +10,7 @@ vdr (1.7.22-1~ctvdr1) unstable; urgency=low
     anymore! To build VDR with a different set of patches, grab the
     appropriate branch from the Git.
   * Dropped reelchannelscan patch
+  * Added build-arch, build-indep targets
 
  -- Tobias Grimm <etobi@debian.org>  Sat, 10 Dec 2011 21:51:31 +0100
 
