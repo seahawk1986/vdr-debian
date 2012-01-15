@@ -1,7 +1,7 @@
 vdr (1.7.23-1~ctvdr1) unstable; urgency=low
 
   * New upstream release
-  * Updated opt-44_rotor.patch
+  * Dropped opt-44_rotor.patch
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 15 Jan 2012 20:50:20 +0100
 

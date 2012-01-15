@@ -51,9 +51,6 @@ opt-42-x_MainMenuHooks.patch
 # (Requires opt-41-x_timer-info !)
 opt-43-x_recordshowfree.patch
 
-# Patch needed for the rotor plugin.
-opt-44_rotor.patch
-
 # Patch needed for the yaepg plugin.
 opt-45_yaepg.patch
 

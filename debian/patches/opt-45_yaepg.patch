@@ -4,8 +4,8 @@ Origin: http://www.hoochvdr.info/yaepg/vdr-1.3.19-core-yaepg.diff
 
 Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
 ===================================================================
---- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2011-12-10 21:50:59.000000000 +0100
-+++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2011-12-11 02:29:56.000000000 +0100
+--- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2012-01-15 21:47:17.000000000 +0100
++++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2012-01-15 21:47:22.000000000 +0100
 @@ -77,6 +77,10 @@
              Cmd(OSD_SetWindow, 0, i + 1);
              Cmd(OSD_Close);
@@ -42,9 +42,9 @@ Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
  }
 Index: vdr/device.h
 ===================================================================
---- vdr.orig/device.h	2011-12-11 02:29:53.000000000 +0100
-+++ vdr/device.h	2011-12-11 02:29:56.000000000 +0100
-@@ -293,12 +293,12 @@
+--- vdr.orig/device.h	2012-01-15 21:47:17.000000000 +0100
++++ vdr/device.h	2012-01-15 21:47:22.000000000 +0100
+@@ -291,12 +291,12 @@
           ///< Direction (only the sign of Direction is evaluated, positive values
           ///< switch to higher channel numbers).
  private:
@@ -61,8 +61,8 @@ Index: vdr/device.h
    static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }
 Index: vdr/osd.c
 ===================================================================
---- vdr.orig/osd.c	2011-12-10 21:50:59.000000000 +0100
-+++ vdr/osd.c	2011-12-11 02:29:56.000000000 +0100
+--- vdr.orig/osd.c	2012-01-15 21:47:17.000000000 +0100
++++ vdr/osd.c	2012-01-15 21:47:22.000000000 +0100
 @@ -1622,6 +1622,7 @@
           }
        }
@@ -73,8 +73,8 @@ Index: vdr/osd.c
  cOsd::~cOsd()
 Index: vdr/osd.h
 ===================================================================
---- vdr.orig/osd.h	2011-12-10 21:59:26.000000000 +0100
-+++ vdr/osd.h	2011-12-11 02:29:56.000000000 +0100
+--- vdr.orig/osd.h	2012-01-15 21:47:17.000000000 +0100
++++ vdr/osd.h	2012-01-15 21:47:22.000000000 +0100
 @@ -921,6 +921,7 @@
         ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
         ///<        delete pm;
