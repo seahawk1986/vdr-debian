@@ -4,9 +4,9 @@ Origin: http://vdrportal.de/board/thread.php?postid=317214#post317214
 
 Index: vdr/config.c
 ===================================================================
---- vdr.orig/config.c	2011-12-11 02:29:26.000000000 +0100
-+++ vdr/config.c	2011-12-11 02:29:35.000000000 +0100
-@@ -402,6 +402,10 @@
+--- vdr.orig/config.c	2012-01-15 21:21:10.000000000 +0100
++++ vdr/config.c	2012-01-15 21:21:18.000000000 +0100
+@@ -401,6 +401,10 @@
    SubtitleFgTransparency = 0;
    SubtitleBgTransparency = 0;
    EPGLanguages[0] = -1;
@@ -28,7 +28,7 @@ Index: vdr/config.c
    else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
    else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
    else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
-@@ -701,6 +709,10 @@
+@@ -702,6 +710,10 @@
    Store("SubtitleFgTransparency", SubtitleFgTransparency);
    Store("SubtitleBgTransparency", SubtitleBgTransparency);
    StoreLanguages("EPGLanguages", EPGLanguages);
@@ -41,8 +41,8 @@ Index: vdr/config.c
    Store("EPGLinger",          EPGLinger);
 Index: vdr/config.h
 ===================================================================
---- vdr.orig/config.h	2011-12-11 02:29:26.000000000 +0100
-+++ vdr/config.h	2011-12-11 02:29:35.000000000 +0100
+--- vdr.orig/config.h	2012-01-15 21:21:10.000000000 +0100
++++ vdr/config.h	2012-01-15 21:21:18.000000000 +0100
 @@ -263,6 +263,10 @@
    int SubtitleOffset;
    int SubtitleFgTransparency, SubtitleBgTransparency;
@@ -56,8 +56,8 @@ Index: vdr/config.h
    int EPGLinger;
 Index: vdr/eit.c
 ===================================================================
---- vdr.orig/eit.c	2011-12-10 22:22:04.000000000 +0100
-+++ vdr/eit.c	2011-12-11 02:29:35.000000000 +0100
+--- vdr.orig/eit.c	2012-01-15 21:02:12.000000000 +0100
++++ vdr/eit.c	2012-01-15 21:21:18.000000000 +0100
 @@ -83,7 +83,83 @@
           uchar TableID = pEvent->TableID();
           if (TableID == 0x00) {
@@ -235,9 +235,9 @@ Index: vdr/eit.c
       if (Empty && getSectionNumber() == 0)
 Index: vdr/epg.c
 ===================================================================
---- vdr.orig/epg.c	2011-12-10 22:22:04.000000000 +0100
-+++ vdr/epg.c	2011-12-11 02:29:35.000000000 +0100
-@@ -939,6 +939,29 @@
+--- vdr.orig/epg.c	2012-01-15 21:07:03.000000000 +0100
++++ vdr/epg.c	2012-01-15 21:21:18.000000000 +0100
+@@ -946,6 +946,29 @@
    return pe;
  }
  
@@ -269,8 +269,8 @@ Index: vdr/epg.c
    hasRunning = false;
 Index: vdr/epg.h
 ===================================================================
---- vdr.orig/epg.h	2011-12-10 22:22:04.000000000 +0100
-+++ vdr/epg.h	2011-12-11 02:29:35.000000000 +0100
+--- vdr.orig/epg.h	2012-01-15 21:02:12.000000000 +0100
++++ vdr/epg.h	2012-01-15 21:21:18.000000000 +0100
 @@ -163,6 +163,7 @@
    void DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
    void Cleanup(time_t Time);
@@ -281,8 +281,8 @@ Index: vdr/epg.h
    void HashEvent(cEvent *Event);
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2011-12-11 02:29:31.000000000 +0100
-+++ vdr/menu.c	2011-12-11 02:29:35.000000000 +0100
+--- vdr.orig/menu.c	2012-01-15 21:21:14.000000000 +0100
++++ vdr/menu.c	2012-01-15 21:21:18.000000000 +0100
 @@ -2866,6 +2866,10 @@
    for (int i = 0; i < numLanguages; i++)
        // TRANSLATORS: note the singular!
@@ -296,9 +296,9 @@ Index: vdr/menu.c
    Display();
 Index: vdr/po/de_DE.po
 ===================================================================
---- vdr.orig/po/de_DE.po	2011-12-11 02:29:26.000000000 +0100
-+++ vdr/po/de_DE.po	2011-12-11 02:29:35.000000000 +0100
-@@ -849,6 +849,18 @@
+--- vdr.orig/po/de_DE.po	2012-01-15 21:21:10.000000000 +0100
++++ vdr/po/de_DE.po	2012-01-15 21:21:18.000000000 +0100
+@@ -852,6 +852,18 @@
  msgid "Button$Scan"
  msgstr "Scan"
  
@@ -319,9 +319,9 @@ Index: vdr/po/de_DE.po
  
 Index: vdr/po/fr_FR.po
 ===================================================================
---- vdr.orig/po/fr_FR.po	2011-12-11 02:29:26.000000000 +0100
-+++ vdr/po/fr_FR.po	2011-12-11 02:29:35.000000000 +0100
-@@ -855,6 +855,18 @@
+--- vdr.orig/po/fr_FR.po	2012-01-15 21:21:10.000000000 +0100
++++ vdr/po/fr_FR.po	2012-01-15 21:21:18.000000000 +0100
+@@ -858,6 +858,18 @@
  msgid "Button$Scan"
  msgstr "Scan"
  

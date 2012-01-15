@@ -5,9 +5,9 @@ Origin: http://winni.vdr-developer.org/noepgmenu/downloads/beta
 
 Index: vdr/config.c
 ===================================================================
---- vdr.orig/config.c	2011-12-11 02:29:35.000000000 +0100
-+++ vdr/config.c	2011-12-11 02:29:40.000000000 +0100
-@@ -392,6 +392,8 @@
+--- vdr.orig/config.c	2012-01-15 21:21:18.000000000 +0100
++++ vdr/config.c	2012-01-15 21:21:23.000000000 +0100
+@@ -391,6 +391,8 @@
    SetSystemTime = 0;
    TimeSource = 0;
    TimeTransponder = 0;
@@ -47,7 +47,7 @@ Index: vdr/config.c
    else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
    else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
    else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
-@@ -699,6 +713,8 @@
+@@ -700,6 +714,8 @@
    Store("SetSystemTime",      SetSystemTime);
    Store("TimeSource",         cSource::ToString(TimeSource));
    Store("TimeTransponder",    TimeTransponder);
@@ -58,8 +58,8 @@ Index: vdr/config.c
    StoreLanguages("AudioLanguages", AudioLanguages);
 Index: vdr/config.h
 ===================================================================
---- vdr.orig/config.h	2011-12-11 02:29:35.000000000 +0100
-+++ vdr/config.h	2011-12-11 02:29:40.000000000 +0100
+--- vdr.orig/config.h	2012-01-15 21:21:18.000000000 +0100
++++ vdr/config.h	2012-01-15 21:21:23.000000000 +0100
 @@ -255,6 +255,7 @@
    int SetSystemTime;
    int TimeSource;
@@ -68,7 +68,7 @@ Index: vdr/config.h
    int MarginStart, MarginStop;
    int AudioLanguages[I18N_MAX_LANGUAGES + 1];
    int DisplaySubtitles;
-@@ -324,7 +325,9 @@
+@@ -325,7 +326,9 @@
    int __EndData__;
    cString InitialChannel;
    cString DeviceBondings;
@@ -80,8 +80,8 @@ Index: vdr/config.h
    bool Save(void);
 Index: vdr/eit.c
 ===================================================================
---- vdr.orig/eit.c	2011-12-11 02:29:35.000000000 +0100
-+++ vdr/eit.c	2011-12-11 02:29:40.000000000 +0100
+--- vdr.orig/eit.c	2012-01-15 21:21:18.000000000 +0100
++++ vdr/eit.c	2012-01-15 21:21:23.000000000 +0100
 @@ -24,8 +24,28 @@
  class cEIT : public SI::EIT {
  public:
@@ -126,8 +126,8 @@ Index: vdr/eit.c
    bool Empty = true;
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2011-12-11 02:29:35.000000000 +0100
-+++ vdr/menu.c	2011-12-11 02:29:40.000000000 +0100
+--- vdr.orig/menu.c	2012-01-15 21:21:18.000000000 +0100
++++ vdr/menu.c	2012-01-15 21:21:23.000000000 +0100
 @@ -2831,6 +2831,7 @@
  
  class cMenuSetupEPG : public cMenuSetupBase {
