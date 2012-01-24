@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## xeatre-manualframerate.dpatch by Tobias Grimm <etobi@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Use frame rate from info file even for PES recordings
+
+@DPATCH@
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/recording.c vdr/recording.c
+--- vdr~/recording.c	2011-10-25 22:04:26.000000000 +0200
++++ vdr/recording.c	2012-01-23 23:25:26.000000000 +0100
+@@ -719,8 +719,8 @@
+         else if (!isPesRecording) {
+            priority = info->priority;
+            lifetime = info->lifetime;
+-           framesPerSecond = info->framesPerSecond;
+            }
++        framesPerSecond = info->framesPerSecond;
+         fclose(f);
+         }
+      else if (errno != ENOENT)
