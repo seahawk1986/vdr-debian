@@ -1,5 +1,6 @@
 debian/patches/opt-20_liemikuutio.patch:31a16912c1c58d6568b469814023e99a
 debian/patches/16_channels.conf.terr-fix.patch:933f8daa6bb6d26c711d0ae987a2b03e
+debian/patches/17_epg_channel_name_width.patch:12180ba935fa7834f818fcae9e0ed182
 debian/patches/04_newplugin.patch:5877f4f62dab4f3d437d4eef7cae3ac0
 debian/patches/opt-43-x_recordshowfree.patch:e215d4b880638dd97deb138a36abc9e1
 debian/patches/opt-42-x_MainMenuHooks.patch:e08533a7b9ee8702272477ad3b8002c0
