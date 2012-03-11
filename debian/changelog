@@ -7,6 +7,7 @@ vdr (1.7.26-1~ctvdr1) unstable; urgency=low
   * Updated debianize-vdrplugin to use the debhelper V7 format
   * Upgraded opt-20_liemikuutio.dpatch to version 1.34
   * Dropped opt-39_noepg.patch (not required anymore)
+  * Dropped opt-21_internal-cam-devices.patch (doesn't apply anmore)
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 19 Feb 2012 17:21:08 +0100
 
