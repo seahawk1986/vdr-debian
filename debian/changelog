@@ -13,7 +13,7 @@ vdr (1.7.26-1~ctvdr1) unstable; urgency=low
   * Updated opt-42-x_MainMenuHooks.patch
   * Refreshed opt-27_ttxtsubs.patch
 
- -- Tobias Grimm <etobi@debian.org>  Sun, 19 Feb 2012 17:21:08 +0100
+ -- Tobias Grimm <etobi@debian.org>  Sun, 11 Mar 2012 23:13:46 +0100
 
 vdr (1.7.23-1~ctvdr1) unstable; urgency=low
 
