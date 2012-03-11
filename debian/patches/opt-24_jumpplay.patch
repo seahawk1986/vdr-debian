@@ -7,9 +7,9 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
 Index: vdr/MANUAL
 ===================================================================
---- vdr.orig/MANUAL	2012-01-15 21:07:03.000000000 +0100
-+++ vdr/MANUAL	2012-01-15 21:21:07.000000000 +0100
-@@ -866,6 +866,25 @@
+--- vdr.orig/MANUAL	2012-03-11 21:03:54.000000000 +0100
++++ vdr/MANUAL	2012-03-11 21:40:00.000000000 +0100
+@@ -857,6 +857,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -38,7 +38,7 @@ Index: vdr/MANUAL
 Index: vdr/README.jumpplay
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/README.jumpplay	2012-01-15 21:21:07.000000000 +0100
++++ vdr/README.jumpplay	2012-03-11 21:40:00.000000000 +0100
 @@ -0,0 +1,92 @@
 +JumpPlay patch for VDR
 +----------------------
@@ -134,9 +134,9 @@ Index: vdr/README.jumpplay
 +    Added French language texts (thanks to Michaël Nival)
 Index: vdr/config.c
 ===================================================================
---- vdr.orig/config.c	2012-01-15 21:07:03.000000000 +0100
-+++ vdr/config.c	2012-01-15 21:21:07.000000000 +0100
-@@ -455,6 +455,9 @@
+--- vdr.orig/config.c	2012-03-11 21:03:54.000000000 +0100
++++ vdr/config.c	2012-03-11 21:40:00.000000000 +0100
+@@ -454,6 +454,9 @@
    ShowReplayMode = 0;
    ShowRemainingTime = 0;
    ResumeID = 0;
@@ -146,7 +146,7 @@ Index: vdr/config.c
    CurrentChannel = -1;
    CurrentVolume = MAXVOLUME;
    CurrentDolby = 0;
-@@ -650,6 +653,9 @@
+@@ -648,6 +651,9 @@
    else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
    else if (!strcasecmp(Name, "ShowRemainingTime"))   ShowRemainingTime  = atoi(Value);
    else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -156,7 +156,7 @@ Index: vdr/config.c
    else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
    else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
    else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-@@ -748,6 +754,9 @@
+@@ -745,6 +751,9 @@
    Store("ShowReplayMode",     ShowReplayMode);
    Store("ShowRemainingTime",  ShowRemainingTime);
    Store("ResumeID",           ResumeID);
@@ -168,18 +168,18 @@ Index: vdr/config.c
    Store("CurrentDolby",       CurrentDolby);
 Index: vdr/config.h
 ===================================================================
---- vdr.orig/config.h	2012-01-15 21:20:51.000000000 +0100
-+++ vdr/config.h	2012-01-15 21:21:07.000000000 +0100
+--- vdr.orig/config.h	2012-03-11 21:38:28.000000000 +0100
++++ vdr/config.h	2012-03-11 21:41:08.000000000 +0100
 @@ -38,6 +38,8 @@
  
- #define LIEMIKUUTIO  133
- 
+ #define LIEMIKUUTIO  134
+  
 +#define JUMPPLAYVERSNUM 100
 +
- #define MAXPRIORITY 99
- #define MAXLIFETIME 99
- 
-@@ -306,6 +308,9 @@
+ #define MAXPRIORITY       99
+ #define MINPRIORITY       (-MAXPRIORITY)
+ #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
+@@ -309,6 +311,9 @@
    int ShowReplayMode;
    int ShowRemainingTime;
    int ResumeID;
@@ -191,8 +191,8 @@ Index: vdr/config.h
    int CurrentDolby;
 Index: vdr/dvbplayer.c
 ===================================================================
---- vdr.orig/dvbplayer.c	2012-01-15 21:02:12.000000000 +0100
-+++ vdr/dvbplayer.c	2012-01-15 21:21:07.000000000 +0100
+--- vdr.orig/dvbplayer.c	2012-03-11 21:03:54.000000000 +0100
++++ vdr/dvbplayer.c	2012-03-11 21:40:38.000000000 +0100
 @@ -204,6 +204,7 @@
    cNonBlockingFileReader *nonBlockingFileReader;
    cRingBufferFrame *ringBuffer;
@@ -201,15 +201,15 @@ Index: vdr/dvbplayer.c
    cFileName *fileName;
    cIndexFile *index;
    cUnbufferedFile *replayFile;
-@@ -282,6 +283,7 @@
-      delete index;
-      index = NULL;
+@@ -286,6 +287,7 @@
       }
+   else if (PauseLive)
+      framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
 +  marks.Load(FileName, framesPerSecond, isPesRecording);
  }
  
  cDvbPlayer::~cDvbPlayer()
-@@ -360,6 +362,10 @@
+@@ -364,6 +366,10 @@
    if (index) {
       int Index = ptsIndex.FindIndex(DeviceGetSTC());
       if (Index >= 0) {
@@ -220,7 +220,7 @@ Index: vdr/dvbplayer.c
          Index -= int(round(RESUMEBACKUP * framesPerSecond));
          if (Index > 0)
             Index = index->GetNextIFrame(Index, false);
-@@ -386,11 +392,26 @@
+@@ -390,11 +396,26 @@
  {
    uchar *p = NULL;
    int pc = 0;
@@ -247,7 +247,7 @@ Index: vdr/dvbplayer.c
    nonBlockingFileReader = new cNonBlockingFileReader;
    int Length = 0;
    bool Sleep = false;
-@@ -415,7 +436,7 @@
+@@ -421,7 +442,7 @@
  
            // Read the next frame from the file:
  
@@ -256,7 +256,7 @@ Index: vdr/dvbplayer.c
               if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
-@@ -452,6 +473,44 @@
+@@ -458,6 +479,44 @@
                     else if (index) {
                        uint16_t FileNumber;
                        off_t FileOffset;
@@ -301,7 +301,7 @@ Index: vdr/dvbplayer.c
                        if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
                           readIndex++;
                        else
-@@ -496,6 +555,13 @@
+@@ -502,6 +561,13 @@
               // Store the frame in the buffer:
  
               if (readFrame) {
@@ -315,7 +315,7 @@ Index: vdr/dvbplayer.c
                  if (ringBuffer->Put(readFrame))
                     readFrame = NULL;
                  else
-@@ -561,8 +627,13 @@
+@@ -567,8 +633,13 @@
                  p = NULL;
                  }
               }
@@ -332,9 +332,9 @@ Index: vdr/dvbplayer.c
  
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2012-01-15 21:21:03.000000000 +0100
-+++ vdr/menu.c	2012-01-15 21:21:07.000000000 +0100
-@@ -3298,6 +3298,9 @@
+--- vdr.orig/menu.c	2012-03-11 21:38:29.000000000 +0100
++++ vdr/menu.c	2012-03-11 21:42:50.000000000 +0100
+@@ -3308,6 +3308,9 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -344,8 +344,8 @@ Index: vdr/menu.c
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4900,8 +4903,10 @@
-         ShowTimed(2);
+@@ -4909,8 +4912,10 @@
+         marks.Add(Current);
          bool Play, Forward;
          int Speed;
 -        if (GetReplayMode(Play, Forward, Speed) && !Play)
@@ -354,9 +354,9 @@ Index: vdr/menu.c
 +           displayFrames = true;
 +           }
          }
+      ShowTimed(2);
       marks.Save();
-      }
-@@ -4914,8 +4919,17 @@
+@@ -4924,8 +4929,17 @@
       if (GetIndex(Current, Total)) {
          cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
          if (m) {
@@ -376,7 +376,7 @@ Index: vdr/menu.c
             }
          }
       }
-@@ -4971,7 +4985,7 @@
+@@ -4981,7 +4995,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {
@@ -387,9 +387,9 @@ Index: vdr/menu.c
             Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
 Index: vdr/po/de_DE.po
 ===================================================================
---- vdr.orig/po/de_DE.po	2012-01-15 21:20:51.000000000 +0100
-+++ vdr/po/de_DE.po	2012-01-15 21:21:07.000000000 +0100
-@@ -1074,6 +1074,15 @@
+--- vdr.orig/po/de_DE.po	2012-03-11 21:38:28.000000000 +0100
++++ vdr/po/de_DE.po	2012-03-11 21:40:00.000000000 +0100
+@@ -1080,6 +1080,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
  
@@ -407,9 +407,9 @@ Index: vdr/po/de_DE.po
  
 Index: vdr/po/fr_FR.po
 ===================================================================
---- vdr.orig/po/fr_FR.po	2012-01-15 21:20:51.000000000 +0100
-+++ vdr/po/fr_FR.po	2012-01-15 21:21:07.000000000 +0100
-@@ -1080,6 +1080,15 @@
+--- vdr.orig/po/fr_FR.po	2012-03-11 21:03:54.000000000 +0100
++++ vdr/po/fr_FR.po	2012-03-11 21:40:00.000000000 +0100
+@@ -1086,6 +1086,15 @@
  msgid "Replay"
  msgstr "Lecture"
  

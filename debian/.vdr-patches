@@ -8,7 +8,7 @@ debian/patches/opt-38_disableDoubleEpgEntrys.patch:c637b1551cb497a5d63d963849198
 debian/patches/opt-45_yaepg.patch:8e9c35a5b9224381cfc8936f0de2fe48
 debian/patches/04_newplugin.patch:5877f4f62dab4f3d437d4eef7cae3ac0
 debian/patches/99_ncursesw-include.patch:9bafeb768f7921015a5bab5e47786950
-debian/patches/opt-24_jumpplay.patch:eaad9557412bc6977b38c76acb988d33
+debian/patches/opt-24_jumpplay.patch:4dd24edfe44410440528210202fcc85b
 debian/patches/opt-41-x_timer-info.patch:24767586707d76f36e33021d3e662508
 debian/patches/opt-43-x_recordshowfree.patch:e215d4b880638dd97deb138a36abc9e1
 debian/patches/opt-42-x_MainMenuHooks.patch:e08533a7b9ee8702272477ad3b8002c0
