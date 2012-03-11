@@ -5,6 +5,7 @@ vdr (1.7.26-1~ctvdr1) unstable; urgency=low
   * New upstream release
   * Install scr.conf (Satellite Channel Routing) to /etc/vdr/ (Closes: #660729)
   * Updated debianize-vdrplugin to use the debhelper V7 format
+  * Upgraded opt-20_liemikuutio.dpatch to version 1.34
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 19 Feb 2012 17:21:08 +0100
 

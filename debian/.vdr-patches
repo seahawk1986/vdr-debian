@@ -1,4 +1,4 @@
-debian/patches/opt-20_liemikuutio.patch:31a16912c1c58d6568b469814023e99a
+debian/patches/opt-20_liemikuutio.patch:34c4538bc61cd6e36de8aee9cced623f
 debian/patches/16_channels.conf.terr-fix.patch:933f8daa6bb6d26c711d0ae987a2b03e
 debian/patches/17_epg_channel_name_width.patch:12180ba935fa7834f818fcae9e0ed182
 debian/patches/04_newplugin.patch:5877f4f62dab4f3d437d4eef7cae3ac0
