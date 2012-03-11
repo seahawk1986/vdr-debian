@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Johan Schuring <johan.schuring@vetteblei.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -652,6 +652,12 @@ msgstr "Bestandnaam"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Eerste dag"
 
@@ -747,6 +753,9 @@ msgstr "Fout bij lezen opname!"
 
 msgid "Delete recording?"
 msgstr "Opname verwijderen?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Fout bij verwijderen opname!"
@@ -1029,9 +1038,6 @@ msgstr "Tijd marge begin (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Tijd marge eind (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Eerste grens"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Standaard prioriteit"

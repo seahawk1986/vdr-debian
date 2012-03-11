@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2012-01-14 14:06+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-02-28 19:44+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -649,6 +649,12 @@ msgstr "Datoteka"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Prvi dan"
 
@@ -744,6 +750,9 @@ msgstr "Napaka pri dostopu do posnetka!"
 
 msgid "Delete recording?"
 msgstr "Izbri¹i posnetek?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Napaka pri brisanju posnetka!"
@@ -1026,9 +1035,6 @@ msgstr "Premik zaèetka snemanja (min)"
 
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Zamik konca snemanja (min)"
-
-msgid "Setup.Recording$Primary limit"
-msgstr "Primarna meja"
 
 msgid "Setup.Recording$Default priority"
 msgstr "Privzeta prioriteta"

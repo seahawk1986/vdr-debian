@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 2.30 2011/12/04 13:38:17 kls Exp $
+ * $Id: device.h 2.37 2012/03/06 12:13:46 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -109,7 +109,6 @@ private:
   static int useDevice;
   static cDevice *device[MAXDEVICES];
   static cDevice *primaryDevice;
-  static cDevice *avoidDevice;
 public:
   static int NumDevices(void) { return numDevices; }
          ///< Returns the total number of devices.
@@ -139,7 +138,7 @@ public:
          ///< Gets the device with the given Index.
          ///< \param Index must be in the range 0..numDevices-1.
          ///< \return A pointer to the device, or NULL if the Index was invalid.
-  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView);
+  static cDevice *GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query = false);
          ///< Returns a device that is able to receive the given Channel at the
          ///< given Priority, with the least impact on active recordings and
          ///< live viewing. The LiveView parameter tells whether the device will
@@ -153,10 +152,16 @@ public:
          ///< after detaching any receivers because the channel can't be decrypted,
          ///< this device/CAM combination will be skipped in the next call to
          ///< GetDevice().
+         ///< If Query is true, no actual CAM assignments or receiver detachments will
+         ///< be done, so that this function can be called without any side effects
+         ///< in order to just determine whether a device is available for the given
+         ///< Channel.
          ///< See also ProvidesChannel().
-  static void SetAvoidDevice(cDevice *Device) { avoidDevice = Device; }
-         ///< Sets the given Device to be temporarily avoided in the next call to
-         ///< GetDevice(const cChannel, int, bool).
+  static cDevice *GetDeviceForTransponder(const cChannel *Channel, int Priority);
+         ///< Returns a device that is not currently "occupied" and can be tuned to
+         ///< the transponder of the given Channel, without disturbing any receiver
+         ///< at priorities higher or equal to Priority.
+         ///< If no such device is currently available, NULL will be returned.
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.
@@ -235,12 +240,11 @@ public:
   virtual bool ProvidesTransponderExclusively(const cChannel *Channel) const;
          ///< Returns true if this is the only device that is able to provide
          ///< the given channel's transponder.
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
-         ///< In case the device has cReceivers attached to it or it is the primary
-         ///< device, Priority is used to decide whether the caller's request can
-         ///< be honored.
-         ///< The special Priority value -1 will tell the caller whether this device
+         ///< In case the device has cReceivers attached to it, Priority is used to
+         ///< decide whether the caller's request can be honored.
+         ///< The special Priority value IDLEPRIORITY will tell the caller whether this device
          ///< is principally able to provide the given Channel, regardless of any
          ///< attached cReceivers.
          ///< If NeedsDetachReceivers is given, the resulting value in it will tell the
@@ -354,6 +358,9 @@ protected:
          ///< Handle->used indicates how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
+public:
+  void DelLivePids(void);
+         ///< Deletes the live viewing PIDs.
 
 // Section filter facilities
 
@@ -436,14 +443,14 @@ public:
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
-         ///< Returns the With, Height and VideoAspect ratio of the currently
+         ///< Returns the Width, Height and VideoAspect ratio of the currently
          ///< displayed video material. Width and Height are given in pixel
          ///< (e.g. 720x576) and VideoAspect is e.g. 1.33333 for a 4:3 broadcast,
          ///< or 1.77778 for 16:9.
          ///< The default implementation returns 0 for Width and Height
          ///< and 1.0 for VideoAspect.
   virtual void GetOsdSize(int &Width, int &Height, double &PixelAspect);
-         ///< Returns the With, Height and PixelAspect ratio the OSD should use
+         ///< Returns the Width, Height and PixelAspect ratio the OSD should use
          ///< to best fit the resolution of the output device. If PixelAspect
          ///< is not 1.0, the OSD may take this as a hint to scale its
          ///< graphics in a way that, e.g., a circle will actually
@@ -495,11 +502,11 @@ public:
        ///< is more than one audio track.
   int NumSubtitleTracks(void) const;
        ///< Returns the number of subtitle tracks that are currently available.
-  eTrackType GetCurrentAudioTrack(void) { return currentAudioTrack; }
+  eTrackType GetCurrentAudioTrack(void) const { return currentAudioTrack; }
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
-  eTrackType GetCurrentSubtitleTrack(void) { return currentSubtitleTrack; }
+  eTrackType GetCurrentSubtitleTrack(void) const { return currentSubtitleTrack; }
   bool SetCurrentSubtitleTrack(eTrackType Type, bool Manual = false);
        ///< Sets the current subtitle track to the given Type.
        ///< IF Manual is true, no automatic preferred subtitle language selection
@@ -716,9 +723,8 @@ private:
   cReceiver *receiver[MAXRECEIVERS];
 public:
   int Priority(void) const;
-      ///< Returns the priority of the current receiving session (0..MAXPRIORITY),
-      ///< or -1 if no receiver is currently active. The primary device will
-      ///< always return at least Setup.PrimaryLimit-1.
+      ///< Returns the priority of the current receiving session (-MAXPRIORITY..MAXPRIORITY),
+      ///< or IDLEPRIORITY if no receiver is currently active.
 protected:
   virtual bool OpenDvr(void);
       ///< Opens the DVR of this device and prepares it to deliver a Transport
@@ -733,8 +739,8 @@ protected:
       ///< false in case of a non recoverable error, otherwise it returns true,
       ///< even if Data is NULL.
 public:
-  bool Receiving(bool CheckAny = false) const;
-       ///< Returns true if we are currently receiving.
+  bool Receiving(bool Dummy = false) const;
+       ///< Returns true if we are currently receiving. The parameter has no meaning (for backwards compatibility only).
   bool AttachReceiver(cReceiver *Receiver);
        ///< Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);

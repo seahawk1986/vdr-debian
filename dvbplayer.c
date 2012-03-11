@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 2.21 2010/03/07 14:24:26 kls Exp $
+ * $Id: dvbplayer.c 2.25 2012/02/21 11:34:04 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -209,6 +209,7 @@ private:
   cUnbufferedFile *replayFile;
   double framesPerSecond;
   bool isPesRecording;
+  bool pauseLive;
   bool eof;
   bool firstPacket;
   ePlayModes playMode;
@@ -228,7 +229,7 @@ protected:
   virtual void Activate(bool On);
   virtual void Action(void);
 public:
-  cDvbPlayer(const char *FileName);
+  cDvbPlayer(const char *FileName, bool PauseLive);
   virtual ~cDvbPlayer();
   bool Active(void) { return cThread::Running(); }
   void Pause(void);
@@ -249,7 +250,7 @@ public:
 #define SPEED_MULT   12 // the speed multiplier
 int cDvbPlayer::Speeds[] = { 0, -2, -4, -8, 1, 2, 4, 12, 0 };
 
-cDvbPlayer::cDvbPlayer(const char *FileName)
+cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
 :cThread("dvbplayer")
 {
   nonBlockingFileReader = NULL;
@@ -258,6 +259,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   cRecording Recording(FileName);
   framesPerSecond = Recording.FramesPerSecond();
   isPesRecording = Recording.IsPesRecording();
+  pauseLive = PauseLive;
   eof = false;
   firstPacket = true;
   playMode = pmPlay;
@@ -275,13 +277,15 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
      return;
   ringBuffer = new cRingBufferFrame(PLAYERBUFSIZE);
   // Create the index file:
-  index = new cIndexFile(FileName, false, isPesRecording);
+  index = new cIndexFile(FileName, false, isPesRecording, pauseLive);
   if (!index)
      esyslog("ERROR: can't allocate index");
   else if (!index->Ok()) {
      delete index;
      index = NULL;
      }
+  else if (PauseLive)
+     framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
 }
 
 cDvbPlayer::~cDvbPlayer()
@@ -400,6 +404,8 @@ void cDvbPlayer::Action(void)
   int LastReadIFrame = -1;
   int SwitchToPlayFrame = 0;
 
+  if (pauseLive)
+     Goto(0, true);
   while (Running()) {
         if (WaitingForData)
            nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
@@ -407,7 +413,7 @@ void cDvbPlayer::Action(void)
            cPoller Poller;
            DevicePoll(Poller, 10);
            Sleep = false;
-           if (playMode == pmStill || playMode==pmPause)
+           if (playMode == pmStill || playMode == pmPause)
               cCondWait::SleepMs(3);
            }
         {
@@ -821,8 +827,8 @@ bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
 
 // --- cDvbPlayerControl -----------------------------------------------------
 
-cDvbPlayerControl::cDvbPlayerControl(const char *FileName)
-:cControl(player = new cDvbPlayer(FileName))
+cDvbPlayerControl::cDvbPlayerControl(const char *FileName, bool PauseLive)
+:cControl(player = new cDvbPlayer(FileName, PauseLive))
 {
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 2.56 2012/01/15 14:31:47 kls Exp $
+ * $Id: dvbdevice.c 2.67 2012/03/08 09:49:58 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -420,7 +420,7 @@ bool cDvbTuner::BondingOk(const cChannel *Channel, bool ConsiderOccupied) const
   if (cDvbTuner *t = bondedTuner) {
      cString BondingParams = GetBondingParams(Channel);
      do {
-        if (t->device->Receiving() || t->tunerStatus != tsIdle && (t->device == cDevice::ActualDevice() || ConsiderOccupied && t->device->Occupied())) {
+        if (t->device->Priority() > IDLEPRIORITY || ConsiderOccupied && t->device->Occupied()) {
            if (strcmp(BondingParams, t->GetBondingParams()) != 0)
               return false;
            }
@@ -502,6 +502,8 @@ void cDvbTuner::SetChannel(const cChannel *Channel)
      tunerStatus = tsIdle;
      ResetToneAndVoltage();
      }
+  if (bondedTuner && device->IsPrimaryDevice())
+     cDevice::PrimaryDevice()->DelLivePids(); // 'device' is const, so we must do it this way
 }
 
 bool cDvbTuner::Locked(int TimeoutMs)
@@ -857,6 +859,7 @@ void cDvbTuner::Action(void)
         if (GetFrontendStatus(NewStatus))
            Status = NewStatus;
         cMutexLock MutexLock(&mutex);
+        int WaitTime = 1000;
         switch (tunerStatus) {
           case tsIdle:
                break;
@@ -877,6 +880,7 @@ void cDvbTuner::Action(void)
                      bondedMasterFailed = true; // give an other tuner a chance in case the sat cable was disconnected
                   continue;
                   }
+               WaitTime = 100; // allows for a quick change from tsTuned to tsLocked
           case tsLocked:
                if (Status & FE_REINIT) {
                   tunerStatus = tsSet;
@@ -905,9 +909,7 @@ void cDvbTuner::Action(void)
                break;
           default: esyslog("ERROR: unknown tuner status %d", tunerStatus);
           }
-
-        if (tunerStatus != tsTuned)
-           newSet.TimedWait(mutex, 1000);
+        newSet.TimedWait(mutex, WaitTime);
         }
 }
 
@@ -1006,6 +1008,7 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
   numModulations = 0;
   bondedDevice = NULL;
   needsDetachBondedReceivers = false;
+  tsBuffer = NULL;
 
   // Devices that are present on all card types:
 
@@ -1045,7 +1048,7 @@ cDvbDevice::~cDvbDevice()
 
 cString cDvbDevice::DvbName(const char *Name, int Adapter, int Frontend)
 {
-  return cString::sprintf("%s%d/%s%d", DEV_DVB_ADAPTER, Adapter, Name, Frontend);
+  return cString::sprintf("%s/%s%d/%s%d", DEV_DVB_BASE, DEV_DVB_ADAPTER, Adapter, Name, Frontend);
 }
 
 int cDvbDevice::DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError)
@@ -1093,28 +1096,47 @@ bool cDvbDevice::Initialize(void)
   new cDvbSourceParam('C', "DVB-C");
   new cDvbSourceParam('S', "DVB-S");
   new cDvbSourceParam('T', "DVB-T");
+  cStringList Nodes;
+  cReadDir DvbDir(DEV_DVB_BASE);
+  if (DvbDir.Ok()) {
+     struct dirent *a;
+     while ((a = DvbDir.Next()) != NULL) {
+           if (strstr(a->d_name, DEV_DVB_ADAPTER) == a->d_name) {
+              int Adapter = strtol(a->d_name + strlen(DEV_DVB_ADAPTER), NULL, 10);
+              cReadDir AdapterDir(AddDirectory(DEV_DVB_BASE, a->d_name));
+              if (AdapterDir.Ok()) {
+                 struct dirent *f;
+                 while ((f = AdapterDir.Next()) != NULL) {
+                       if (strstr(f->d_name, DEV_DVB_FRONTEND) == f->d_name) {
+                          int Frontend = strtol(f->d_name + strlen(DEV_DVB_FRONTEND), NULL, 10);
+                          Nodes.Append(strdup(cString::sprintf("%2d %2d", Adapter, Frontend)));
+                          }
+                       }
+                 }
+              }
+           }
+     }
   int Checked = 0;
   int Found = 0;
-  for (int Adapter = 0; ; Adapter++) {
-      for (int Frontend = 0; ; Frontend++) {
-          if (Exists(Adapter, Frontend)) {
-             if (Checked++ < MAXDVBDEVICES) {
-                if (UseDevice(NextCardIndex())) {
-                   if (Probe(Adapter, Frontend))
-                      Found++;
-                   }
-                else
-                   NextCardIndex(1); // skips this one
-                }
-             }
-          else if (Frontend == 0)
-             goto LastAdapter;
-          else
-             goto NextAdapter;
-          }
-      NextAdapter: ;
-      }
-LastAdapter:
+  if (Nodes.Size() > 0) {
+     Nodes.Sort();
+     for (int i = 0; i < Nodes.Size(); i++) {
+         int Adapter;
+         int Frontend;
+         if (2 == sscanf(Nodes[i], "%d %d", &Adapter, &Frontend)) {
+            if (Exists(Adapter, Frontend)) {
+               if (Checked++ < MAXDVBDEVICES) {
+                  if (UseDevice(NextCardIndex())) {
+                     if (Probe(Adapter, Frontend))
+                        Found++;
+                     }
+                  else
+                     NextCardIndex(1); // skips this one
+                  }
+               }
+            }
+         }
+     }
   NextCardIndex(MAXDVBDEVICES - Checked); // skips the rest
   if (Found > 0)
      isyslog("found %d DVB device%s", Found, Found > 1 ? "s" : "");
@@ -1130,7 +1152,7 @@ bool cDvbDevice::QueryDeliverySystems(int fd_frontend)
      LOG_ERROR;
      return false;
      }
-#if DVB_API_VERSION > 5 || DVB_API_VERSION_MINOR >= 5
+#if (DVB_API_VERSION << 8 | DVB_API_VERSION_MINOR) >= 0x0505
   dtv_property Frontend[1];
   memset(&Frontend, 0, sizeof(Frontend));
   dtv_properties CmdSeq;
@@ -1415,32 +1437,30 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
-  bool hasPriority = Priority < 0 || Priority > this->Priority();
+  bool hasPriority = Priority == IDLEPRIORITY || Priority > this->Priority();
   bool needsDetachReceivers = false;
   needsDetachBondedReceivers = false;
 
   if (dvbTuner && ProvidesTransponder(Channel)) {
      result = hasPriority;
      if (Priority >= 0) {
-        if (Receiving(true)) {
+        if (Receiving()) {
            if (dvbTuner->IsTunedTo(Channel)) {
-              if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
+              if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0)) || Channel->Dpid(0) && !HasPid(Channel->Dpid(0))) {
                  if (CamSlot() && Channel->Ca() >= CA_ENCRYPTED_MIN) {
                     if (CamSlot()->CanDecrypt(Channel))
                        result = true;
                     else
                        needsDetachReceivers = true;
                     }
-                 else if (!IsPrimaryDevice())
-                    result = true;
                  else
-                    result = Priority >= Setup.PrimaryLimit;
+                    result = true;
                  }
               else
-                 result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
+                 result = true;
               }
            else
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving();
            }
         if (result) {
            if (!BondingOk(Channel)) {
@@ -1452,7 +1472,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                      }
                   }
               needsDetachBondedReceivers = true;
-              needsDetachReceivers = true;
+              needsDetachReceivers = Receiving();
               }
            }
         }
@@ -1569,21 +1589,43 @@ cDvbDeviceProbe::~cDvbDeviceProbe()
 
 uint32_t cDvbDeviceProbe::GetSubsystemId(int Adapter, int Frontend)
 {
-  cString FileName;
-  cReadLine ReadLine;
-  FILE *f = NULL;
   uint32_t SubsystemId = 0;
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_vendor", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId = strtoul(s, NULL, 0) << 16;
-     fclose(f);
-     }
-  FileName = cString::sprintf("/sys/class/dvb/dvb%d.frontend%d/device/subsystem_device", Adapter, Frontend);
-  if ((f = fopen(FileName, "r")) != NULL) {
-     if (char *s = ReadLine.Read(f))
-        SubsystemId |= strtoul(s, NULL, 0);
-     fclose(f);
+  cString FileName = cString::sprintf("/dev/dvb/adapter%d/frontend%d", Adapter, Frontend);
+  struct stat st;
+  if (stat(FileName, &st) == 0) {
+     cReadDir d("/sys/class/dvb");
+     if (d.Ok()) {
+        struct dirent *e;
+        while ((e = d.Next()) != NULL) {
+              if (strstr(e->d_name, "frontend")) {
+                 FileName = cString::sprintf("/sys/class/dvb/%s/dev", e->d_name);
+                 if (FILE *f = fopen(FileName, "r")) {
+                    cReadLine ReadLine;
+                    char *s = ReadLine.Read(f);
+                    fclose(f);
+                    unsigned Major;
+                    unsigned Minor;
+                    if (s && 2 == sscanf(s, "%u:%u", &Major, &Minor)) {
+                       if (((Major << 8) | Minor) == st.st_rdev) {
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_vendor", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId = strtoul(s, NULL, 0) << 16;
+                             fclose(f);
+                             }
+                          FileName = cString::sprintf("/sys/class/dvb/%s/device/subsystem_device", e->d_name);
+                          if ((f = fopen(FileName, "r")) != NULL) {
+                             if (char *s = ReadLine.Read(f))
+                                SubsystemId |= strtoul(s, NULL, 0);
+                             fclose(f);
+                             }
+                          break;
+                          }
+                       }
+                    }
+                 }
+              }
+        }
      }
   return SubsystemId;
 }

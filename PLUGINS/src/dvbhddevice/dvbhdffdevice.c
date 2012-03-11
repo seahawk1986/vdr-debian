@@ -3,8 +3,10 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dvbhdffdevice.c 1.35 2011/12/04 15:30:42 kls Exp $
+ * $Id: dvbhdffdevice.c 1.41 2012/03/07 13:52:41 kls Exp $
  */
+
+#include <stdint.h>
 
 #include "dvbhdffdevice.h"
 #include <errno.h>
@@ -46,34 +48,57 @@ cDvbHdFfDevice::cDvbHdFfDevice(int Adapter, int Frontend)
      devHdffOffset = adapter;
      isHdffPrimary = true;
      mHdffCmdIf = new HDFF::cHdffCmdIf(fd_osd);
+
+     /* reset some stuff in case the VDR was killed before and had no chance
+	to clean up. */
+     mHdffCmdIf->CmdOsdReset();
+
+     mHdffCmdIf->CmdAvSetVideoSpeed(0, 100);
+     mHdffCmdIf->CmdAvSetAudioSpeed(0, 100);
+
+     mHdffCmdIf->CmdAvEnableVideoAfterStop(0, false);
+     mHdffCmdIf->CmdAvSetPcrPid(0, 0);
+     mHdffCmdIf->CmdAvSetVideoPid(0, 0, HDFF_VIDEO_STREAM_MPEG1);
+     mHdffCmdIf->CmdAvSetAudioPid(0, 0, HDFF_AUDIO_STREAM_MPEG1);
+
+     ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX);
+     mHdffCmdIf->CmdAvSetDecoderInput(0, 0);
+     mHdffCmdIf->CmdAvEnableSync(0, true);
+     mHdffCmdIf->CmdAvSetPlayMode(0, true);
+     /* reset done */
+
      mHdffCmdIf->CmdAvSetAudioDelay(gHdffSetup.AudioDelay);
      mHdffCmdIf->CmdAvSetAudioDownmix((HdffAudioDownmixMode_t) gHdffSetup.AudioDownmix);
      mHdffCmdIf->CmdMuxSetVideoOut((HdffVideoOut_t) gHdffSetup.AnalogueVideo);
      mHdffCmdIf->CmdHdmiSetVideoMode(gHdffSetup.GetVideoMode());
+
      HdffHdmiConfig_t hdmiConfig;
+     memset(&hdmiConfig, 0, sizeof(hdmiConfig));
      hdmiConfig.TransmitAudio = true;
      hdmiConfig.ForceDviMode = false;
      hdmiConfig.CecEnabled = gHdffSetup.CecEnabled;
+     strcpy(hdmiConfig.CecDeviceName, "VDR");
      hdmiConfig.VideoModeAdaption = (HdffVideoModeAdaption_t) gHdffSetup.VideoModeAdaption;
      mHdffCmdIf->CmdHdmiConfigure(&hdmiConfig);
-     if (gHdffSetup.CecEnabled)
-        mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_ON);
+
      mHdffCmdIf->CmdRemoteSetProtocol((HdffRemoteProtocol_t) gHdffSetup.RemoteProtocol);
      mHdffCmdIf->CmdRemoteSetAddressFilter(gHdffSetup.RemoteAddress >= 0, gHdffSetup.RemoteAddress);
      }
-
-  // Video format:
-
-  SetVideoFormat(Setup.VideoFormat);
 }
 
 cDvbHdFfDevice::~cDvbHdFfDevice()
 {
-  delete spuDecoder;
-  if (isHdffPrimary)
-     delete mHdffCmdIf;
-  // We're not explicitly closing any device files here, since this sometimes
-  // caused segfaults. Besides, the program is about to terminate anyway...
+    delete spuDecoder;
+    if (isHdffPrimary)
+    {
+        if (gHdffSetup.CecEnabled && gHdffSetup.CecTvOff)
+        {
+            mHdffCmdIf->CmdHdmiSendCecCommand(HDFF_CEC_COMMAND_TV_OFF);
+        }
+        delete mHdffCmdIf;
+    }
+    // We're not explicitly closing any device files here, since this sometimes
+    // caused segfaults. Besides, the program is about to terminate anyway...
 }
 
 void cDvbHdFfDevice::MakePrimaryDevice(bool On)
@@ -272,13 +297,6 @@ bool cDvbHdFfDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   if (!cDvbDevice::SetChannelDevice(Channel, LiveView))
      return false;
-
-  // If this channel switch was requested by the EITScanner we don't wait for
-  // a lock and don't set any live PIDs (the EITScanner will wait for the lock
-  // by itself before setting any filters):
-
-  if (EITScanner.UsesDevice(this)) //XXX
-     return true;
 
   // PID settings:
 

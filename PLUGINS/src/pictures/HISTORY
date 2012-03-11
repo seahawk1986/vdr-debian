@@ -63,3 +63,11 @@ VDR Plugin 'pictures' Revision History
 2012-01-08:
 
 - Added option -o to pic2mpg.
+
+2012-02-17:
+
+- cReadDir::Next() now skips directory entries "." and "..".
+
+2012-02-27: Version 0.1.2
+
+- Removed an obsolete command line option.

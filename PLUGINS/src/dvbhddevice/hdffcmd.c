@@ -3,8 +3,10 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hdffcmd.c 1.22 2011/12/04 15:31:03 kls Exp $
+ * $Id: hdffcmd.c 1.24 2012/02/28 09:19:09 kls Exp $
  */
+
+#include <stdint.h>
 
 #include "hdffcmd.h"
 #include "libhdffcmd/hdffcmd.h"
@@ -186,6 +188,7 @@ uint32_t cHdffCmdIf::CmdOsdCreateDisplay(uint32_t Width, uint32_t Height, HdffCo
 
     if (HdffCmdOsdCreateDisplay(mOsdDev, Width, Height, ColorType, &newDisplay) == 0)
         return newDisplay;
+    LOG_ERROR_STR("Error creating display");
     return HDFF_INVALID_HANDLE;
 }
 
@@ -215,7 +218,7 @@ void cHdffCmdIf::CmdOsdSetDisplayClippingArea(uint32_t hDisplay, bool Enable, ui
 
 void cHdffCmdIf::CmdOsdRenderDisplay(uint32_t hDisplay)
 {
-    //printf("Render\n");
+    //printf("Render %08X\n", hDisplay);
     HdffCmdOsdRenderDisplay(mOsdDev, hDisplay);
 }
 
@@ -229,6 +232,7 @@ uint32_t cHdffCmdIf::CmdOsdCreatePalette(HdffColorType_t ColorType, HdffColorFor
                                   pColors, &newPalette);
     if (err == 0)
         return newPalette;
+    LOG_ERROR_STR("Error creating palette");
     return HDFF_INVALID_HANDLE;
 }
 
@@ -258,6 +262,7 @@ uint32_t cHdffCmdIf::CmdOsdCreateFontFace(const uint8_t * pFontData, uint32_t Da
     err = HdffCmdOsdCreateFontFace(mOsdDev, pFontData, DataSize, &newFontFace);
     if (err == 0)
         return newFontFace;
+    LOG_ERROR_STR("Error creating font face");
     return HDFF_INVALID_HANDLE;
 }
 
@@ -276,6 +281,7 @@ uint32_t cHdffCmdIf::CmdOsdCreateFont(uint32_t hFontFace, uint32_t Size)
     err = HdffCmdOsdCreateFont(mOsdDev, hFontFace, Size, &newFont);
     if (err == 0)
         return newFont;
+    LOG_ERROR_STR("Error creating font");
     return HDFF_INVALID_HANDLE;
 }
 
@@ -314,7 +320,7 @@ void cHdffCmdIf::CmdOsdDrawBitmap(uint32_t hDisplay, int X, int Y, const uint8_t
                                   int BmpWidth, int BmpHeight, int BmpSize,
                                   HdffColorType_t ColorType, uint32_t hPalette)
 {
-    //printf("Bitmap (%d,%d) %d x %d\n", X, Y, BmpWidth, BmpHeight);
+    //printf("Bitmap %08X (%d,%d) %d x %d, %08X\n", hDisplay, X, Y, BmpWidth, BmpHeight, hPalette);
     HdffCmdOsdDrawBitmap(mOsdDev, hDisplay, X, Y, pBitmap, BmpWidth, BmpHeight,
                          BmpSize, ColorType, hPalette);
 }

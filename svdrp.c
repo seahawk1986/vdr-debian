@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 2.13 2012/01/12 15:02:46 kls Exp $
+ * $Id: svdrp.c 2.16 2012/03/04 12:05:56 kls Exp $
  */
 
 #include "svdrp.h"
@@ -256,8 +256,6 @@ const char *HelpPages[] = {
   "    used to easily activate or deactivate a timer.",
   "MOVC <number> <to>\n"
   "    Move a channel to a new position.",
-  "MOVT <number> <to>\n"
-  "    Move a timer to a new position.",
   "NEWC <settings>\n"
   "    Create a new channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
@@ -603,9 +601,13 @@ void cSVDRP::CmdCLRE(const char *Option)
         Reply(501, "Undefined channel \"%s\"", Option);
      }
   else {
-     cSchedules::ClearAll();
      cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
-     Reply(250, "EPG data cleared");
+     if (cSchedules::ClearAll()) {
+        Reply(250, "EPG data cleared");
+        cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME);
+        }
+     else
+        Reply(451, "Error while clearing EPG data");
      }
 }
 
@@ -664,12 +666,16 @@ void cSVDRP::CmdDELR(const char *Option)
         if (recording) {
            cRecordControl *rc = cRecordControls::GetRecordControl(recording->FileName());
            if (!rc) {
-              if (recording->Delete()) {
-                 Reply(250, "Recording \"%s\" deleted", Option);
-                 ::Recordings.DelByName(recording->FileName());
+              if (!cCutter::Active(recording->FileName())) {
+                 if (recording->Delete()) {
+                    Reply(250, "Recording \"%s\" deleted", Option);
+                    ::Recordings.DelByName(recording->FileName());
+                    }
+                 else
+                    Reply(554, "Error while deleting recording!");
                  }
               else
-                 Reply(554, "Error while deleting recording!");
+                 Reply(550, "Recording \"%s\" is being edited", Option);
               }
            else
               Reply(550, "Recording \"%s\" is in use by timer %d", Option, rc->Timer()->Index() + 1);
@@ -1283,12 +1289,6 @@ void cSVDRP::CmdMOVC(const char *Option)
      Reply(501, "Missing channel number");
 }
 
-void cSVDRP::CmdMOVT(const char *Option)
-{
-  //TODO combine this with menu action
-  Reply(502, "MOVT not yet implemented");
-}
-
 void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
@@ -1604,6 +1604,7 @@ void cSVDRP::Execute(char *Cmd)
         Reply(PUTEhandler->Status(), "%s", PUTEhandler->Message());
         DELETENULL(PUTEhandler);
         }
+     cEitFilter::SetDisableUntil(time(NULL) + EITDISABLETIME); // re-trigger the timeout, in case there is very much EPG data
      return;
      }
   // skip leading whitespace:
@@ -1632,7 +1633,6 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("MODC"))  CmdMODC(s);
   else if (CMD("MODT"))  CmdMODT(s);
   else if (CMD("MOVC"))  CmdMOVC(s);
-  else if (CMD("MOVT"))  CmdMOVT(s);
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
