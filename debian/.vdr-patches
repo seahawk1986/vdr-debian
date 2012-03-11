@@ -1,5 +1,5 @@
 debian/patches/opt-20_liemikuutio.patch:34c4538bc61cd6e36de8aee9cced623f
-debian/patches/opt-27_ttxtsubs.patch:20323eb5d6ec0a8240163ca91e0e9da6
+debian/patches/opt-27_ttxtsubs.patch:1321a802b5fda2568c206c3a6a615183
 debian/patches/12_osdbase-maxitems.patch:f6fc7c5a100f8e891280195b3e1d69ba
 debian/patches/16_channels.conf.terr-fix.patch:933f8daa6bb6d26c711d0ae987a2b03e
 debian/patches/opt-50_graphtft-liemikuutio.patch:a5a3ead7091ddd35fab0b6925ffefcab
