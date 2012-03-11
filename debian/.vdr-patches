@@ -10,7 +10,7 @@ debian/patches/99_ncursesw-include.patch:9bafeb768f7921015a5bab5e47786950
 debian/patches/opt-24_jumpplay.patch:4dd24edfe44410440528210202fcc85b
 debian/patches/opt-41-x_timer-info.patch:24767586707d76f36e33021d3e662508
 debian/patches/opt-43-x_recordshowfree.patch:e215d4b880638dd97deb138a36abc9e1
-debian/patches/opt-42-x_MainMenuHooks.patch:e08533a7b9ee8702272477ad3b8002c0
+debian/patches/opt-42-x_MainMenuHooks.patch:5149b740783dbb4e67e4e32161533812
 debian/patches/82_valgrind.patch:60ad50e72eabb0861d096d1002fddca7
 debian/patches/06_default_svdrp_port_0.patch:4835f681f185991262a3160146f43f2f
 debian/patches/opt-50_graphtft.patch:89b222a6d29eede764163c8806a07dd3

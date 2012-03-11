@@ -10,6 +10,7 @@ vdr (1.7.26-1~ctvdr1) unstable; urgency=low
   * Dropped opt-21_internal-cam-devices.patch (doesn't apply anmore)
   * Updated opt-24_jumpplay.patch
   * Dropped opt-38_disableDoubleEpgEntrys.patch (doesn't apply anmore)
+  * Updated opt-42-x_MainMenuHooks.patch
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 19 Feb 2012 17:21:08 +0100
 
