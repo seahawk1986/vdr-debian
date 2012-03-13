@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2011-02-15 16:29+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -72,6 +72,9 @@ msgstr "Hierarchia"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Zaèína prehµadáva» EPG"
@@ -645,6 +648,12 @@ msgstr "Súbor"
 msgid "Button$Folder"
 msgstr "Zlo¾ka"
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Prvý deò"
 
@@ -740,6 +749,9 @@ msgstr "Chyba pri prístupe k nahrávkam!"
 
 msgid "Delete recording?"
 msgstr "Zmaza» nahrávku?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Pri vymazávaní nahrávky pri¹lo k chybe!"
@@ -962,6 +974,13 @@ msgstr "Dolná frekvencia LNB (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Horná frekvencia LNB (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Resetnutie CAMu"
 
@@ -1016,9 +1035,6 @@ msgstr "Nahráva» pred zaèiatkom (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Nahráva» po konci (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Hlavný limit"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Predvolená priorita"
 
@@ -1069,6 +1085,9 @@ msgstr "Viac rýchlostný re¾im"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Zobrazi» spôsob prehrávania"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID obnovenie"

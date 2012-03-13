@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-03-09 12:59+0100\n"
 "Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -72,6 +72,9 @@ msgid "Hierarchy"
 msgstr "Hierarchia"
 
 msgid "Rolloff"
+msgstr ""
+
+msgid "PlpId"
 msgstr ""
 
 msgid "Starting EPG scan"
@@ -646,6 +649,12 @@ msgstr "Plik"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Pierwszy dzieñ"
 
@@ -741,6 +750,9 @@ msgstr "Bl±d podczas dostêpu do nagrania!"
 
 msgid "Delete recording?"
 msgstr "Usun±æ nagranie?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Bl±d podczas usuwania nagrania!"
@@ -963,6 +975,13 @@ msgstr "Dolna czêstotliwo¶æ LNB (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Górna czêstotliwo¶æ LNB (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM zresetowany"
 
@@ -1017,9 +1036,6 @@ msgstr "Margines na pocz±tku (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Margines na koñcu (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Podstawowy limit"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Domy¶lny priorytet"
 
@@ -1070,6 +1086,9 @@ msgstr "Tryb wieloprêdko¶ciowy"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Pokazuj tryb odtwarzania"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID wznowienia"

@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
-"PO-Revision-Date: 2010-06-13 00:30+0100\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
+"PO-Revision-Date: 2012-01-15 19:11+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -79,6 +79,9 @@ msgstr "Gerarchia"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Inizio scansione EPG"
@@ -652,6 +655,12 @@ msgstr "Nome"
 msgid "Button$Folder"
 msgstr "Cartella"
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "1° giorno"
 
@@ -747,6 +756,9 @@ msgstr "Errore accesso alla registrazione!"
 
 msgid "Delete recording?"
 msgstr "Eliminare la registrazione?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Errore eliminazione registrazione!"
@@ -969,6 +981,13 @@ msgstr "Freq LO LNB (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Freq HI LNB (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr "Periferica %d connessa al cavo sat"
+
+msgid "Setup.LNB$own"
+msgstr "propria"
+
 msgid "CAM reset"
 msgstr "Reimposta la CAM"
 
@@ -1023,9 +1042,6 @@ msgstr "Margine iniziale (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Margine finale (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Limite primario"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Priorità predefinita"
 
@@ -1076,6 +1092,9 @@ msgstr "Modalità multispeed"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Mostra modalità riproduzione"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr "Mostra tempo rimanente"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR-1.7.14\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-03-11 00:54+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -73,6 +73,9 @@ msgstr "Хиерархија"
 
 msgid "Rolloff"
 msgstr "Рол-оф"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Започнувам скенирање на EPG"
@@ -646,6 +649,12 @@ msgstr "Датотека"
 msgid "Button$Folder"
 msgstr "Директориум"
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Прв ден"
 
@@ -741,6 +750,9 @@ msgstr "Грешка при пристап до снимката!"
 
 msgid "Delete recording?"
 msgstr "Избриши снимка?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Грешка при бришење на снимката!"
@@ -963,6 +975,13 @@ msgstr "Долна LNB фрекфенција (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Форна LNB фрекфенција (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Рестартирај CAM"
 
@@ -1017,9 +1036,6 @@ msgstr "Резерва на почеток на снимање (мин)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Резерва на крајот на снимање (мин)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Стандардно огранучување"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Зададен приоритет"
 
@@ -1070,6 +1086,9 @@ msgstr "Повеќебрзински режим"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Прикажи начин на пуштање"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"

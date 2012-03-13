@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.7.16\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-10-30 11:55+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -72,6 +72,9 @@ msgstr "Hierarchija"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Pradedamas EPG skanavimas"
@@ -645,6 +648,12 @@ msgstr "Failas"
 msgid "Button$Folder"
 msgstr "Katalogas"
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Pirma diena"
 
@@ -740,6 +749,9 @@ msgstr "Klaida atidarant įrašą!"
 
 msgid "Delete recording?"
 msgstr "Ištrinti įrašą?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Klaida trinant įrašą!"
@@ -962,6 +974,13 @@ msgstr "Žemasis LNB dažnis (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Aukštasis LNB dažnis (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Dekodavimo modulis (CAM) perkrautas"
 
@@ -1016,9 +1035,6 @@ msgstr "Įrašo pradžios užlaikymo laikas (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Įrašo pabaigos užlaikymo laikas (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Pagrindinio įvesties įrenginio suderinimo prioritetas"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Numatytas laikmačio prioritetas"
 
@@ -1069,6 +1085,9 @@ msgstr "Prasukimo ręžimas"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Rodyti pakartojimo ręžimą"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Kūrinio ID"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.32 2011/08/27 11:05:33 kls Exp $
+ * $Id: menu.c 2.42 2012/03/08 13:32:44 kls Exp $
  */
 
 #include "menu.h"
@@ -903,7 +903,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
   file = NULL;
-  firstday = NULL;
+  day = firstday = NULL;
   timer = Timer;
   addIfConfirmed = New;
   if (timer) {
@@ -913,7 +913,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      channel = data.Channel()->Number();
      Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
-     Add(new cMenuEditDateItem(tr("Day"),          &data.day, &data.weekdays));
+     Add(day = new cMenuEditDateItem(tr("Day"),    &data.day, &data.weekdays));
      Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
      Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
      Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
@@ -935,7 +935,7 @@ cMenuEditTimer::~cMenuEditTimer()
 
 void cMenuEditTimer::SetHelpKeys(void)
 {
-  SetHelp(tr("Button$Folder"));
+  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Once") : tr("Button$Repeating"));
 }
 
 void cMenuEditTimer::SetFirstDayItem(void)
@@ -1001,7 +1001,14 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                      }
                      return osBack;
        case kRed:    return AddSubMenu(new cMenuFolder(tr("Select folder"), &Folders, data.file));
-       case kGreen:
+       case kGreen:  if (day) {
+                        day->ToggleRepeating();
+                        SetCurrent(day);
+                        SetFirstDayItem();
+                        SetHelpKeys();
+                        Display();
+                        }
+                     return osContinue;
        case kYellow:
        case kBlue:   return osContinue;
        default: break;
@@ -2383,9 +2390,19 @@ eOSState cMenuRecordings::Delete(void)
            }
         cRecording *recording = GetRecording(ri);
         if (recording) {
+           if (cCutter::Active(ri->FileName())) {
+              if (Interface->Confirm(tr("Recording is being edited - really delete?"))) {
+                 cCutter::Stop();
+                 recording = Recordings.GetByName(ri->FileName()); // cCutter::Stop() might have deleted it if it was the edited version
+                 // we continue with the code below even if recording is NULL,
+                 // in order to have the menu updated etc.
+                 }
+              else
+                 return osContinue;
+              }
            if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), ri->FileName()) == 0)
               cControl::Shutdown();
-           if (recording->Delete()) {
+           if (!recording || recording->Delete()) {
               cReplayControl::ClearLastReplayed(ri->FileName());
               Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
@@ -2885,6 +2902,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 
 class cMenuSetupLNB : public cMenuSetupBase {
 private:
+  cSatCableNumbers satCableNumbers;
   void Setup(void);
 public:
   cMenuSetupLNB(void);
@@ -2892,7 +2910,9 @@ public:
   };
 
 cMenuSetupLNB::cMenuSetupLNB(void)
+:satCableNumbers(MAXDEVICES)
 {
+  satCableNumbers.FromString(data.DeviceBondings);
   SetSection(tr("LNB"));
   Setup();
 }
@@ -2910,6 +2930,18 @@ void cMenuSetupLNB::Setup(void)
      Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
      }
 
+  int NumSatDevices = 0;
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      if (cDevice::GetDevice(i)->ProvidesSource(cSource::stSat))
+         NumSatDevices++;
+      }
+  if (NumSatDevices > 1) {
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         if (cDevice::GetDevice(i)->ProvidesSource(cSource::stSat))
+            Add(new cMenuEditIntItem(cString::sprintf(tr("Setup.LNB$Device %d connected to sat cable"), i + 1), &satCableNumbers.Array()[i], 0, NumSatDevices, tr("Setup.LNB$own")));
+         }
+     }
+
   SetCurrent(Get(current));
   Display();
 }
@@ -2917,10 +2949,18 @@ void cMenuSetupLNB::Setup(void)
 eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
 {
   int oldDiSEqC = data.DiSEqC;
+  bool DeviceBondingsChanged = false;
+  if (Key == kOk) {
+     cString NewDeviceBondings = satCableNumbers.ToString();
+     DeviceBondingsChanged = strcmp(data.DeviceBondings, NewDeviceBondings) != 0;
+     data.DeviceBondings = NewDeviceBondings;
+     }
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone && data.DiSEqC != oldDiSEqC)
      Setup();
+  else if (DeviceBondingsChanged)
+     cDvbDevice::BondDevices(data.DeviceBondings);
   return state;
 }
 
@@ -3060,7 +3100,6 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   SetSection(tr("Recording"));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditStraItem(tr("Setup.Recording$Pause key handling"),        &data.PauseKeyHandling, 3, pauseKeyHandlingTexts));
@@ -3091,6 +3130,7 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   SetSection(tr("Replay"));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -3620,7 +3660,7 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
            Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
            if (!Channel && Setup.ChannelsWrap)
               Channel = Direction > 0 ? Channels.First() : Channels.Last();
-           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, 0, true))
+           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
               return Channel;
            }
      }
@@ -4185,7 +4225,7 @@ bool cRecordControl::GetEvent(void)
       }
       if (seconds == 0)
          dsyslog("waiting for EPG info...");
-      sleep(1);
+      cCondWait::SleepMs(1000);
       }
   dsyslog("no EPG info available");
   return false;
@@ -4260,7 +4300,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
                }
            }
         }
-     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending())) {
+     else if (!Timer || !Timer->Pending()) {
         isyslog("no free DVB device to record channel %d!", ch);
         Skins.Message(mtError, tr("No free DVB device to record!"));
         }
@@ -4295,13 +4335,10 @@ bool cRecordControls::PauseLiveVideo(void)
   Skins.Message(mtStatus, tr("Pausing live video..."));
   cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
   if (Start(NULL, true)) {
-     sleep(2); // allow recorded file to fill up enough to start replaying
-     cReplayControl *rc = new cReplayControl;
+     cReplayControl *rc = new cReplayControl(true);
      cControl::Launch(rc);
      cControl::Attach();
-     sleep(1); // allow device to replay some frames, so we have a picture
      Skins.Message(mtStatus, NULL);
-     rc->ProcessKey(kPause); // pause, allowing replay mode display
      return true;
      }
   Skins.Message(mtStatus, NULL);
@@ -4391,8 +4428,8 @@ cReplayControl *cReplayControl::currentReplayControl = NULL;
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
 
-cReplayControl::cReplayControl(void)
-:cDvbPlayerControl(fileName)
+cReplayControl::cReplayControl(bool PauseLive)
+:cDvbPlayerControl(fileName, PauseLive)
 {
   currentReplayControl = this;
   displayReplay = NULL;
@@ -4483,6 +4520,8 @@ void cReplayControl::ShowTimed(int Seconds)
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
+  else if (timeoutShow && Seconds > 0)
+     timeoutShow = time(NULL) + Seconds;
 }
 
 void cReplayControl::Show(void)
@@ -4501,6 +4540,7 @@ void cReplayControl::Hide(void)
      lastPlay = lastForward = false;
      lastSpeed = -2; // an invalid value
      timeSearchActive = false;
+     timeoutShow = 0;
      }
 }
 
@@ -4545,12 +4585,15 @@ bool cReplayControl::ShowProgress(bool Initial)
            displayReplay->SetTitle(title);
         lastCurrent = lastTotal = -1;
         }
-     if (Total != lastTotal) {
-        displayReplay->SetTotal(IndexToHMSF(Total, false, FramesPerSecond()));
-        if (!Initial)
-           displayReplay->Flush();
-        }
      if (Current != lastCurrent || Total != lastTotal) {
+        if (Setup.ShowRemainingTime || Total != lastTotal) {
+           int Index = Total;
+           if (Setup.ShowRemainingTime)
+              Index = Current - Index;
+           displayReplay->SetTotal(IndexToHMSF(Index, false, FramesPerSecond()));
+           if (!Initial)
+              displayReplay->Flush();
+           }
         displayReplay->SetProgress(Current, Total);
         if (!Initial)
            displayReplay->Flush();
@@ -4661,12 +4704,12 @@ void cReplayControl::MarkToggle(void)
         marks.Del(m);
      else {
         marks.Add(Current);
-        ShowTimed(2);
         bool Play, Forward;
         int Speed;
         if (GetReplayMode(Play, Forward, Speed) && !Play)
            Goto(Current, true);
         }
+     ShowTimed(2);
      marks.Save();
      }
 }

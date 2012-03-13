@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 2.18 2011/05/21 12:21:40 kls Exp $
+# $Id: Makefile 2.25 2012/02/27 10:54:38 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -17,10 +17,10 @@ CXXFLAGS ?= -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
 LSIDIR   = ./libsi
 DESTDIR ?=
 PREFIX  ?= /usr/local
-MANDIR   = $(PREFIX)/share/man
-BINDIR   = $(PREFIX)/bin
-INCDIR   = $(PREFIX)/include
-LOCDIR   = ./locale
+MANDIR  ?= $(PREFIX)/share/man
+BINDIR  ?= $(PREFIX)/bin
+INCDIR  ?= $(PREFIX)/include
+LOCDIR  ?= ./locale
 LIBS     = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
 INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 
@@ -30,8 +30,10 @@ PLUGINLIBDIR= $(PLUGINDIR)/lib
 VIDEODIR = /video
 CONFDIR  = $(VIDEODIR)
 
-DOXYGEN  = /usr/bin/doxygen
+DOXYGEN ?= /usr/bin/doxygen
 DOXYFILE = Doxyfile
+
+PCDIR   ?= $(firstword $(subst :, , ${PKG_CONFIG_PATH}:$(shell pkg-config --variable=pc_path pkg-config):$(PREFIX)/lib/pkgconfig))
 
 include Make.global
 -include Make.config
@@ -40,7 +42,7 @@ SILIB    = $(LSIDIR)/libsi.a
 
 OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
        dvbplayer.o dvbspu.o dvbsubtitle.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
-       lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o rcu.o\
+       lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
        skinclassic.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
        timers.o tools.o transfer.o vdr.o videodir.o
@@ -60,10 +62,9 @@ DEFINES += -DBIDI
 LIBS += $(shell pkg-config --libs fribidi)
 endif
 
-LIRC_DEVICE ?= /dev/lircd
-RCU_DEVICE  ?= /dev/ttyS1
+LIRC_DEVICE ?= /var/run/lirc/lircd
 
-DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
+DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\"
 
 DEFINES += -D_GNU_SOURCE
 
@@ -77,7 +78,7 @@ DEFINES += -DLOCDIR=\"$(LOCDIR)\"
 VDRVERSION = $(shell sed -ne '/define VDRVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' config.h)
 
-all: vdr i18n
+all: vdr i18n vdr.pc
 
 # Implicit rules:
 
@@ -103,6 +104,25 @@ vdr: $(OBJS) $(SILIB)
 $(SILIB):
 	$(MAKE) -C $(LSIDIR) all
 
+# pkg-config file:
+
+vdr.pc: Makefile Make.global
+	@echo "bindir=$(BINDIR)" > $@
+	@echo "includedir=$(INCDIR)" >> $@
+	@echo "configdir=$(CONFDIR)" >> $@
+	@echo "videodir=$(VIDEODIR)" >> $@
+	@echo "plugindir=$(PLUGINLIBDIR)" >> $@
+	@echo "localedir=$(LOCDIR)" >> $@
+	@echo "apiversion=$(APIVERSION)" >> $@
+	@echo "cflags=$(CXXFLAGS) $(DEFINES) -I\$${includedir}" >> $@
+	@echo "plugincflags=\$${cflags} -fPIC" >> $@
+	@echo "" >> $@
+	@echo "Name: VDR" >> $@
+	@echo "Description: Video Disk Recorder" >> $@
+	@echo "URL: http://www.tvdr.de/" >> $@
+	@echo "Version: $(VDRVERSION)" >> $@
+	@echo "Cflags: \$${cflags}" >> $@
+
 # Internationalization (I18N):
 
 PODIR     = po
@@ -118,7 +138,7 @@ $(I18Npot): $(wildcard *.c)
 	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --package-name=VDR --package-version=$(VDRVERSION) --msgid-bugs-address='<vdr-bugs@tvdr.de>' -o $@ `ls $^`
 
 %.po: $(I18Npot)
-	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<
+	msgmerge -U --no-wrap --no-location --backup=none -q -N $@ $<
 	@touch $@
 
 $(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr.mo: $(PODIR)/%.mo
@@ -163,13 +183,13 @@ clean-plugins:
 
 # Install the files:
 
-install: install-bin install-conf install-doc install-plugins install-i18n install-includes
+install: install-bin install-conf install-doc install-plugins install-i18n install-includes install-pc
 
 # VDR binary:
 
 install-bin: vdr
 	@mkdir -p $(DESTDIR)$(BINDIR)
-	@cp --remove-destination vdr svdrpsend.pl $(DESTDIR)$(BINDIR)
+	@cp --remove-destination vdr svdrpsend $(DESTDIR)$(BINDIR)
 
 # Configuration files:
 
@@ -200,6 +220,14 @@ install-includes: include-dir
 	@mkdir -p $(DESTDIR)$(INCDIR)
 	@cp -pLR include/vdr include/libsi $(DESTDIR)$(INCDIR)
 
+# pkg-config file:
+
+install-pc: vdr.pc
+	if [ -n "$(PCDIR)" ] ; then \
+	    mkdir -p $(DESTDIR)$(PCDIR) ; \
+	    cp vdr.pc $(DESTDIR)$(PCDIR) ; \
+	    fi
+
 # Source documentation:
 
 srcdoc:
@@ -212,9 +240,8 @@ srcdoc:
 
 clean:
 	$(MAKE) -C $(LSIDIR) clean
-	-rm -f $(OBJS) $(DEPFILE) vdr core* *~
+	-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
 	-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
 	-rm -rf include
 	-rm -rf srcdoc
 CLEAN: clean
-

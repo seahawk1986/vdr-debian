@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.25 2011/08/21 13:10:39 kls Exp $
+ * $Id: recording.h 2.27 2012/02/19 10:44:53 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -176,7 +176,7 @@ public:
        ///< Triggers an update of the list of recordings, which will run
        ///< as a separate thread if Wait is false. If Wait is true, the
        ///< function returns only after the update has completed.
-       ///< Returns true if Wait is true and there is anyting in the list
+       ///< Returns true if Wait is true and there is anything in the list
        ///< of recordings, false otherwise.
   void TouchUpdate(void);
        ///< Touches the '.update' file in the video directory, so that other
@@ -279,7 +279,7 @@ private:
   void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
 public:
-  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false);
+  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false);
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
@@ -292,7 +292,7 @@ public:
   bool IsStillRecording(void);
   void Delete(void);
   static int GetLength(const char *FileName, bool IsPesRecording = false);
-       ///< Calculates the recording length (numer of frames) without actually reading the index file.
+       ///< Calculates the recording length (number of frames) without actually reading the index file.
        ///< Returns -1 in case of error.
   };
 

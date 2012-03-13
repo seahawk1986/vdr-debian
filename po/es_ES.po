@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -72,6 +72,9 @@ msgid "Hierarchy"
 msgstr "Jerarquía"
 
 msgid "Rolloff"
+msgstr ""
+
+msgid "PlpId"
 msgstr ""
 
 msgid "Starting EPG scan"
@@ -646,6 +649,12 @@ msgstr "Fichero"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Primer día"
 
@@ -741,6 +750,9 @@ msgstr "¡Error al acceder a la grabación!"
 
 msgid "Delete recording?"
 msgstr "¿Eliminar grabacion?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "¡Error al borrar la grabación!"
@@ -963,6 +975,13 @@ msgstr "Frecuencia inferior del LNB (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Frecuencia superior del LNB (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Reset CAM"
 
@@ -1017,9 +1036,6 @@ msgstr "Comenzar grabación antes (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Acabar grabación después (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Límite primario"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Prioridad por defecto"
 
@@ -1070,6 +1086,9 @@ msgstr "Modo multi-velocidad"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Mostrar modo de reproducción"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID de continuación"

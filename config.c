@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 2.15 2011/08/20 09:12:05 kls Exp $
+ * $Id: config.c 2.20 2012/02/29 10:15:54 kls Exp $
  */
 
 #include "config.h"
@@ -61,6 +61,68 @@ bool cSVDRPhost::IsLocalhost(void)
 bool cSVDRPhost::Accepts(in_addr_t Address)
 {
   return (Address & mask) == (addr.s_addr & mask);
+}
+
+// --- cSatCableNumbers ------------------------------------------------------
+
+cSatCableNumbers::cSatCableNumbers(int Size, const char *s)
+{
+  size = Size;
+  array = MALLOC(int, size);
+  FromString(s);
+}
+
+cSatCableNumbers::~cSatCableNumbers()
+{
+  free(array);
+}
+
+bool cSatCableNumbers::FromString(const char *s)
+{
+  char *t;
+  int i = 0;
+  const char *p = s;
+  while (p && *p) {
+        int n = strtol(p, &t, 10);
+        if (t != p) {
+           if (i < size)
+              array[i++] = n;
+           else {
+              esyslog("ERROR: too many sat cable numbers in '%s'", s);
+              return false;
+              }
+           }
+        else {
+           esyslog("ERROR: invalid sat cable number in '%s'", s);
+           return false;
+           }
+        p = skipspace(t);
+        }
+  for ( ; i < size; i++)
+      array[i] = 0;
+  return true;
+}
+
+cString cSatCableNumbers::ToString(void)
+{
+  cString s("");
+  for (int i = 0; i < size; i++) {
+      s = cString::sprintf("%s%d ", *s, array[i]);
+      }
+  return s;
+}
+
+int cSatCableNumbers::FirstDeviceIndex(int DeviceIndex) const
+{
+  if (0 <= DeviceIndex && DeviceIndex < size) {
+     if (int CableNr = array[DeviceIndex]) {
+        for (int i = 0; i < size; i++) {
+            if (i < DeviceIndex && array[i] == CableNr)
+               return i;
+            }
+        }
+     }
+  return -1;
 }
 
 // --- cNestedItem -----------------------------------------------------------
@@ -344,9 +406,8 @@ cSetup::cSetup(void)
   SVDRPTimeout = 300;
   ZapTimeout = 3;
   ChannelEntryTimeout = 1000;
-  PrimaryLimit = 0;
   DefaultPriority = 50;
-  DefaultLifetime = 99;
+  DefaultLifetime = MAXLIFETIME;
   PauseKeyHandling = 2;
   PausePriority = 10;
   PauseLifetime = 1;
@@ -391,11 +452,13 @@ cSetup::cSetup(void)
   NextWakeupTime = 0;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
+  ShowRemainingTime = 0;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
   CurrentDolby = 0;
   InitialChannel = "";
+  DeviceBondings = "";
   InitialVolume = -1;
   ChannelsWrap = 0;
   EmergencyExit = 1;
@@ -405,6 +468,7 @@ cSetup& cSetup::operator= (const cSetup &s)
 {
   memcpy(&__BeginData__, &s.__BeginData__, (char *)&s.__EndData__ - (char *)&s.__BeginData__);
   InitialChannel = s.InitialChannel;
+  DeviceBondings = s.DeviceBondings;
   return *this;
 }
 
@@ -536,7 +600,6 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
-  else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
   else if (!strcasecmp(Name, "PauseKeyHandling"))    PauseKeyHandling   = atoi(Value);
@@ -583,12 +646,14 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
+  else if (!strcasecmp(Name, "ShowRemainingTime"))   ShowRemainingTime  = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = Value;
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
+  else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
   else
@@ -632,7 +697,6 @@ bool cSetup::Save(void)
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
-  Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
   Store("PauseKeyHandling",   PauseKeyHandling);
@@ -679,12 +743,14 @@ bool cSetup::Save(void)
   Store("NextWakeupTime",     NextWakeupTime);
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
+  Store("ShowRemainingTime",  ShowRemainingTime);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
   Store("CurrentDolby",       CurrentDolby);
   Store("InitialChannel",     InitialChannel);
   Store("InitialVolume",      InitialVolume);
+  Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);
   Store("EmergencyExit",      EmergencyExit);
 

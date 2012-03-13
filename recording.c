@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.38 2011/09/04 09:32:25 kls Exp $
+ * $Id: recording.c 2.51 2012/02/26 13:58:26 kls Exp $
  */
 
 #include "recording.h"
@@ -873,16 +873,23 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%c%d:%02d%c%c%s",
+     cString Length("");
+     if (NewIndicator) {
+        int Minutes = max(0, (LengthInSeconds() + 30) / 60);
+        Length = cString::sprintf("%c%d:%02d",
+                   Delimiter,
+                   Minutes / 60,
+                   Minutes % 60
+                   );
+        }
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,
-                            Delimiter,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 3600 : 0,
-                            (LengthInSeconds() >= 0) ? LengthInSeconds() / 60 % 60 : 0,
+                            *Length,
                             New,
                             Delimiter,
                             s));
@@ -1052,7 +1059,7 @@ int cRecording::LengthInSeconds(void) const
 {
   int nf = NumFrames();
   if (nf >= 0)
-     return int((nf / FramesPerSecond() + 30) / 60) * 60;
+     return int(nf / FramesPerSecond());
   return -1;
 }
 
@@ -1102,49 +1109,39 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
   cReadDir d(DirName);
   struct dirent *e;
   while ((Foreground || Running()) && (e = d.Next()) != NULL) {
-        if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-           char *buffer = strdup(AddDirectory(DirName, e->d_name));
-           struct stat st;
-           if (stat(buffer, &st) == 0) {
-              int Link = 0;
-              if (S_ISLNK(st.st_mode)) {
-                 if (LinkLevel > MAX_LINK_LEVEL) {
-                    isyslog("max link level exceeded - not scanning %s", buffer);
-                    continue;
-                    }
-                 Link = 1;
-                 char *old = buffer;
-                 buffer = ReadLink(old);
-                 free(old);
-                 if (!buffer)
-                    continue;
-                 if (stat(buffer, &st) != 0) {
-                    free(buffer);
-                    continue;
-                    }
+        cString buffer = AddDirectory(DirName, e->d_name);
+        struct stat st;
+        if (lstat(buffer, &st) == 0) {
+           int Link = 0;
+           if (S_ISLNK(st.st_mode)) {
+              if (LinkLevel > MAX_LINK_LEVEL) {
+                 isyslog("max link level exceeded - not scanning %s", *buffer);
+                 continue;
                  }
-              if (S_ISDIR(st.st_mode)) {
-                 if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
-                    cRecording *r = new cRecording(buffer);
-                    if (r->Name()) {
-                       r->NumFrames(); // initializes the numFrames member
-                       Lock();
-                       Add(r);
-                       ChangeState();
-                       Unlock();
-                       if (deleted) {
-                          r->fileSizeMB = DirSizeMB(buffer);
-                          r->deleted = time(NULL);
-                          }
+              Link = 1;
+              if (stat(buffer, &st) != 0)
+                 continue;
+              }
+           if (S_ISDIR(st.st_mode)) {
+              if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
+                 cRecording *r = new cRecording(buffer);
+                 if (r->Name()) {
+                    r->NumFrames(); // initializes the numFrames member
+                    Lock();
+                    Add(r);
+                    ChangeState();
+                    Unlock();
+                    if (deleted) {
+                       r->fileSizeMB = DirSizeMB(buffer);
+                       r->deleted = time(NULL);
                        }
-                    else
-                       delete r;
                     }
                  else
-                    ScanVideoDir(buffer, Foreground, LinkLevel + Link);
+                    delete r;
                  }
+              else
+                 ScanVideoDir(buffer, Foreground, LinkLevel + Link);
               }
-           free(buffer);
            }
         }
 }
@@ -1162,7 +1159,7 @@ void cRecordings::TouchUpdate(void)
   bool needsUpdate = NeedsUpdate();
   TouchFile(UpdateFileName());
   if (!needsUpdate)
-     lastUpdate = time(NULL); // make sure we don't tigger ourselves
+     lastUpdate = time(NULL); // make sure we don't trigger ourselves
 }
 
 bool cRecordings::NeedsUpdate(void)
@@ -1218,12 +1215,14 @@ void cRecordings::DelByName(const char *FileName)
      char *ext = strrchr(recording->fileName, '.');
      if (ext) {
         strncpy(ext, DELEXT, strlen(ext));
-        recording->fileSizeMB = DirSizeMB(recording->FileName());
-        recording->deleted = time(NULL);
-        DeletedRecordings.Add(recording);
+        if (access(recording->FileName(), F_OK) == 0) {
+           recording->fileSizeMB = DirSizeMB(recording->FileName());
+           recording->deleted = time(NULL);
+           DeletedRecordings.Add(recording);
+           recording = NULL; // to prevent it from being deleted below
+           }
         }
-     else
-        delete recording;
+     delete recording;
      ChangeState();
      TouchUpdate();
      }
@@ -1556,8 +1555,9 @@ struct tIndexTs {
 
 #define MAXWAITFORINDEXFILE     10 // max. time to wait for the regenerated index file (seconds)
 #define INDEXFILECHECKINTERVAL 500 // ms between checks for existence of the regenerated index file
+#define INDEXFILETESTINTERVAL   10 // ms between tests for the size of the index file in case of pausing live video
 
-cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
+cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive)
 :resumeFile(FileName, IsPesRecording)
 {
   f = -1;
@@ -1568,6 +1568,12 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording)
   indexFileGenerator = NULL;
   if (FileName) {
      fileName = IndexFileName(FileName, isPesRecording);
+     if (!Record && PauseLive) {
+        // Wait until the index file contains at least two frames:
+        time_t tmax = time(NULL) + MAXWAITFORINDEXFILE;
+        while (time(NULL) < tmax && FileSize(fileName) < off_t(2 * sizeof(tIndexTs)))
+              cCondWait::SleepMs(INDEXFILETESTINTERVAL);
+        }
      int delta = 0;
      if (!Record && access(fileName, R_OK) != 0) {
         // Index file doesn't exist, so try to regenerate it:
@@ -2040,15 +2046,18 @@ cUnbufferedFile *cFileName::NextFile(void)
 
 cString IndexToHMSF(int Index, bool WithFrame, double FramesPerSecond)
 {
-  char buffer[16];
+  const char *Sign = "";
+  if (Index < 0) {
+     Index = -Index;
+     Sign = "-";
+     }
   double Seconds;
   int f = int(modf((Index + 0.5) / FramesPerSecond, &Seconds) * FramesPerSecond + 1);
   int s = int(Seconds);
   int m = s / 60 % 60;
   int h = s / 3600;
   s %= 60;
-  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
-  return buffer;
+  return cString::sprintf(WithFrame ? "%s%d:%02d:%02d.%02d" : "%s%d:%02d:%02d", Sign, h, m, s, f);
 }
 
 int HMSFToIndex(const char *HMSF, double FramesPerSecond)

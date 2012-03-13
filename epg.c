@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.7 2011/02/25 15:16:05 kls Exp $
+ * $Id: epg.c 2.12 2012/03/10 13:14:27 kls Exp $
  */
 
 #include "epg.h"
@@ -114,7 +114,7 @@ cEvent::cEvent(tEventID EventID)
 {
   schedule = NULL;
   eventID = EventID;
-  tableID = 0;
+  tableID = 0xFF; // actual table ids are 0x4E..0x60
   version = 0xFF; // actual version numbers are 0..31
   runningStatus = SI::RunningStatusUndefined;
   title = NULL;
@@ -424,7 +424,7 @@ cString cEvent::GetVpsString(void) const
 {
   char buf[25];
   struct tm tm_r;
-  strftime(buf, sizeof(buf), "%d.%m %R", localtime_r(&vps, &tm_r));
+  strftime(buf, sizeof(buf), "%d.%m. %R", localtime_r(&vps, &tm_r));
   return buf;
 }
 
@@ -587,7 +587,7 @@ void ReportEpgBugFixStats(bool Reset)
      bool GotHits = false;
      char buffer[1024];
      for (int i = 0; i < MAXEPGBUGFIXSTATS; i++) {
-         const char *delim = "\t";
+         const char *delim = " ";
          tEpgBugFixStats *p = &EpgBugFixStats[i];
          if (p->hits) {
             bool PrintedStats = false;
@@ -604,11 +604,11 @@ void ReportEpgBugFixStats(bool Reset)
                       dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEvent::FixEpgBugs()");
                       dsyslog("IN VDR/epg.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
                       dsyslog("=====================");
-                      dsyslog("Fix\tHits\tChannels");
+                      dsyslog("Fix Hits Channels");
                       GotHits = true;
                       }
                    if (!PrintedStats) {
-                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%-3d %-4d", i, p->hits);
                       PrintedStats = true;
                       }
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
@@ -828,10 +828,17 @@ void cEvent::FixEpgBugs(void)
 
 Final:
 
-  // VDR can't usefully handle newline characters in the title and shortText of EPG
+  // VDR can't usefully handle newline characters in the title, shortText or component description of EPG
   // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
+  if (components) {
+     for (int i = 0; i < components->NumComponents(); i++) {
+         tComponent *p = components->Component(i);
+         if (p->description)
+            strreplace(p->description, '\n', ' ');
+         }
+     }
   /* TODO adapt to UTF-8
   // Same for control characters:
   strreplace(title, '\x86', ' ');
@@ -1276,4 +1283,166 @@ const cSchedule *cSchedules::GetSchedule(const cChannel *Channel, bool AddIfMiss
      Channel->schedule = Schedule;
      }
   return Channel->schedule != &DummySchedule? Channel->schedule : NULL;
+}
+
+// --- cEpgDataReader --------------------------------------------------------
+
+cEpgDataReader::cEpgDataReader(void)
+:cThread("epg data reader")
+{
+}
+
+void cEpgDataReader::Action(void)
+{
+  cSchedules::Read();
+}
+
+// --- cEpgHandler -----------------------------------------------------------
+
+cEpgHandler::cEpgHandler(void)
+{
+  EpgHandlers.Add(this);
+}
+
+cEpgHandler::~cEpgHandler()
+{
+  EpgHandlers.Del(this, false);
+}
+
+// --- cEpgHandlers ----------------------------------------------------------
+
+cEpgHandlers EpgHandlers;
+
+bool cEpgHandlers::IgnoreChannel(const cChannel *Channel)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->IgnoreChannel(Channel))
+         return true;
+      }
+  return false;
+}
+
+bool cEpgHandlers::HandleEitEvent(cSchedule *Schedule, const SI::EIT::Event *EitEvent, uchar TableID, uchar Version)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->HandleEitEvent(Schedule, EitEvent, TableID, Version))
+         return true;
+      }
+  return false;
+}
+
+void cEpgHandlers::SetEventID(cEvent *Event, tEventID EventID)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetEventID(Event, EventID))
+         return;
+      }
+  Event->SetEventID(EventID);
+}
+
+void cEpgHandlers::SetTitle(cEvent *Event, const char *Title)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetTitle(Event, Title))
+         return;
+      }
+  Event->SetTitle(Title);
+}
+
+void cEpgHandlers::SetShortText(cEvent *Event, const char *ShortText)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetShortText(Event, ShortText))
+         return;
+      }
+  Event->SetShortText(ShortText);
+}
+
+void cEpgHandlers::SetDescription(cEvent *Event, const char *Description)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetDescription(Event, Description))
+         return;
+      }
+  Event->SetDescription(Description);
+}
+
+void cEpgHandlers::SetContents(cEvent *Event, uchar *Contents)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetContents(Event, Contents))
+         return;
+      }
+  Event->SetContents(Contents);
+}
+
+void cEpgHandlers::SetParentalRating(cEvent *Event, int ParentalRating)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetParentalRating(Event, ParentalRating))
+         return;
+      }
+  Event->SetParentalRating(ParentalRating);
+}
+
+void cEpgHandlers::SetStartTime(cEvent *Event, time_t StartTime)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetStartTime(Event, StartTime))
+         return;
+      }
+  Event->SetStartTime(StartTime);
+}
+
+void cEpgHandlers::SetDuration(cEvent *Event, int Duration)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetDuration(Event, Duration))
+         return;
+      }
+  Event->SetDuration(Duration);
+}
+
+void cEpgHandlers::SetVps(cEvent *Event, time_t Vps)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetVps(Event, Vps))
+         return;
+      }
+  Event->SetVps(Vps);
+}
+
+void cEpgHandlers::FixEpgBugs(cEvent *Event)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->FixEpgBugs(Event))
+         return;
+      }
+  Event->FixEpgBugs();
+}
+
+void cEpgHandlers::HandleEvent(cEvent *Event)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->HandleEvent(Event))
+         break;
+      }
+}
+
+void cEpgHandlers::SortSchedule(cSchedule *Schedule)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SortSchedule(Schedule))
+         return;
+      }
+  Schedule->Sort();
+}
+
+void cEpgHandlers::DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->DropOutdated(Schedule, SegmentStart, SegmentEnd, TableID, Version))
+         return;
+      }
+  Schedule->DropOutdated(SegmentStart, SegmentEnd, TableID, Version);
 }

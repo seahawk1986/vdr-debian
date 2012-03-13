@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -71,6 +71,9 @@ msgid "Hierarchy"
 msgstr "Hierarki"
 
 msgid "Rolloff"
+msgstr ""
+
+msgid "PlpId"
 msgstr ""
 
 msgid "Starting EPG scan"
@@ -645,6 +648,12 @@ msgstr "Fil"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Første dag"
 
@@ -740,6 +749,9 @@ msgstr "Fejl ved læsning af optagelse!"
 
 msgid "Delete recording?"
 msgstr "Slet optagelse?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Fejl ved sletning af optagelse!"
@@ -962,6 +974,13 @@ msgstr "Nedre LNB frekvens (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Øvre LNB frekvens (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM nulstil"
 
@@ -1016,9 +1035,6 @@ msgstr "Margin ved start (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Margin ved stop (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Primær grænse"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Standard prioritet"
 
@@ -1069,6 +1085,9 @@ msgstr "Multi hastighedsmodus"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Vis afspilningsmodus"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Genoptagelses ID"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 2.42 2011/08/26 12:56:00 kls Exp $
+ * $Id: device.c 2.57 2012/03/07 14:17:49 kls Exp $
  */
 
 #include "device.h"
@@ -41,7 +41,8 @@ cLiveSubtitle::~cLiveSubtitle()
 
 void cLiveSubtitle::Receive(uchar *Data, int Length)
 {
-  cDevice::PrimaryDevice()->PlayTs(Data, Length);
+  if (cDevice::PrimaryDevice())
+     cDevice::PrimaryDevice()->PlayTs(Data, Length);
 }
 
 // --- cDeviceHook -----------------------------------------------------------
@@ -58,9 +59,6 @@ bool cDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChanne
 
 // --- cDevice ---------------------------------------------------------------
 
-// The default priority for non-primary devices:
-#define DEFAULTPRIORITY  -1
-
 // The minimum number of unknown PS1 packets to consider this a "pre 1.3.19 private stream":
 #define MIN_PRE_1_3_19_PRIVATESTREAM 10
 
@@ -70,7 +68,6 @@ int cDevice::nextCardIndex = 0;
 int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
-cDevice *cDevice::avoidDevice = NULL;
 cList<cDeviceHook> cDevice::deviceHooks;
 
 cDevice::cDevice(void)
@@ -80,8 +77,6 @@ cDevice::cDevice(void)
   dsyslog("new device number %d", CardIndex() + 1);
 
   SetDescription("receiver on device %d", CardIndex() + 1);
-
-  SetVideoFormat(Setup.VideoFormat);
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -94,6 +89,8 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
   startScrambleDetection = 0;
+
+  occupiedTimeout = 0;
 
   player = NULL;
   isPlayingVideo = false;
@@ -228,10 +225,8 @@ static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
   return NumProvidedSystems;
 }
 
-cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView)
+cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView, bool Query)
 {
-  cDevice *AvoidDevice = avoidDevice;
-  avoidDevice = NULL;
   // Collect the current priorities of all CAM slots that can decrypt the channel:
   int NumCamSlots = CamSlots.Count();
   int SlotPriority[NumCamSlots];
@@ -261,8 +256,6 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (NumUsableSlots && SlotPriority[j] > MAXPRIORITY)
          continue; // there is no CAM available in this slot
       for (int i = 0; i < numDevices; i++) {
-          if (device[i] == AvoidDevice)
-             continue; // this device shall be temporarily avoided
           if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->CardIndex() + 1)
              continue; // a specific card was requested, but not this one
           if (NumUsableSlots && !CamSlots.Get(j)->Assign(device[i], true))
@@ -283,8 +276,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
              imp <<= 4; imp |= GetClippedNumProvidedSystems(4, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
-             imp <<= 8; imp |= min(max(device[i]->Priority() + MAXPRIORITY, 0), 0xFF);                               // use the device with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
-             imp <<= 8; imp |= min(max((NumUsableSlots ? SlotPriority[j] : 0) + MAXPRIORITY, 0), 0xFF);              // use the CAM slot with the lowest priority (+MAXPRIORITY to assure that values -99..99 can be used)
+             imp <<= 8; imp |= device[i]->Priority() - IDLEPRIORITY;                                                 // use the device with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
+             imp <<= 8; imp |= (NumUsableSlots ? SlotPriority[j] : IDLEPRIORITY) - IDLEPRIORITY;                     // use the CAM slot with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
              imp <<= 1; imp |= ndr;                                                                                  // avoid devices if we need to detach existing receivers
              imp <<= 1; imp |= NumUsableSlots ? 0 : device[i]->HasCi();                                              // avoid cards with Common Interface for FTA channels
              imp <<= 1; imp |= device[i]->AvoidRecording();                                                          // avoid SD full featured cards
@@ -303,7 +296,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (!NumUsableSlots)
          break; // no CAM necessary, so just one loop over the devices
       }
-  if (d) {
+  if (d && !Query) {
      if (NeedsDetachReceivers)
         d->DetachAllReceivers();
      if (s) {
@@ -321,6 +314,26 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
   return d;
 }
 
+cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
+{
+  cDevice *Device = NULL;
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      if (cDevice *d = cDevice::GetDevice(i)) {
+         if (d->IsTunedToTransponder(Channel))
+            return d; // if any device is tuned to the transponder, we're done
+         if (d->ProvidesTransponder(Channel)) {
+            if (d->MaySwitchTransponder(Channel))
+               Device = d; // this device may switch to the transponder without disturbing any receiver or live view
+            else if (!d->Occupied()) {
+               if (d->Priority() < Priority && (!Device || d->Priority() < Device->Priority()))
+                  Device = d; // use this one only if no other with less impact can be found
+               }
+            }
+         }
+      }
+  return Device;
+}
+
 bool cDevice::HasCi(void)
 {
   return false;
@@ -333,6 +346,7 @@ void cDevice::SetCamSlot(cCamSlot *CamSlot)
 
 void cDevice::Shutdown(void)
 {
+  deviceHooks.Clear();
   primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];
@@ -529,6 +543,14 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
+void cDevice::DelLivePids(void)
+{
+  for (int i = ptAudio; i < ptOther; i++) {
+      if (pidHandles[i].pid)
+         DelPid(pidHandles[i].pid, ePidType(i));
+      }
+}
+
 void cDevice::StartSectionHandler(void)
 {
   if (!sectionHandler) {
@@ -638,14 +660,14 @@ const cChannel *cDevice::GetCurrentlyTunedTransponder(void) const
   return NULL;
 }
 
-bool cDevice::IsTunedToTransponder(const cChannel *Channel)
+bool cDevice::IsTunedToTransponder(const cChannel *Channel) const
 {
   return false;
 }
 
-bool cDevice::MaySwitchTransponder(void)
+bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 {
-  return !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
+  return time(NULL) > occupiedTimeout && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -680,7 +702,7 @@ bool cDevice::SwitchChannel(int Direction)
      cChannel *channel;
      while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
-           if (GetDevice(channel, 0, true))
+           if (GetDevice(channel, LIVEPRIORITY, true, true))
               break;
            n = channel->Number() + Direction;
            }
@@ -701,13 +723,15 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
+  cStatus::MsgChannelSwitch(this, 0, LiveView);
+
   if (LiveView) {
      StopReplay();
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
      }
 
-  cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, 0, LiveView) : this;
+  cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
   bool NeedsTransferMode = Device != this;
 
@@ -718,7 +742,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (NeedsTransferMode) {
      if (Device && CanReplay()) {
-        cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (Device->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(Device, Channel));
         else
@@ -729,7 +752,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
   else {
      Channels.Lock(false);
-     cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
      // Stop section handling:
      if (sectionHandler) {
         sectionHandler->SetStatus(false);
@@ -771,7 +793,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureAudioTrack(true);
         EnsureSubtitleTrack();
         }
-     cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successfull
      }
 
   return Result;
@@ -784,6 +806,18 @@ void cDevice::ForceTransferMode(void)
      if (Channel)
         SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
      }
+}
+
+int cDevice::Occupied(void) const
+{
+  int Seconds = occupiedTimeout - time(NULL);
+  return Seconds > 0 ? Seconds : 0;
+}
+
+void cDevice::SetOccupied(int Seconds)
+{
+  if (Seconds >= 0)
+     occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
 }
 
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
@@ -858,7 +892,7 @@ void cDevice::SetAudioChannel(int AudioChannel)
 void cDevice::SetVolume(int Volume, bool Absolute)
 {
   int OldVolume = volume;
-  volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
+  volume = constrain(Absolute ? Volume : volume + Volume, 0, MAXVOLUME);
   SetVolumeDevice(volume);
   Absolute |= mute;
   cStatus::MsgSetVolume(Absolute ? volume : volume - OldVolume, Absolute);
@@ -1027,7 +1061,8 @@ void cDevice::EnsureSubtitleTrack(void)
      int LanguagePreference = INT_MAX; // higher than the maximum possible value
      for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
          const tTrackId *TrackId = GetTrack(eTrackType(i));
-         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference))
+         if (TrackId && TrackId->id && (I18nIsPreferredLanguage(Setup.SubtitleLanguages, TrackId->language, LanguagePreference) ||
+            (i == ttSubtitleFirst + 8 && !*TrackId->language && LanguagePreference == INT_MAX))) // compatibility mode for old subtitles plugin
             PreferredTrack = eTrackType(i);
          }
      // Make sure we're set to an available subtitle track:
@@ -1473,7 +1508,10 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 
 int cDevice::Priority(void) const
 {
-  int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
+  int priority = IDLEPRIORITY;
+  if (IsPrimaryDevice() && !Replaying() && ActualDevice() == PrimaryDevice())
+     priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
          priority = max(receiver[i]->priority, priority);
@@ -1486,10 +1524,11 @@ bool cDevice::Ready(void)
   return true;
 }
 
-bool cDevice::Receiving(bool CheckAny) const
+bool cDevice::Receiving(bool Dummy) const
 {
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
-      if (receiver[i] && (CheckAny || receiver[i]->priority >= 0)) // cReceiver with priority < 0 doesn't count
+      if (receiver[i])
          return true;
       }
   return false;

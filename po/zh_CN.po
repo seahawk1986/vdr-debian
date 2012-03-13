@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2009-09-23 23:50+0800\n"
 "Last-Translator: Nan Feng <nfgx@21cn.com>\n"
 "Language-Team: Chinese (simplified) <vdr@linuxtv.org>\n"
@@ -75,6 +75,9 @@ msgstr "层次"
 
 msgid "Rolloff"
 msgstr "越零率"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "开始节目单扫描"
@@ -648,6 +651,12 @@ msgstr "文件"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "第一天"
 
@@ -743,6 +752,9 @@ msgstr "存取录像错误！"
 
 msgid "Delete recording?"
 msgstr "是否删除录像？"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "删除录像错误！"
@@ -965,6 +977,13 @@ msgstr "低本振频率 (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "高本振频率 (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM重置"
 
@@ -1019,9 +1038,6 @@ msgstr "时间正在开始 (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "时间正在停止 (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "主要限制"
-
 msgid "Setup.Recording$Default priority"
 msgstr "默认优先"
 
@@ -1072,6 +1088,9 @@ msgstr "媒体速度模式"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "显示回放模式"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "恢复 ID"

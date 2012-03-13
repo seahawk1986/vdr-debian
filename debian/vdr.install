@@ -1,8 +1,8 @@
 vdr                                     usr/bin/
+svdrpsend                               usr/bin/
 debian/runvdr                           usr/sbin/
 
-epg2html.pl                             usr/lib/vdr/
-svdrpsend.pl                            usr/lib/vdr/
+epg2html                                usr/lib/vdr/
 debian/config-loader.sh                 usr/lib/vdr/
 debian/plugin-loader.sh                 usr/lib/vdr/
 debian/commands-loader.sh               usr/lib/vdr/
@@ -14,6 +14,7 @@ debian/vdr-shutdown.wrapper             usr/lib/vdr/
 
 diseqc.conf                             etc/vdr/
 keymacros.conf                          etc/vdr/
+scr.conf                                etc/vdr/
 sources.conf                            etc/vdr/
 svdrphosts.conf                         etc/vdr/
 debian/vdr.groups                       etc/vdr/

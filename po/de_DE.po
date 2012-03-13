@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2010-01-16 16:46+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -72,6 +72,9 @@ msgstr "Hierarchie"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr "PlpId"
 
 msgid "Starting EPG scan"
 msgstr "Aktualisiere EPG-Daten"
@@ -645,6 +648,12 @@ msgstr "Datei"
 msgid "Button$Folder"
 msgstr "Verzeichnis"
 
+msgid "Button$Once"
+msgstr "Einmalig"
+
+msgid "Button$Repeating"
+msgstr "Wiederholend"
+
 msgid "First day"
 msgstr "Erster Tag"
 
@@ -740,6 +749,9 @@ msgstr "Fehler beim Ansprechen der Aufzeichnung!"
 
 msgid "Delete recording?"
 msgstr "Aufzeichnung löschen?"
+
+msgid "Recording is being edited - really delete?"
+msgstr "Aufzeichnung wird geschnitten - trotzdem löschen?"
 
 msgid "Error while deleting recording!"
 msgstr "Fehler beim Löschen der Aufzeichnung!"
@@ -962,6 +974,13 @@ msgstr "Untere LNB-Frequenz (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Obere LNB-Frequenz (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr "Device %d angeschlossen an Sat-Kabel"
+
+msgid "Setup.LNB$own"
+msgstr "eigenes"
+
 msgid "CAM reset"
 msgstr "CAM zurückgesetzt"
 
@@ -1016,9 +1035,6 @@ msgstr "Vorlauf zum Timer-Beginn (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Nachlauf am Timer-Ende (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Primär-Limit"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Default-Priorität"
 
@@ -1069,6 +1085,9 @@ msgstr "Mehrstufiger Vor-/Rücklauf"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Wiedergabestatus anzeigen"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr "Verbleibende Zeit anzeigen"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"
@@ -1321,4 +1340,4 @@ msgstr "Taste drücken, um Neustart abzubrechen"
 
 #, c-format
 msgid "VDR will shut down in %s minutes"
-msgstr "VDR wird in %s Minuten ausschalten"
+msgstr "VDR wird in %s Minuten abgeschaltet"

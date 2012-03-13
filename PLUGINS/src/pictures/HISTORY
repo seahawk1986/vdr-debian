@@ -55,3 +55,19 @@ VDR Plugin 'pictures' Revision History
 - The pic2mpg script now generates HD images (thanks to Andre Weidemann for his
   support in using convert/ffmpeg). The old SD version is still available as
   pic2mpg-sd.
+
+2011-11-02:
+
+- Fixed handling images that are rotated by 180 degrees in pic2mpg.
+
+2012-01-08:
+
+- Added option -o to pic2mpg.
+
+2012-02-17:
+
+- cReadDir::Next() now skips directory entries "." and "..".
+
+2012-02-27: Version 0.1.2
+
+- Removed an obsolete command line option.

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-03-17 19:00+0100\n"
 "Last-Translator: Adrian Caval <anrxc@sysphere.org>\n"
 "Language-Team: Croatian <vdr@linuxtv.org>\n"
@@ -73,6 +73,9 @@ msgid "Hierarchy"
 msgstr "Hijerarhija"
 
 msgid "Rolloff"
+msgstr ""
+
+msgid "PlpId"
 msgstr ""
 
 msgid "Starting EPG scan"
@@ -647,6 +650,12 @@ msgstr "Datoteka"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Prvi dan"
 
@@ -742,6 +751,9 @@ msgstr "Gre¹ka pri pristupanju snimke!"
 
 msgid "Delete recording?"
 msgstr "Obrisati snimku?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Gre¹ka pri brisanju snimke!"
@@ -964,6 +976,13 @@ msgstr "Donja LNB frekv. (MHz)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Gornja LNB frekv. (MHz)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "Ponovno pokreni CAM"
 
@@ -1018,9 +1037,6 @@ msgstr "Rezerva na poèetku snimanja (min)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Rezerva na kraju (min)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Standardno ogranièenje"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Zadani prioritet"
 
@@ -1071,6 +1087,9 @@ msgstr "Vi¹estruke brzine prikaza"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Prika¾i naèin prikazivanja"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID nastavka"

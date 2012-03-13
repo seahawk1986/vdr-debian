@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 2.4 2011/08/26 16:16:46 kls Exp $
+ * $Id: eitscan.c 2.6 2012/03/07 13:54:34 kls Exp $
  */
 
 #include "eitscan.h"
@@ -92,7 +92,6 @@ cEITScanner EITScanner;
 cEITScanner::cEITScanner(void)
 {
   lastScan = lastActivity = time(NULL);
-  currentDevice = NULL;
   currentChannel = 0;
   scanList = NULL;
   transponderList = NULL;
@@ -150,7 +149,7 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= CA_ENCRYPTED_MIN) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (!Device->Receiving()) {
-                                  bool MaySwitchTransponder = Device->MaySwitchTransponder();
+                                  bool MaySwitchTransponder = Device->MaySwitchTransponder(Channel);
                                   if (MaySwitchTransponder || Device->ProvidesTransponderExclusively(Channel) && now - lastActivity > Setup.EPGScanTimeout * 3600) {
                                      if (!MaySwitchTransponder) {
                                         if (Device == cDevice::ActualDevice() && !currentChannel) {
@@ -159,10 +158,8 @@ void cEITScanner::Process(void)
                                            Skins.Message(mtInfo, tr("Starting EPG scan"));
                                            }
                                         }
-                                     currentDevice = Device;//XXX see also dvbdevice.c!!!
                                      //dsyslog("EIT scan: device %d  source  %-8s tp %5d", Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());
                                      Device->SwitchChannel(Channel, false);
-                                     currentDevice = NULL;
                                      scanList->Del(ScanData);
                                      AnyDeviceSwitched = true;
                                      break;

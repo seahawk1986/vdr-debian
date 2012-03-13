@@ -1,3 +1,26 @@
+vdr (1.7.26-1~xeatre1) unstable; urgency=low
+
+  * New upstream release
+  * Standards-Version: 3.9.3
+  * Install scr.conf (Satellite Channel Routing) to /etc/vdr/ (Closes: #660729)
+  * Updated debianize-vdrplugin to use the debhelper V7 format
+  * Build-depend on linux-libc-dev (>= 3.0) (DVB driver API >= 5.3 required
+    now, which was introduced in Linux 3.0-rc!)
+  * 17_epg_channel_name_width.patch
+    Show more of the channel names in the EPG now/next listings.
+    Without this, I see 'BBC ON', BBC TW', 'ITV1', 'Channe', 'Channe' etc.
+  * Enabled parallel build.
+  * Dropped multipatch patches - these are available in the etobi-branch
+    of the Git repository
+  * Dropped dpatch and use quilt for the patches - no PATCHVARIANT support
+    anymore! To build VDR with a different set of patches, grab the
+    appropriate branch from the Git.
+  * Added build-arch, build-indep targets
+  * Added installation of the dvbhddevice plugin
+  * chown +r on /proc/av7110_ir and /proc/budget_ci_ir
+
+ -- Tobias Grimm <etobi@debian.org>  Wed, 26 Oct 2011 00:10:58 +0200
+
 vdr (1.7.21-1~xeatre4) unstable; urgency=low
 
   * Addd patch to allow setting frame rate for PES recordings via info.vdr

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 2.3 2010/03/06 16:15:59 kls Exp $
+ * $Id: menu.h 2.5 2012/03/08 13:11:40 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -76,6 +76,7 @@ private:
   int channel;
   bool addIfConfirmed;
   cMenuEditStrItem *file;
+  cMenuEditDateItem *day;
   cMenuEditDateItem *firstday;
   eOSState SetFolder(void);
   void SetFirstDayItem(void);
@@ -276,7 +277,7 @@ private:
   void EditCut(void);
   void EditTest(void);
 public:
-  cReplayControl(void);
+  cReplayControl(bool PauseLive = false);
   virtual ~cReplayControl();
   void Stop(void);
   virtual cOsdObject *GetInfo(void);

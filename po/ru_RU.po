@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2011-08-27 11:54+0200\n"
+"POT-Creation-Date: 2012-03-08 14:37+0100\n"
 "PO-Revision-Date: 2008-12-15 14:37+0100\n"
 "Last-Translator: Oleg Roitburd <oleg@roitburd.de>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -73,6 +73,9 @@ msgstr "Иерархия"
 
 msgid "Rolloff"
 msgstr "Rolloff"
+
+msgid "PlpId"
+msgstr ""
 
 msgid "Starting EPG scan"
 msgstr "Начинаю EPG-сканирование"
@@ -646,6 +649,12 @@ msgstr "Файл"
 msgid "Button$Folder"
 msgstr ""
 
+msgid "Button$Once"
+msgstr ""
+
+msgid "Button$Repeating"
+msgstr ""
+
 msgid "First day"
 msgstr "Первый день"
 
@@ -741,6 +750,9 @@ msgstr "Ошибка доступа к записи!"
 
 msgid "Delete recording?"
 msgstr "Стереть запись?"
+
+msgid "Recording is being edited - really delete?"
+msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Ошибка удаления записи!"
@@ -963,6 +975,13 @@ msgstr "Нижняя частота конвертера (МГц)"
 msgid "Setup.LNB$High LNB frequency (MHz)"
 msgstr "Верхняя частота конвертера (МГц)"
 
+#, c-format
+msgid "Setup.LNB$Device %d connected to sat cable"
+msgstr ""
+
+msgid "Setup.LNB$own"
+msgstr ""
+
 msgid "CAM reset"
 msgstr "CAM перегружен"
 
@@ -1017,9 +1036,6 @@ msgstr "Опережение начала записи (мин)"
 msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Запаздывание остановки записи (мин)"
 
-msgid "Setup.Recording$Primary limit"
-msgstr "Мин. приоритет захвата осн. устройства"
-
 msgid "Setup.Recording$Default priority"
 msgstr "Приоритет таймера по умолчанию"
 
@@ -1070,6 +1086,9 @@ msgstr "Многоскоростной режим"
 
 msgid "Setup.Replay$Show replay mode"
 msgstr "Отображать режим воспроизведения"
+
+msgid "Setup.Replay$Show remaining time"
+msgstr ""
 
 msgid "Setup.Replay$Resume ID"
 msgstr "ID воспроизведения"
