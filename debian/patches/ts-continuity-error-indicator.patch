@@ -4,9 +4,10 @@
 ## DP: the number of discontinuity errors
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recorder.c vdr1.7+/recorder.c
---- vdr1.7+~/recorder.c	2011-10-25 22:11:37.000000000 +0200
-+++ vdr1.7+/recorder.c	2011-10-25 22:11:37.000000000 +0200
+Index: vdr/recorder.c
+===================================================================
+--- vdr.orig/recorder.c	2012-03-13 23:19:17.000000000 +0100
++++ vdr/recorder.c	2012-03-13 23:19:27.000000000 +0100
 @@ -121,6 +121,7 @@
    time_t t = time(NULL);
    bool InfoWritten = false;
@@ -32,9 +33,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
                      if (recordFile->Write(b, Count) < 0) {
                         LOG_ERROR_STR(fileName->Name());
                         break;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recording.c vdr1.7+/recording.c
---- vdr1.7+~/recording.c	2011-10-25 22:11:37.000000000 +0200
-+++ vdr1.7+/recording.c	2011-10-25 22:11:37.000000000 +0200
+Index: vdr/recording.c
+===================================================================
+--- vdr.orig/recording.c	2012-03-13 23:19:11.000000000 +0100
++++ vdr/recording.c	2012-03-13 23:19:27.000000000 +0100
 @@ -321,6 +321,7 @@
    event = ownEvent ? ownEvent : Event;
    aux = NULL;
@@ -72,9 +74,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    fprintf(f, "%sP %d\n", Prefix, priority);
    fprintf(f, "%sL %d\n", Prefix, lifetime);
    if (aux)
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recording.h vdr1.7+/recording.h
---- vdr1.7+~/recording.h	2011-10-25 22:11:37.000000000 +0200
-+++ vdr1.7+/recording.h	2011-10-25 22:12:56.000000000 +0200
+Index: vdr/recording.h
+===================================================================
+--- vdr.orig/recording.h	2012-03-13 23:19:11.000000000 +0100
++++ vdr/recording.h	2012-03-13 23:19:27.000000000 +0100
 @@ -56,6 +56,7 @@
    cEvent *ownEvent;
    char *aux;
@@ -92,10 +95,11 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    bool Write(FILE *f, const char *Prefix = "") const;
    bool Read(void);
    bool Write(void) const;
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/remux.c vdr1.7+/remux.c
---- vdr1.7+~/remux.c	2011-10-25 22:04:26.000000000 +0200
-+++ vdr1.7+/remux.c	2011-10-25 22:11:37.000000000 +0200
-@@ -1029,3 +1029,44 @@
+Index: vdr/remux.c
+===================================================================
+--- vdr.orig/remux.c	2012-03-13 23:18:15.000000000 +0100
++++ vdr/remux.c	2012-03-13 23:19:27.000000000 +0100
+@@ -1033,3 +1033,44 @@
          }
    return Processed;
  }
@@ -140,9 +144,10 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
 +         }
 +      }
 +}
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/remux.h vdr1.7+/remux.h
---- vdr1.7+~/remux.h	2011-10-25 22:04:26.000000000 +0200
-+++ vdr1.7+/remux.h	2011-10-25 22:11:37.000000000 +0200
+Index: vdr/remux.h
+===================================================================
+--- vdr.orig/remux.h	2012-03-13 23:18:15.000000000 +0100
++++ vdr/remux.h	2012-03-13 23:19:27.000000000 +0100
 @@ -390,4 +390,29 @@
        ///< available.
    };

@@ -7,10 +7,11 @@
 ## DP: increased.
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/config.c vdr1.7+/config.c
---- vdr1.7+~/config.c	2011-10-25 22:04:26.000000000 +0200
-+++ vdr1.7+/config.c	2011-10-25 22:06:47.000000000 +0200
-@@ -399,6 +399,7 @@
+Index: vdr/config.c
+===================================================================
+--- vdr.orig/config.c	2012-03-13 23:18:15.000000000 +0100
++++ vdr/config.c	2012-03-13 23:19:17.000000000 +0100
+@@ -462,6 +462,7 @@
    InitialVolume = -1;
    ChannelsWrap = 0;
    EmergencyExit = 1;
@@ -18,36 +19,38 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -591,6 +592,7 @@
-   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
+@@ -656,6 +657,7 @@
+   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
    else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
 +  else if (!strcasecmp(Name, "RecorderBufSize"))     RecorderBufSize    = atoi(Value);
    else
       return false;
    return true;
-@@ -687,6 +689,7 @@
-   Store("InitialVolume",      InitialVolume);
+@@ -753,6 +755,7 @@
+   Store("DeviceBondings",     DeviceBondings);
    Store("ChannelsWrap",       ChannelsWrap);
    Store("EmergencyExit",      EmergencyExit);
 +  Store("RecorderBufSize",    RecorderBufSize);
  
    Sort();
  
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/config.h vdr1.7+/config.h
---- vdr1.7+~/config.h	2011-10-25 22:04:26.000000000 +0200
-+++ vdr1.7+/config.h	2011-10-25 22:06:47.000000000 +0200
-@@ -290,6 +290,7 @@
+Index: vdr/config.h
+===================================================================
+--- vdr.orig/config.h	2012-03-13 23:18:15.000000000 +0100
++++ vdr/config.h	2012-03-13 23:19:17.000000000 +0100
+@@ -313,6 +313,7 @@
    int InitialVolume;
    int ChannelsWrap;
    int EmergencyExit;
 +  int RecorderBufSize;
    int __EndData__;
    cString InitialChannel;
-   cSetup(void);
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr1.7+~/recorder.c vdr1.7+/recorder.c
---- vdr1.7+~/recorder.c	2011-10-25 22:04:26.000000000 +0200
-+++ vdr1.7+/recorder.c	2011-10-25 22:08:48.000000000 +0200
+   cString DeviceBondings;
+Index: vdr/recorder.c
+===================================================================
+--- vdr.orig/recorder.c	2012-03-13 23:18:15.000000000 +0100
++++ vdr/recorder.c	2012-03-13 23:19:17.000000000 +0100
 @@ -10,7 +10,7 @@
  #include "recorder.h"
  #include "shutdown.h"

@@ -5,10 +5,11 @@
 ## DP: Required for the SVDRP extensions plugin.
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/menu.h vdr/menu.h
---- vdr~/menu.h	2010-12-23 22:14:33.000000000 +0100
-+++ vdr/menu.h	2011-12-06 02:46:05.000000000 +0100
-@@ -265,14 +265,10 @@
+Index: vdr/menu.h
+===================================================================
+--- vdr.orig/menu.h	2012-03-13 23:18:15.000000000 +0100
++++ vdr/menu.h	2012-03-13 23:19:21.000000000 +0100
+@@ -266,14 +266,10 @@
    void TimeSearchProcess(eKeys Key);
    void TimeSearch(void);
    void ShowTimed(int Seconds = 0);
@@ -23,7 +24,7 @@ diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' 
    void EditCut(void);
    void EditTest(void);
  public:
-@@ -284,6 +280,10 @@
+@@ -285,6 +281,10 @@
    virtual void Show(void);
    virtual void Hide(void);
    bool Visible(void) { return visible; }

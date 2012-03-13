@@ -5,10 +5,11 @@
 ## DP: Use frame rate from info file even for PES recordings
 
 @DPATCH@
-diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr~/recording.c vdr/recording.c
---- vdr~/recording.c	2011-10-25 22:04:26.000000000 +0200
-+++ vdr/recording.c	2012-01-23 23:25:26.000000000 +0100
-@@ -719,8 +719,8 @@
+Index: vdr/recording.c
+===================================================================
+--- vdr.orig/recording.c	2012-03-13 23:19:27.000000000 +0100
++++ vdr/recording.c	2012-03-13 23:19:30.000000000 +0100
+@@ -734,8 +734,8 @@
          else if (!isPesRecording) {
             priority = info->priority;
             lifetime = info->lifetime;
