@@ -9,6 +9,7 @@
 82_valgrind.patch
 
 99_ncursesw-include.patch
+99_lc_numeric.patch
 
 xeatre-recstart-macro.patch
 xeatre-configurable-recordbuffer-size.patch

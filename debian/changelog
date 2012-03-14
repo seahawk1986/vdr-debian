@@ -1,3 +1,9 @@
+vdr (1.7.26-1~xeatre2) unstable; urgency=low
+
+  * Added 99_lc_numeric.patch
+
+ -- Tobias Grimm <tg@e-tobi.net>  Wed, 14 Mar 2012 20:02:34 +0100
+
 vdr (1.7.26-1~xeatre1) unstable; urgency=low
 
   * New upstream release
@@ -19,7 +25,7 @@ vdr (1.7.26-1~xeatre1) unstable; urgency=low
   * Added installation of the dvbhddevice plugin
   * chown +r on /proc/av7110_ir and /proc/budget_ci_ir
 
- -- Tobias Grimm <etobi@debian.org>  Wed, 26 Oct 2011 00:10:58 +0200
+ -- Tobias Grimm <tg@e-tobi.net>  Wed, 26 Oct 2011 00:10:58 +0200
 
 vdr (1.7.21-1~xeatre4) unstable; urgency=low
 
