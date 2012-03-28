@@ -1,4 +1,4 @@
-debian/patches/opt-20_liemikuutio.patch:aff4b9cd0a7bef47b0a35c59d735acbd
+debian/patches/opt-20_liemikuutio.patch:a724587fb8d95bca266df8fec67cb71d
 debian/patches/opt-27_ttxtsubs.patch:edee4d1927f7e4606d3e177e8b3f392b
 debian/patches/12_osdbase-maxitems.patch:2c1da1d095dac066237d77f8dedde68d
 debian/patches/16_channels.conf.terr-fix.patch:d8b141b9ffdbb9841625f1671eacd25d
@@ -6,7 +6,7 @@ debian/patches/82_valgrind.patch:02f07d119ac1f7c9112060bdbe105e54
 debian/patches/opt-45_yaepg.patch:ebfc90b2ee42a1ed67cc2a033afc7832
 debian/patches/04_newplugin.patch:1caa94c8f161b8f5cee8848ad5ed617c
 debian/patches/99_ncursesw-include.patch:a0afe2be5c9453ea7c93d6f2abff1e3a
-debian/patches/opt-24_jumpplay.patch:d4c0120d85745d2139c95b06042347a5
+debian/patches/opt-24_jumpplay.patch:0856a9d4433bac830b086cbf18c0682f
 debian/patches/opt-41-x_timer-info.patch:9461f18f19577b74d8e5a370a033d792
 debian/patches/opt-43-x_recordshowfree.patch:1f5c356e66136ab5ba7c51cd4b196b9a
 debian/patches/opt-42-x_MainMenuHooks.patch:648ee497dd3c3ec1ce824cc1442e7d2b
@@ -14,6 +14,6 @@ debian/patches/opt-50_graphtft-liemikuutio.patch:f21935955b6e1ad2ce2d274e84856f6
 debian/patches/06_default_svdrp_port_0.patch:961fed0d8413e21265d9d9a75910663b
 debian/patches/opt-50_graphtft.patch:4fa3b5b529ab273feee5e0783415c3d1
 debian/patches/opt-37-x_menuorg.patch:b9a001ede140f6a155372a351e2b85fc
-debian/patches/opt-22-x_edit_marks.patch:c3ba02b37f27f3a913415819f1d5b200
+debian/patches/opt-22-x_edit_marks.patch:5ec87a8f787d4d74d01fb30abc456958
 debian/patches/11_sortrecordings.patch:faf3aa6ba793831039e45090db3ee099
 debian/patches/81_Make_config.patch:2c8d5f7511ebaaf156fcf96c3310b290
