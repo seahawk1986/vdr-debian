@@ -5,8 +5,8 @@ Origin: http://www.jepsennet.de/vdr/download/11_sortrecordings.dpatch
 
 Index: vdr/recording.c
 ===================================================================
---- vdr.orig/recording.c	2011-12-10 22:22:04.000000000 +0100
-+++ vdr/recording.c	2011-12-11 01:48:54.000000000 +0100
+--- vdr.orig/recording.c	2012-03-28 20:18:26.000000000 +0200
++++ vdr/recording.c	2012-03-28 20:18:33.000000000 +0200
 @@ -811,8 +811,8 @@
                s1 = t;
             }

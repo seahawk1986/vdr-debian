@@ -4,9 +4,9 @@ Author: Frank Schmirler <vdrdev@schmirler.de>
 
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2012-03-11 20:01:02.000000000 +0100
-+++ vdr/menu.c	2012-03-11 20:01:18.000000000 +0100
-@@ -3642,15 +3642,30 @@
+--- vdr.orig/menu.c	2012-03-28 20:18:39.000000000 +0200
++++ vdr/menu.c	2012-03-28 20:18:39.000000000 +0200
+@@ -3646,15 +3646,30 @@
  
    // Initial submenus:
  
@@ -43,7 +43,7 @@ Index: vdr/menu.c
  }
  
  cOsdObject *cMenuMain::PluginOsdObject(void)
-@@ -3803,13 +3818,34 @@
+@@ -3807,13 +3822,34 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -84,7 +84,7 @@ Index: vdr/menu.c
      case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                            cOsdItem *item = Get(Current());
                            if (item) {
-@@ -3902,6 +3938,8 @@
+@@ -3906,6 +3942,8 @@
                 default:      break;
                 }
      }
@@ -95,8 +95,8 @@ Index: vdr/menu.c
    if (Key != kNone) {
 Index: vdr/config.h
 ===================================================================
---- vdr.orig/config.h	2012-03-11 20:01:02.000000000 +0100
-+++ vdr/config.h	2012-03-11 20:01:45.000000000 +0100
+--- vdr.orig/config.h	2012-03-28 20:18:37.000000000 +0200
++++ vdr/config.h	2012-03-28 20:18:39.000000000 +0200
 @@ -40,6 +40,8 @@
   
  #define JUMPPLAYVERSNUM 100
@@ -109,7 +109,7 @@ Index: vdr/config.h
 Index: vdr/README.MainMenuHooks
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/README.MainMenuHooks	2012-03-11 20:01:18.000000000 +0100
++++ vdr/README.MainMenuHooks	2012-03-28 20:18:39.000000000 +0200
 @@ -0,0 +1,55 @@
 +This is a "patch" for the Video Disk Recorder (VDR).
 +

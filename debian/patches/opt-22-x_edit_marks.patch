@@ -6,9 +6,9 @@ Origin: http://vdrportal.de/board/thread.php?postid=718583#post718583
 
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2012-01-15 21:20:51.000000000 +0100
-+++ vdr/menu.c	2012-01-15 21:21:03.000000000 +0100
-@@ -5034,10 +5034,6 @@
+--- vdr.orig/menu.c	2012-03-28 20:18:36.000000000 +0200
++++ vdr/menu.c	2012-03-28 20:18:36.000000000 +0200
+@@ -5048,10 +5048,6 @@
      case kGreen:   SkipSeconds(-60); break;
      case kYellow|k_Repeat:
      case kYellow:  SkipSeconds( 60); break;
@@ -19,7 +19,7 @@ Index: vdr/menu.c
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5065,10 +5061,46 @@
+@@ -5079,10 +5075,46 @@
                     Stop();
                     return osEnd;
      default: {
