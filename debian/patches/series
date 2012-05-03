@@ -8,6 +8,7 @@
 82_valgrind.patch
 
 99_ncursesw-include.patch
+fontconfig_fontsort.patch
 
 # Patch collection (replaces enAIO).
 opt-20_liemikuutio.patch

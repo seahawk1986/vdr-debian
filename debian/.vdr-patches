@@ -3,6 +3,7 @@ debian/patches/opt-27_ttxtsubs.patch:edee4d1927f7e4606d3e177e8b3f392b
 debian/patches/12_osdbase-maxitems.patch:2c1da1d095dac066237d77f8dedde68d
 debian/patches/16_channels.conf.terr-fix.patch:d8b141b9ffdbb9841625f1671eacd25d
 debian/patches/82_valgrind.patch:02f07d119ac1f7c9112060bdbe105e54
+debian/patches/fontconfig_fontsort.patch:6a08714204d718800899fb9d1ce544fa
 debian/patches/opt-45_yaepg.patch:ebfc90b2ee42a1ed67cc2a033afc7832
 debian/patches/04_newplugin.patch:1caa94c8f161b8f5cee8848ad5ed617c
 debian/patches/99_ncursesw-include.patch:a0afe2be5c9453ea7c93d6f2abff1e3a

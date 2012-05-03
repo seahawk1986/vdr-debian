@@ -1,3 +1,11 @@
+vdr (1.7.27-2~etobi1) unstable; urgency=low
+
+  * Fixed issue with fontconfig 2.9 (Closes: #671223)
+  * Fixed removing user vdr from groups in vdr-groups.sh
+  * Fix bashism in vdr-groups.sh (Closes: #669937)
+
+ -- Tobias Grimm <etobi@debian.org>  Thu, 03 May 2012 19:33:19 +0200
+
 vdr (1.7.27-1~etobi1) unstable; urgency=low
 
   * New upstream release
