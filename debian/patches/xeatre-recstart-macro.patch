@@ -8,10 +8,10 @@
 ## DP: from a loop recording.
 
 @DPATCH@
-Index: vdr/recording.c
+Index: vdr1.7+/recording.c
 ===================================================================
---- vdr.orig/recording.c	2012-03-13 23:18:56.000000000 +0100
-+++ vdr/recording.c	2012-03-13 23:19:11.000000000 +0100
+--- vdr1.7+.orig/recording.c	2012-05-29 16:07:16.000000000 +0200
++++ vdr1.7+/recording.c	2012-05-29 16:07:19.000000000 +0200
 @@ -635,10 +635,16 @@
       }
    const char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
@@ -31,15 +31,15 @@ Index: vdr/recording.c
       // avoid blanks at the end:
       int l = strlen(name);
       while (l-- > 2) {
-Index: vdr/recording.h
+Index: vdr1.7+/recording.h
 ===================================================================
---- vdr.orig/recording.h	2012-03-13 23:18:56.000000000 +0100
-+++ vdr/recording.h	2012-03-13 23:19:11.000000000 +0100
+--- vdr1.7+.orig/recording.h	2012-05-29 16:07:16.000000000 +0200
++++ vdr1.7+/recording.h	2012-05-29 16:07:19.000000000 +0200
 @@ -21,6 +21,7 @@
  #define FOLDERDELIMCHAR '~'
  #define TIMERMACRO_TITLE    "TITLE"
  #define TIMERMACRO_EPISODE  "EPISODE"
 +#define TIMERMACRO_RECSTART  "RECSTART"
  
- #define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
+ //#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
  

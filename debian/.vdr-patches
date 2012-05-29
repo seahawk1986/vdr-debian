@@ -1,5 +1,5 @@
 debian/patches/xeatre-configurable-recordbuffer-size.patch:965381ebed99dc77d3a7e4c08d1126c8
-debian/patches/xeatre-recstart-macro.patch:81bf30cce1c0ca74303c10568801eeb1
+debian/patches/xeatre-recstart-macro.patch:8d2f4f05c1da969173243e4e19aab0f9
 debian/patches/12_osdbase-maxitems.patch:10ab91b6a8619bdb50d37e2de6ec50d0
 debian/patches/16_channels.conf.terr-fix.patch:933f8daa6bb6d26c711d0ae987a2b03e
 debian/patches/82_valgrind.patch:27e07a83103317b9bc90ac9b836e2c47
