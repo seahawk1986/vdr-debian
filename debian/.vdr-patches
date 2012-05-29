@@ -1,13 +1,10 @@
 debian/patches/xeatre-configurable-recordbuffer-size.patch:965381ebed99dc77d3a7e4c08d1126c8
 debian/patches/xeatre-recstart-macro.patch:81bf30cce1c0ca74303c10568801eeb1
-debian/patches/12_osdbase-maxitems.patch:f6fc7c5a100f8e891280195b3e1d69ba
+debian/patches/12_osdbase-maxitems.patch:10ab91b6a8619bdb50d37e2de6ec50d0
 debian/patches/16_channels.conf.terr-fix.patch:933f8daa6bb6d26c711d0ae987a2b03e
-debian/patches/17_epg_channel_name_width.patch:12180ba935fa7834f818fcae9e0ed182
+debian/patches/82_valgrind.patch:27e07a83103317b9bc90ac9b836e2c47
 debian/patches/xeatre-svdrpdebug.patch:d468a230d8ed093d9f9e45b784029846
 debian/patches/04_newplugin.patch:5877f4f62dab4f3d437d4eef7cae3ac0
-debian/patches/99_ncursesw-include.patch:9bafeb768f7921015a5bab5e47786950
-debian/patches/99_lc_numeric.patch:aa4d511b371b75dd2970d928755e38ea
-debian/patches/82_valgrind.patch:60ad50e72eabb0861d096d1002fddca7
 debian/patches/06_default_svdrp_port_0.patch:4835f681f185991262a3160146f43f2f
 debian/patches/xeatre-manualframerate.patch:dfca0becfce9dc1694fd2f894622fd15
 debian/patches/xeatre-svdrpextensions.patch:14f7f0267d442322fc6a5c0dccf531df
