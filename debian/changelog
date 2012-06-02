@@ -2,6 +2,7 @@ vdr (1.7.27-2~xeatre2) unstable; urgency=low
 
   * Fixed problem with DW-TV
     See: http://linuxtv.org/pipermail/vdr/2012-April/026108.html
+  * Fixed patches
 
  -- Tobias Grimm <tg@e-tobi.net>  Sat, 02 Jun 2012 04:41:32 +0200
 

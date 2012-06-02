@@ -7,6 +7,9 @@
 81_Make_config.patch
 82_valgrind.patch
 
+99_ncursesw-include.patch
+fontconfig_fontsort.patch
+
 xeatre-recstart-macro.patch
 xeatre-configurable-recordbuffer-size.patch
 xeatre-svdrpextensions.patch
