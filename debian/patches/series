@@ -13,3 +13,4 @@ xeatre-svdrpextensions.patch
 xeatre-svdrpdebug.patch
 ts-continuity-error-indicator.patch
 xeatre-manualframerate.patch
+pat.c-fix.patch
