@@ -8,7 +8,7 @@ debian/patches/opt-45_yaepg.patch:cf3dcab06c31c75ae975b6476ea4b426
 debian/patches/04_newplugin.patch:1caa94c8f161b8f5cee8848ad5ed617c
 debian/patches/99_ncursesw-include.patch:202634ae3e5d18b35edd5d04d2390e01
 debian/patches/opt-24_jumpplay.patch:c3c55532ea955ced6c5fce27107e7cc1
-debian/patches/opt-41-x_timer-info.patch:eafbff3b5fe908fe4756f5096c9f9255
+debian/patches/opt-41-x_timer-info.patch:6d2ef9eb7928d8767b003801e0ea383c
 debian/patches/opt-42-x_MainMenuHooks.patch:35d440930b32c270b8239d3fa55f8f15
 debian/patches/fix-no-hddvbdevice-segfault.patch:51fca90c1a05d8ddfa6a8988c11be6f2
 debian/patches/06_default_svdrp_port_0.patch:961fed0d8413e21265d9d9a75910663b
