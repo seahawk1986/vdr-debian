@@ -8,6 +8,7 @@ vdr (1.7.28-1~etobi1) unstable; urgency=low
   * Added fix-no-hddvbdevice-segfault.patch to avoid a segfault when the
     dvbhddevice plugin is installed but no full featured HD DVB card is
     available (Closes: #674441)
+  * Updated patches, dropped opt-43-x_recordshowfree.patch
 
  -- Tobias Grimm <etobi@debian.org>  Wed, 06 Jun 2012 17:57:29 +0200
 
