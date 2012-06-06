@@ -10,6 +10,7 @@
 99_ncursesw-include.patch
 
 fix-no-hddvbdevice-segfault.patch
+fix-gcc-issue.patch
 
 # Patch collection (replaces enAIO).
 opt-20_liemikuutio.patch

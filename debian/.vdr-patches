@@ -4,6 +4,7 @@ debian/patches/12_osdbase-maxitems.patch:2c1da1d095dac066237d77f8dedde68d
 debian/patches/16_channels.conf.terr-fix.patch:d8b141b9ffdbb9841625f1671eacd25d
 debian/patches/opt-50_graphtft-liemikuutio.patch:0a69b092b9e3b0391c693904aac319c9
 debian/patches/82_valgrind.patch:02f07d119ac1f7c9112060bdbe105e54
+debian/patches/fix-gcc-issue.patch:da7db4f1f426823da318956836995667
 debian/patches/opt-45_yaepg.patch:cf3dcab06c31c75ae975b6476ea4b426
 debian/patches/04_newplugin.patch:1caa94c8f161b8f5cee8848ad5ed617c
 debian/patches/99_ncursesw-include.patch:202634ae3e5d18b35edd5d04d2390e01
