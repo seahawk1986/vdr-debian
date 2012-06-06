@@ -4,9 +4,9 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2012-03-28 20:18:42.000000000 +0200
-+++ vdr/menu.c	2012-03-28 20:18:43.000000000 +0200
-@@ -2384,6 +2384,7 @@
+--- vdr.orig/menu.c	2012-06-06 23:10:50.000000000 +0200
++++ vdr/menu.c	2012-06-06 23:10:54.000000000 +0200
+@@ -2357,6 +2357,7 @@
  public:
    cMenuEditRecording(cRecording *Recording);
    virtual eOSState ProcessKey(eKeys Key);
