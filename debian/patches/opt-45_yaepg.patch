@@ -4,8 +4,8 @@ Origin: http://www.hoochvdr.info/yaepg/vdr-1.3.19-core-yaepg.diff
 
 Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
 ===================================================================
---- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2012-06-06 23:10:48.000000000 +0200
+--- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-01-23 21:58:28.000000000 +0100
++++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-03-03 09:22:33.000000000 +0100
 @@ -77,6 +77,10 @@
              Cmd(OSD_SetWindow, 0, i + 1);
              Cmd(OSD_Close);
@@ -42,8 +42,8 @@ Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
  }
 Index: vdr/device.h
 ===================================================================
---- vdr.orig/device.h	2012-06-06 23:10:30.000000000 +0200
-+++ vdr/device.h	2012-06-06 23:10:48.000000000 +0200
+--- vdr.orig/device.h	2013-03-03 09:22:06.000000000 +0100
++++ vdr/device.h	2013-03-03 09:22:33.000000000 +0100
 @@ -304,12 +304,12 @@
           ///< Direction (only the sign of Direction is evaluated, positive values
           ///< switch to higher channel numbers).
@@ -61,9 +61,9 @@ Index: vdr/device.h
    static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }
 Index: vdr/osd.c
 ===================================================================
---- vdr.orig/osd.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/osd.c	2012-06-06 23:10:48.000000000 +0200
-@@ -1644,6 +1644,7 @@
+--- vdr.orig/osd.c	2013-03-03 08:43:26.000000000 +0100
++++ vdr/osd.c	2013-03-03 09:22:33.000000000 +0100
+@@ -1643,6 +1643,7 @@
           }
        }
    Osds.Append(this);
@@ -73,9 +73,9 @@ Index: vdr/osd.c
  cOsd::~cOsd()
 Index: vdr/osd.h
 ===================================================================
---- vdr.orig/osd.h	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/osd.h	2012-06-06 23:10:48.000000000 +0200
-@@ -931,6 +931,7 @@
+--- vdr.orig/osd.h	2013-03-03 08:43:26.000000000 +0100
++++ vdr/osd.h	2013-03-03 09:22:33.000000000 +0100
+@@ -926,6 +926,7 @@
         ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
         ///<        delete pm;
         ///<        }

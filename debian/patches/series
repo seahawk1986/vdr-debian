@@ -4,16 +4,6 @@
 
 99_ncursesw-include.patch
 
-# Patch collection (replaces enAIO).
-opt-20_liemikuutio.patch
-
-# Easy editing of cutting marks
-# (Requires opt-20_liemikuutio!)
-opt-22-x_edit_marks.patch
-
-# The Jump patch allows automatic jumping over cutting marks.
-opt-24_jumpplay.patch
-
 # Patch needed for the ttxtsubs plugin.
 opt-27_ttxtsubs.patch
 
@@ -37,7 +27,3 @@ opt-45_yaepg.patch
 
 # Patch required for the GraphTFT plugin
 opt-50_graphtft.patch
-opt-50_graphtft-liemikuutio.patch
-
-# Setup for AC3 transfer, QAM_256, disable primary tuner
-# opt-53_dvbsetup.patch
