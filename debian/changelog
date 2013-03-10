@@ -1,6 +1,7 @@
 vdr (1.7.40-1~etobi1) unstable; urgency=low
 
   * New upstream release
+  * Updated ttxtsubs patch from ttxtsibs plugin version 0.3.0
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 10 Mar 2013 18:42:30 +0100
 

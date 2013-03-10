@@ -8,7 +8,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 Index: vdr/mainmenuitemsprovider.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/mainmenuitemsprovider.h	2013-03-06 22:17:46.000000000 +0100
++++ vdr/mainmenuitemsprovider.h	2013-03-10 18:45:11.000000000 +0100
 @@ -0,0 +1,60 @@
 +/*
 + * vdr-menuorg - A plugin for the Linux Video Disk Recorder
@@ -72,8 +72,8 @@ Index: vdr/mainmenuitemsprovider.h
 +#endif //__MAINMENUITEMSPROVIDER_H
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2013-03-06 22:17:44.000000000 +0100
-+++ vdr/menu.c	2013-03-06 22:17:46.000000000 +0100
+--- vdr.orig/menu.c	2013-03-10 18:45:08.000000000 +0100
++++ vdr/menu.c	2013-03-10 18:45:11.000000000 +0100
 @@ -31,6 +31,7 @@
  #include "timers.h"
  #include "transfer.h"
@@ -82,7 +82,7 @@ Index: vdr/menu.c
  
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
-@@ -3373,6 +3374,9 @@
+@@ -3376,6 +3377,9 @@
    cancelEditingItem = NULL;
    stopRecordingItem = NULL;
    recordControlsState = 0;
@@ -92,7 +92,7 @@ Index: vdr/menu.c
    Set();
  
    // Initial submenus:
-@@ -3401,6 +3405,29 @@
+@@ -3404,6 +3408,29 @@
    SetTitle("VDR");
    SetHasHotkeys();
  
@@ -122,7 +122,7 @@ Index: vdr/menu.c
    // Basic menu items:
  
    Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
-@@ -3427,6 +3454,8 @@
+@@ -3430,6 +3457,8 @@
    if (Commands.Count())
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
@@ -131,7 +131,7 @@ Index: vdr/menu.c
    Update(true);
  
    Display();
-@@ -3532,6 +3561,41 @@
+@@ -3535,6 +3564,41 @@
                           state = osEnd;
                         }
                         break;
@@ -176,7 +176,7 @@ Index: vdr/menu.c
 Index: vdr/menuorgpatch.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/menuorgpatch.h	2013-03-06 22:17:46.000000000 +0100
++++ vdr/menuorgpatch.h	2013-03-10 18:45:11.000000000 +0100
 @@ -0,0 +1,100 @@
 +/*
 + * vdr-menuorg - A plugin for the Linux Video Disk Recorder
