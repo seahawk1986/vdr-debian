@@ -1,10 +1,10 @@
 debian/patches/opt-41-x_timer-info.patch:415aa18fc7f2400f5001a7b214c04164
-debian/patches/12_osdbase-maxitems.patch:7aa7360f9c75a23d1fb2cb5cdb12ab10
+debian/patches/12_osdbase-maxitems.patch:2453ebb246e91f62943386e196a8233b
 debian/patches/opt-45_yaepg.patch:a028d6cbd970660a72241b5948a46f0c
-debian/patches/04_newplugin.patch:1ef4b4fe16ad73193dca00cecf1b51ca
+debian/patches/04_newplugin.patch:be5169037184e60fe7265891bb8f9f94
 debian/patches/opt-27_ttxtsubs.patch:f6005824f5c15d5e2f4f618c81b946f9
 debian/patches/opt-42-x_MainMenuHooks.patch:01c3bd247fff0ee6f3530a5e80a608e7
-debian/patches/06_default_svdrp_port_0.patch:0860916fa856d9e905c9855f672e0478
+debian/patches/06_default_svdrp_port_0.patch:9c0f2bdcf5f05ae8f112bf2a31a63d91
 debian/patches/opt-50_graphtft.patch:79e72730327c802a656a49d25b3d2873
 debian/patches/opt-37-x_menuorg.patch:9068e26643a0ac1a2a9991d42b4a202c
-debian/patches/99_ncursesw-include.patch:244b4795307260d6a25d422d37265a90
+debian/patches/99_ncursesw-include.patch:a1a84fdba449583cb1759209419a413a
