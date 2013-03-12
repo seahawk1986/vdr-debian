@@ -1,7 +1,8 @@
 vdr (1.7.40-1~etobi1) unstable; urgency=low
 
   * New upstream release
-  * Updated ttxtsubs patch from ttxtsibs plugin version 0.3.0
+  * Updated ttxtsubs patch from ttxtsubs plugin version 0.3.0
+  * Delete /var/lib/vdr/channels.conf(.terr|.cable) in postrm
 
  -- Tobias Grimm <etobi@debian.org>  Sun, 10 Mar 2013 18:42:30 +0100
 
