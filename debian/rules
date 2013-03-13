@@ -15,12 +15,10 @@ MAKE_OPTIONS = PREFIX=$(PREFIX) VIDEODIR=$(VIDEODIR) LIBDIR=$(LIBDIR)
 override_dh_auto_build:
 	dh_auto_build -- $(MAKE_OPTIONS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o debian/vdr-shutdown.wrapper debian/vdr-shutdown-wrapper.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o debian/ctvdrwrapper debian/ctvdrwrapper.c
 
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -f debian/vdr-shutdown.wrapper
-	rm -f debian/ctvdrwrapper
 	rm -f debian/patchinfo
 
 override_dh_auto_install:

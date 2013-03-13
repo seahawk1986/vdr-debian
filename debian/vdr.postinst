@@ -65,12 +65,6 @@ if [ "$ACTION" = "configure" ] ; then
         chown root:$GROUP /usr/lib/vdr/vdr-shutdown.wrapper && \
         chmod a=,u+srwx,g+srx /usr/lib/vdr/vdr-shutdown.wrapper
     fi
-
-    # make /usr/lib/vdr/ctvdrwrapper setuid/setgid
-    if [ -e /usr/lib/vdr/ctvdrwrapper ] ; then
-        chown root:$GROUP /usr/lib/vdr/ctvdrwrapper && \
-        chmod a=,u+srwx,g+srx /usr/lib/vdr/ctvdrwrapper
-    fi
 fi
 
 #DEBHELPER#

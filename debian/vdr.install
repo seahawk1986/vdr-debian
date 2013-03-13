@@ -35,10 +35,4 @@ debian/commands.update-recordings.conf  usr/share/vdr/command-hooks/
 
 debian/themes/*.theme                   var/lib/vdr/themes/
 
-debian/commands.ctvdr.conf              usr/share/vdr/command-hooks/
-debian/commands.shutdownvdr.conf        usr/share/vdr/command-hooks/
-debian/ctvdrwrapper                     usr/lib/vdr/
-debian/ctvdrinfo                        usr/bin/
-debian/ctvdrsysinfo                     usr/bin/
-debian/poweroffvdr                      usr/bin/
 debian/vdraptrefresh                    usr/sbin/
