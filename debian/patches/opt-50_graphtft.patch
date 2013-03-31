@@ -4,8 +4,8 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2013-03-10 18:45:21.000000000 +0100
-+++ vdr/menu.c	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/menu.c	2013-03-31 13:47:46.000000000 +0200
++++ vdr/menu.c	2013-03-31 13:47:48.000000000 +0200
 @@ -168,6 +168,7 @@
  public:
    cMenuEditChannel(cChannel *Channel, bool New = false);
@@ -176,8 +176,8 @@ Index: vdr/menu.c
  cMenuSetup::cMenuSetup(void)
 Index: vdr/menu.h
 ===================================================================
---- vdr.orig/menu.h	2013-03-06 22:17:52.000000000 +0100
-+++ vdr/menu.h	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/menu.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/menu.h	2013-03-31 13:47:48.000000000 +0200
 @@ -29,6 +29,7 @@
    void SetText(const char *Text);
    virtual void Display(void);
@@ -228,8 +228,8 @@ Index: vdr/menu.h
  class cRecordControl {
 Index: vdr/menuitems.h
 ===================================================================
---- vdr.orig/menuitems.h	2013-03-06 22:17:52.000000000 +0100
-+++ vdr/menuitems.h	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/menuitems.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/menuitems.h	2013-03-31 13:47:48.000000000 +0200
 @@ -209,6 +209,7 @@
    cMenuSetupPage(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -240,8 +240,8 @@ Index: vdr/menuitems.h
  #endif //__MENUITEMS_H
 Index: vdr/osdbase.c
 ===================================================================
---- vdr.orig/osdbase.c	2013-03-10 18:45:07.000000000 +0100
-+++ vdr/osdbase.c	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/osdbase.c	2013-03-31 13:47:43.000000000 +0200
++++ vdr/osdbase.c	2013-03-31 13:47:48.000000000 +0200
 @@ -105,6 +105,7 @@
    free(status);
    displayMenu->Clear();
@@ -260,8 +260,8 @@ Index: vdr/osdbase.c
    displayMenuItems = displayMenu->MaxItems();
 Index: vdr/osdbase.h
 ===================================================================
---- vdr.orig/osdbase.h	2013-03-06 22:17:52.000000000 +0100
-+++ vdr/osdbase.h	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/osdbase.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/osdbase.h	2013-03-31 13:47:48.000000000 +0200
 @@ -136,6 +136,7 @@
    void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
    virtual void Display(void);
@@ -272,8 +272,8 @@ Index: vdr/osdbase.h
  #endif //__OSDBASE_H
 Index: vdr/recording.h
 ===================================================================
---- vdr.orig/recording.h	2013-03-10 18:38:22.000000000 +0100
-+++ vdr/recording.h	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/recording.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/recording.h	2013-03-31 13:47:48.000000000 +0200
 @@ -68,6 +68,7 @@
    const cEvent *GetEvent(void) const { return event; }
    const char *Title(void) const { return event->Title(); }
@@ -284,8 +284,8 @@ Index: vdr/recording.h
    const char *Aux(void) const { return aux; }
 Index: vdr/status.c
 ===================================================================
---- vdr.orig/status.c	2013-03-06 22:17:52.000000000 +0100
-+++ vdr/status.c	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/status.c	2013-03-31 13:46:29.000000000 +0200
++++ vdr/status.c	2013-03-31 13:47:48.000000000 +0200
 @@ -124,3 +124,32 @@
    for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
        sm->OsdProgramme(PresentTime, PresentTitle, PresentSubtitle, FollowingTime, FollowingTitle, FollowingSubtitle);
@@ -321,8 +321,8 @@ Index: vdr/status.c
 +}
 Index: vdr/status.h
 ===================================================================
---- vdr.orig/status.h	2013-03-06 22:17:52.000000000 +0100
-+++ vdr/status.h	2013-03-10 18:45:29.000000000 +0100
+--- vdr.orig/status.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/status.h	2013-03-31 13:47:48.000000000 +0200
 @@ -81,6 +81,17 @@
                 // The OSD displays the single line Text with the current channel information.
    virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) {}

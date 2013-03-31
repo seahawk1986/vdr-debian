@@ -1,6 +1,5 @@
 debian/patches/opt-41-x_timer-info.patch:415aa18fc7f2400f5001a7b214c04164
 debian/patches/12_osdbase-maxitems.patch:2453ebb246e91f62943386e196a8233b
-debian/patches/vdr-1.7.42-fixpendingtimers.diff:29282c8b20c2b956c86e0afa856d2c53
 debian/patches/opt-45_yaepg.patch:a028d6cbd970660a72241b5948a46f0c
 debian/patches/04_newplugin.patch:be5169037184e60fe7265891bb8f9f94
 debian/patches/opt-27_ttxtsubs.patch:d105f6fbc5856b79b1d0333eae5ec5ad

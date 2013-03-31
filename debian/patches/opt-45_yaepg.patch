@@ -4,8 +4,8 @@ Origin: http://www.hoochvdr.info/yaepg/vdr-1.3.19-core-yaepg.diff
 
 Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
 ===================================================================
---- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-03-06 22:14:27.000000000 +0100
-+++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-03-06 22:17:47.000000000 +0100
+--- vdr.orig/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-03-31 13:46:29.000000000 +0200
++++ vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c	2013-03-31 13:47:47.000000000 +0200
 @@ -77,6 +77,10 @@
              Cmd(OSD_SetWindow, 0, i + 1);
              Cmd(OSD_Close);
@@ -42,8 +42,8 @@ Index: vdr/PLUGINS/src/dvbsddevice/dvbsdffosd.c
  }
 Index: vdr/device.h
 ===================================================================
---- vdr.orig/device.h	2013-03-06 22:17:44.000000000 +0100
-+++ vdr/device.h	2013-03-06 22:17:47.000000000 +0100
+--- vdr.orig/device.h	2013-03-31 13:47:44.000000000 +0200
++++ vdr/device.h	2013-03-31 13:47:47.000000000 +0200
 @@ -304,12 +304,12 @@
           ///< Direction (only the sign of Direction is evaluated, positive values
           ///< switch to higher channel numbers).
@@ -61,8 +61,8 @@ Index: vdr/device.h
    static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }
 Index: vdr/osd.c
 ===================================================================
---- vdr.orig/osd.c	2013-03-06 22:14:27.000000000 +0100
-+++ vdr/osd.c	2013-03-06 22:17:47.000000000 +0100
+--- vdr.orig/osd.c	2013-03-31 13:46:29.000000000 +0200
++++ vdr/osd.c	2013-03-31 13:47:47.000000000 +0200
 @@ -1643,6 +1643,7 @@
           }
        }
@@ -73,8 +73,8 @@ Index: vdr/osd.c
  cOsd::~cOsd()
 Index: vdr/osd.h
 ===================================================================
---- vdr.orig/osd.h	2013-03-06 22:14:27.000000000 +0100
-+++ vdr/osd.h	2013-03-06 22:17:47.000000000 +0100
+--- vdr.orig/osd.h	2013-03-31 13:46:29.000000000 +0200
++++ vdr/osd.h	2013-03-31 13:47:47.000000000 +0200
 @@ -926,6 +926,7 @@
         ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
         ///<        delete pm;

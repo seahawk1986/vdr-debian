@@ -1,4 +1,4 @@
-vdr (2.0.0-1) unstable; urgency=low
+vdr (2.0.0-1~etobi1) unstable; urgency=low
 
   * New upstream release
   * Dropped vdr-1.7.42-fixpendingtimers.diff - fixed upstream
