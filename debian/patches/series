@@ -27,6 +27,3 @@ opt-45_yaepg.patch
 
 # Patch required for the GraphTFT plugin
 opt-50_graphtft.patch
-
-vdr-1.7.42-fixpendingtimers.diff
-
