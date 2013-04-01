@@ -1,3 +1,11 @@
+vdr (2.0.0-1~etobi2) unstable; urgency=low
+
+  * Added new config option ENABLE_CORE_DUMPS in /etc/default/vdr
+  * Append CPPFLAGS to CFLAGS, so this gets stored in vdr.pc
+    and can be used by plugins
+
+ -- Tobias Grimm <etobi@debian.org>  Mon, 01 Apr 2013 20:19:46 +0200
+
 vdr (2.0.0-1~etobi1) unstable; urgency=low
 
   * New upstream release

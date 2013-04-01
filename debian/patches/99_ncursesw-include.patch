@@ -3,8 +3,8 @@ Author: Tobias Grimm <tg@e-tobi.net>
 
 Index: vdr/PLUGINS/src/skincurses/skincurses.c
 ===================================================================
---- vdr.orig/PLUGINS/src/skincurses/skincurses.c	2013-03-31 13:46:30.000000000 +0200
-+++ vdr/PLUGINS/src/skincurses/skincurses.c	2013-03-31 13:47:44.000000000 +0200
+--- vdr.orig/PLUGINS/src/skincurses/skincurses.c	2013-04-01 19:55:49.000000000 +0200
++++ vdr/PLUGINS/src/skincurses/skincurses.c	2013-04-01 20:04:47.000000000 +0200
 @@ -6,7 +6,7 @@
   * $Id: skincurses.c 2.13 2013/03/31 09:30:18 kls Exp $
   */
