@@ -7,4 +7,5 @@ debian/patches/opt-42-x_MainMenuHooks.patch:ef26bc79d45a2d32a3cb7b1589e9b652
 debian/patches/06_default_svdrp_port_0.patch:bb49194133b0487b1efe5619930d7af0
 debian/patches/opt-50_graphtft.patch:10a8dfc931180dfc13cf14e4f080b874
 debian/patches/opt-37-x_menuorg.patch:6dcb9013c5e2bf7d800d9c3b23b97c42
+debian/patches/opt-22-x_edit_marks.patch:29794d91fd06559eaea8970d43689af7
 debian/patches/99_ncursesw-include.patch:9312525e87bdbb7181329cf7ff6c9c0c

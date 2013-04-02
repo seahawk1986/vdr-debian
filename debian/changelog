@@ -1,3 +1,9 @@
+vdr (2.0.0-1~etobi3) unstable; urgency=low
+
+  * Added opt-22-x_edit_marks.patch again
+
+ -- Tobias Grimm <etobi@debian.org>  Tue, 02 Apr 2013 21:33:01 +0200
+
 vdr (2.0.0-1~etobi2) unstable; urgency=low
 
   * Added new config option ENABLE_CORE_DUMPS in /etc/default/vdr
