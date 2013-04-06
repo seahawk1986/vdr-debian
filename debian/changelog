@@ -1,3 +1,9 @@
+vdr (2.0.0-1~etobi4) unstable; urgency=low
+
+  * Added upstream fix vdr-2.0.0-fixkeeptracksinit.diff
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 06 Apr 2013 10:36:35 +0200
+
 vdr (2.0.0-1~etobi3) unstable; urgency=low
 
   * Added opt-22-x_edit_marks.patch again
