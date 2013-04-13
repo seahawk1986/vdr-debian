@@ -1,4 +1,5 @@
 Description: This patch is needed for the ttxtsubs plugin.
+Author: Tobias Grimm <vdr@e-tobi.net>
 Origin: ttxsubs plugin
 
 Index: vdr/MANUAL
