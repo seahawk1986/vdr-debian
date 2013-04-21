@@ -1,3 +1,9 @@
+vdr (2.0.1-1~etobi2) UNRELEASED; urgency=low
+
+  * Fixed and improved opt-22-x_edit_marks.patch
+
+ -- Thomas Günther <tom@toms-cafe.de>  Sun, 21 Apr 2013 17:45:43 +0200
+
 vdr (2.0.1-1~etobi1) unstable; urgency=low
 
   * New upstream release
