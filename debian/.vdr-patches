@@ -2,7 +2,7 @@
 06_default_svdrp_port_0.patch:bb49194133b0487b1efe5619930d7af0
 12_osdbase-maxitems.patch:3b1184fcb109593c63686108c895fcec
 99_ncursesw-include.patch:9312525e87bdbb7181329cf7ff6c9c0c
-opt-22-x_edit_marks.patch:29794d91fd06559eaea8970d43689af7
+opt-22-x_edit_marks.patch:e7bd2cbdfb3962657484a13815bd25de
 opt-27_ttxtsubs.patch:d78c0304a0b74cc829f49cf3c3716a60
 opt-37-x_menuorg.patch:6dcb9013c5e2bf7d800d9c3b23b97c42
 opt-41-x_timer-info.patch:8df0fefa8fb9dff3448d6bd3633d7b4e
