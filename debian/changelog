@@ -1,4 +1,14 @@
-vdr (2.0.1-1~etobi2) UNRELEASED; urgency=low
+vdr (2.0.3-1~etobi1) unstable; urgency=low
+
+  * New upstream release
+  * Install sample channels.conf's to /usr/share/vdr/examples/ (Closes: #709749)
+  * vdr-plugin-dvbhddevice and vdr-plugin-examples Replaces/Breaks
+    vdr << 2.0.1-1 - manpages have been moved from vdr into the plugin
+    packages  (Closes: #709152)
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 08 Sep 2013 21:32:26 +0200
+
+vdr (2.0.1-1~etobi2) unstable; urgency=low
 
   * Fixed and improved opt-22-x_edit_marks.patch
 

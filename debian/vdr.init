@@ -98,7 +98,7 @@ startvdr()
                 --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- \
                 -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD \
                 -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp \
-                --port $SVDRP_PORT $LIRC_OPT $PLUGINS $OPTIONS $REDIRECT
+                --port $SVDRP_PORT $OPTIONS $LIRC_OPT $PLUGINS $REDIRECT
         else
             echo -n " - seems to be running already"
         fi
