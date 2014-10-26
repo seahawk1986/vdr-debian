@@ -1,3 +1,12 @@
+vdr (2.0.6-1~etobi1) unstable; urgency=low
+
+  * New upstream release
+  * Standards-Version: 3.9.5
+  * Source /lib/lsb/init-functions in init script
+  * Fix "unhandled symlink to directory conversion of vdr-dbg (Closes: #736297)
+
+ -- Tobias Grimm <etobi@debian.org>  Mon, 31 Mar 2014 22:57:52 +0200
+
 vdr (2.0.3-1~etobi1) unstable; urgency=low
 
   * New upstream release
