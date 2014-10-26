@@ -4,9 +4,9 @@ Author: Frank Schmirler <vdrdev@schmirler.de>
 
 Index: vdr/menu.c
 ===================================================================
---- vdr.orig/menu.c	2013-03-31 13:47:46.000000000 +0200
-+++ vdr/menu.c	2013-03-31 13:47:46.000000000 +0200
-@@ -3510,15 +3510,30 @@
+--- vdr.orig/menu.c	2014-10-26 09:53:23.891656220 +0100
++++ vdr/menu.c	2014-10-26 09:57:54.045729339 +0100
+@@ -3522,15 +3522,30 @@
  
    // Initial submenus:
  
@@ -15,7 +15,7 @@ Index: vdr/menu.c
 -    case osSchedule:   AddSubMenu(new cMenuSchedule); break;
 -    case osChannels:   AddSubMenu(new cMenuChannels); break;
 -    case osTimers:     AddSubMenu(new cMenuTimers); break;
--    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
+-    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, OpenSubMenus)); break;
 -    case osSetup:      AddSubMenu(new cMenuSetup); break;
 -    case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
 +    case osSchedule:
@@ -32,7 +32,7 @@ Index: vdr/menu.c
 +        break;
 +    case osRecordings:
 +        if (!cPluginManager::CallFirstService("MainMenuHooksPatch-v1.0::osRecordings", &menu))
-+            menu = new cMenuRecordings(NULL, 0, true);
++            menu = new cMenuRecordings(NULL, 0, OpenSubMenus);
 +        break;
 +    case osSetup:      menu = new cMenuSetup; break;
 +    case osCommands:   menu = new cMenuCommands(tr("Commands"), &Commands); break;
@@ -43,7 +43,7 @@ Index: vdr/menu.c
  }
  
  cOsdObject *cMenuMain::PluginOsdObject(void)
-@@ -3651,13 +3666,34 @@
+@@ -3663,13 +3678,34 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -84,7 +84,7 @@ Index: vdr/menu.c
      case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                            cOsdItem *item = Get(Current());
                            if (item) {
-@@ -3744,6 +3780,8 @@
+@@ -3756,6 +3792,8 @@
                 default:      break;
                 }
      }
@@ -95,8 +95,8 @@ Index: vdr/menu.c
    if (Key != kNone) {
 Index: vdr/config.h
 ===================================================================
---- vdr.orig/config.h	2013-03-31 13:47:44.000000000 +0200
-+++ vdr/config.h	2013-03-31 13:47:46.000000000 +0200
+--- vdr.orig/config.h	2014-10-26 09:53:23.891656220 +0100
++++ vdr/config.h	2014-10-26 09:53:23.891656220 +0100
 @@ -36,6 +36,8 @@
  // plugins to work with newer versions of the core VDR as long as no
  // VDR header files have changed.
@@ -109,7 +109,7 @@ Index: vdr/config.h
 Index: vdr/README.MainMenuHooks
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/README.MainMenuHooks	2013-03-31 13:47:46.000000000 +0200
++++ vdr/README.MainMenuHooks	2014-10-26 09:53:23.891656220 +0100
 @@ -0,0 +1,55 @@
 +This is a "patch" for the Video Disk Recorder (VDR).
 +
