@@ -217,7 +217,7 @@ Index: vdr/menu.c
 +
 +  // compute free disk space
 +  int freeMB, freeMinutes, runshortMinutes;
-+  VideoDiskSpace(&freeMB);
++  cVideoDirectory::VideoDiskSpace(&freeMB);
 +  freeMinutes = int(double(freeMB) * 1.1 / 25.75); // overestimate by 10 percent
 +  runshortMinutes = freeMinutes / 5; // 20 Percent
 +
