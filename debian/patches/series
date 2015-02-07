@@ -4,9 +4,6 @@
 
 99_ncursesw-include.patch
 
-# Move cut mark 10 seconds with 1/3 and stop playback when toggeling cut mark
-opt-22-x_edit_marks.patch
-
 # Patch needed for the ttxtsubs plugin.
 opt-27_ttxtsubs.patch
 
