@@ -2,6 +2,7 @@ vdr (2.1.8-1~etobi1) UNRELEASED; urgency=medium
 
   * New upstream release
   * Dropped opt-22-x_edit_marks.patch
+  * Added bash completion for svdrpesend (taken from yaVDR / Lars Hanisch)
 
  -- Tobias Grimm <etobi@debian.org>  Sat, 07 Feb 2015 11:15:37 +0100
 
