@@ -1,10 +1,10 @@
-vdr (2.1.8-1~etobi1) UNRELEASED; urgency=medium
+vdr (2.1.8-1~etobi1) unstable; urgency=medium
 
   * New upstream release
   * Dropped opt-22-x_edit_marks.patch
   * Added bash completion for svdrpesend (taken from yaVDR / Lars Hanisch)
 
- -- Tobias Grimm <etobi@debian.org>  Sat, 07 Feb 2015 11:15:37 +0100
+ -- Tobias Grimm <etobi@debian.org>  Sun, 08 Feb 2015 18:31:07 +0100
 
 vdr (2.0.6-1~etobi1) unstable; urgency=low
 
