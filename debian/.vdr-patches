@@ -1,10 +1,10 @@
 04_newplugin.patch:22a72799db5051ed0ef08b0770a5e6f0
 06_default_svdrp_port_0.patch:008562fda187f9e88bb9dd10ac6c59f6
 12_osdbase-maxitems.patch:0a9ce49053c44b51eae36db595870122
-99_ncursesw-include.patch:a276aad6a8a0c48b929d2411f23a7f72
-opt-27_ttxtsubs.patch:d68d4d98d933a03170a6a261a1415cf6
-opt-37-x_menuorg.patch:d7e4b5f374425498e2db2a48951949c5
-opt-41-x_timer-info.patch:e4d94484ce73090b9ef3a526a1099fda
-opt-42-x_MainMenuHooks.patch:ab22ed128ab55050d0a3dad54050b5e3
+99_ncursesw-include.patch:17deb746df790f6b1f87744a218cd577
+opt-27_ttxtsubs.patch:a72b11906b1a3bb9ede4effa5743a0fb
+opt-37-x_menuorg.patch:e6679bfd4fa23d239e981b05fa42fb62
+opt-41-x_timer-info.patch:571ca43774dbd768cd9d90552fd1442d
+opt-42-x_MainMenuHooks.patch:d716f84c01ca2f5c057b893ea41f6f90
 opt-45_yaepg.patch:bf16931ea98ec607776192e636e4556c
-opt-50_graphtft.patch:158b7629f93503c4f7b9493d4e9176f3
+opt-50_graphtft.patch:afd5727a6b65ac5c15dfd9630327a29a
