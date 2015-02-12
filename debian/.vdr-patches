@@ -3,8 +3,8 @@
 12_osdbase-maxitems.patch:0a9ce49053c44b51eae36db595870122
 99_ncursesw-include.patch:17deb746df790f6b1f87744a218cd577
 opt-27_ttxtsubs.patch:a72b11906b1a3bb9ede4effa5743a0fb
-opt-37-x_menuorg.patch:e6679bfd4fa23d239e981b05fa42fb62
+opt-37-x_menuorg.patch:5af45321309b1e723d89e5c6dc1c947f
 opt-41-x_timer-info.patch:571ca43774dbd768cd9d90552fd1442d
-opt-42-x_MainMenuHooks.patch:d716f84c01ca2f5c057b893ea41f6f90
-opt-45_yaepg.patch:bf16931ea98ec607776192e636e4556c
-opt-50_graphtft.patch:afd5727a6b65ac5c15dfd9630327a29a
+opt-42-x_MainMenuHooks.patch:7ccacd9d4d79efbb2b9341c3d8e366a9
+opt-45_yaepg.patch:f867903d4be9339198bdb22e823b679e
+opt-50_graphtft.patch:7de63c9d4e2a8de754297ae40b367e01
