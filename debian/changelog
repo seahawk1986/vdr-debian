@@ -1,6 +1,15 @@
+vdr (2.1.10-1~etobi1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Tobias Grimm <etobi@debian.org>  Thu, 12 Feb 2015 18:34:24 +0100
+
 vdr (2.1.9-1~etobi1) unstable; urgency=medium
 
   * New upstream release
+  * Merged from Jessie-version 2.0.3-3: Fixed use of getent in postinst script
+    for detecting existing vdr user and group (Closes: #770773)
+  * Standards-Version: 3.9.6
 
  -- Tobias Grimm <etobi@debian.org>  Mon, 09 Feb 2015 18:53:03 +0100
 
