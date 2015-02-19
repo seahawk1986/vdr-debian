@@ -1,8 +1,8 @@
 04_newplugin.patch:22a72799db5051ed0ef08b0770a5e6f0
 06_default_svdrp_port_0.patch:008562fda187f9e88bb9dd10ac6c59f6
 12_osdbase-maxitems.patch:0a9ce49053c44b51eae36db595870122
-99_ncursesw-include.patch:17deb746df790f6b1f87744a218cd577
-opt-27_ttxtsubs.patch:a72b11906b1a3bb9ede4effa5743a0fb
+99_ncursesw-include.patch:5d5d3ced7f7647f1680f0481ad2650fe
+opt-27_ttxtsubs.patch:a1aeece65cc723e38b65fbfb8d10edf3
 opt-37-x_menuorg.patch:5af45321309b1e723d89e5c6dc1c947f
 opt-41-x_timer-info.patch:571ca43774dbd768cd9d90552fd1442d
 opt-42-x_MainMenuHooks.patch:7ccacd9d4d79efbb2b9341c3d8e366a9
