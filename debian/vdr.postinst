@@ -2,6 +2,23 @@
 
 # Peter Siering <ps@ctmagazin.de>, 10/2/2003
 
+#
+# Create /var/lib/video if /var/lib/video does not exist.
+# If /var/lib/video.00 exists, /var/lib/video will become a symlink
+#
+TryCreateVideoDir() {
+    if [ ! -e /var/lib/video -a ! -L /var/lib/video ]; then
+        if [ -e /var/lib/video.00 ]; then
+            # No /var/lib/video but /var/lib/video.00 -> Make video a symlink pointing to video.00
+            ln -s video.00 /var/lib/video
+        else
+            # create /var/lib/video
+            mkdir /var/lib/video
+        fi
+    fi
+}
+
+
 ACTION=$1
 
 # Upgrade <= 1.2.6-26 to a more FHS-conform directory structure
@@ -18,7 +35,7 @@ if [ "$ACTION" = "configure" ] ; then
         fi
     fi
 
-    [ ! -d /var/lib/video.00 ] && mkdir /var/lib/video.00
+    TryCreateVideoDir
 
     # copy example channels.conf files into config dir
     if [ ! -e /var/lib/vdr/channels.conf ]; then

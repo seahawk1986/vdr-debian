@@ -1,3 +1,11 @@
+vdr (2.2.0-1~etobi2) UNRELEASED; urgency=medium
+
+  * Dropped upgrade code for pre-Squeeze releases
+  * Default video directory is now /var/lib/video because multiple video
+    directories are not supported anymore
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 22 Feb 2015 10:52:50 +0100
+
 vdr (2.2.0-1~etobi1) unstable; urgency=medium
 
   * New upstream release
