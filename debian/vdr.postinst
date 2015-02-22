@@ -25,16 +25,6 @@ ACTION=$1
 #
 
 if [ "$ACTION" = "configure" ] ; then
-    # Fix channels.conf when updating from 1.5.14 to 1.5.15
-    if dpkg --compare-versions "$2" ge "1.5.14" ; then
-        if dpkg --compare-versions "$2" lt "1.5.15" ; then
-            if [ -e /var/lib/vdr/channels.conf ]; then
-                cp /var/lib/vdr/channels.conf /var/lib/vdr/channels.conf.1.5.14
-                sed -i 's/M2O0S0//' /var/lib/vdr/channels.conf
-            fi
-        fi
-    fi
-
     TryCreateVideoDir
 
     # copy example channels.conf files into config dir
