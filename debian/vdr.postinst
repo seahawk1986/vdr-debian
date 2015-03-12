@@ -27,10 +27,9 @@ ACTION=$1
 if [ "$ACTION" = "configure" ] ; then
     TryCreateVideoDir
 
-    # copy example channels.conf files into config dir
+    # copy example channels.conf file into config dir
     if [ ! -e /var/lib/vdr/channels.conf ]; then
-        cp /usr/share/doc/vdr/examples/channels.conf* /var/lib/vdr/
-        gunzip /var/lib/vdr/channels.conf*.gz
+        cp /usr/share/doc/vdr/examples/channels.conf-examples/channels.conf.sat /var/lib/vdr/channels.conf
     fi
 
     # ensure that user and group 'vdr' exist

@@ -1,3 +1,10 @@
+vdr (2.2.0-1~etobi4) unstable; urgency=medium
+
+  * Install channels.conf.sat as default channels.conf file
+  * Dropped the default video directory link
+
+ -- Tobias Grimm <etobi@debian.org>  Thu, 12 Mar 2015 16:09:09 +0100
+
 vdr (2.2.0-1~etobi3) unstable; urgency=medium
 
   * When LIRC is set to an empty string, disable LIRC. By default use
