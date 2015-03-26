@@ -1,29 +1,12 @@
 vdr for Debian
 --------------
 
-Comments to the Debian version:
+The vdr package comes with a SysVinit and a systemd service to run VDR as
+a backround service daemon. Both are disabled by default.
 
- - You need a DVB card and a driver using the "Linux DVB S2API".
-   These drivers have been merged into the Linux-Kernel in version 2.6.28,
-   but you might require a later kernel or special drivers for you DVB card.
-   You can get more information about the DVB driver development at:
-
-   http://www.linuxtv.org
-
-   Please also note, that proper trick speed playback with a full featured DVB
-   card needs an improved av7110 firmware. Without this firmware you might
-   experience problems like jumping backwards when stopping fast-forward
-   playback. The improved firmware is provided by Oliver Endriss and can be
-   download here:
- 
-   http://www.escape-edv.de/endriss/firmware/
-
- - all the small scripts and tools distributed with the package are located in
-   /usr/lib/vdr/. You may use and modify them for you own purposes.
- - if you want to use the vdr-initscript, edit /etc/default/vdr and change
-   ENABLED=0 to ENABLED=1, and the other options in this file
- - video-dir is moved to /var/lib/video see #234429
- - cfg-dir was moved to /var/lib/vdr, to be FHS-compliant
+Depending on your init system, you might want to enable VDR via
+`sudo systemctl enable vdr` for systemd or by setting ENABLED=1 in
+/etc/default/vdr for SysVinit.
 
 
 Additional configuration options
