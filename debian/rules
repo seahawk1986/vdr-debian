@@ -11,7 +11,7 @@ LIBDIR = /usr/lib/vdr/plugins
 MAKE_OPTIONS = PREFIX=$(PREFIX) VIDEODIR=$(VIDEODIR) LIBDIR=$(LIBDIR) SDNOTIFY=1
 
 %:
-	dh $@
+	dh $@ --with bash-completion
 
 override_dh_auto_build:
 	dh_auto_build -- $(MAKE_OPTIONS)
