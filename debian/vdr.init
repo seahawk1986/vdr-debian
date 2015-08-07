@@ -10,7 +10,6 @@
 # Default-Stop:      0 1 6
 # Short-Description: Starts the Linux Video Disk Recorder (VDR)
 # Description:       Starts the Linux Video Disk Recorder (VDR),
-#                    if it is enabled in /etc/default/vdr.
 ### END INIT INFO
 
 . /lib/lsb/init-functions
@@ -66,22 +65,18 @@ get_status()
 
 startvdr()
 {
-    if [ "$ENABLED" != "0" ] ; then
-        # only start vdr if there is no other instance running
-        if start-stop-daemon --start --startas $DAEMON --test \
-            --name $(basename $DAEMON) --pidfile $PIDFILE >/dev/null
-        then
-            mergecommands "commands"
-            mergecommands "reccmds"
-            configure_console_input
+    # only start vdr if there is no other instance running
+    if start-stop-daemon --start --startas $DAEMON --test \
+        --name $(basename $DAEMON) --pidfile $PIDFILE >/dev/null
+    then
+        mergecommands "commands"
+        mergecommands "reccmds"
+        configure_console_input
 
-            start-stop-daemon --start --quiet --startas $DAEMON --background -d /tmp \
-                --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- $REDIRECT
-        else
-            echo -n " - seems to be running already"
-        fi
+        start-stop-daemon --start --quiet --startas $DAEMON --background -d /tmp \
+            --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- $REDIRECT
     else
-        echo -n " - aborted (to enable the daemon, edit /etc/default/vdr)"
+        echo -n " - seems to be running already"
     fi
 }
 

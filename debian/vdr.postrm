@@ -1,7 +1,4 @@
 #! /bin/sh
-# postrm script for vdr-plugin-#PACKAGE#
-#
-# see: dh_installdeb(1)
 
 set -e
 

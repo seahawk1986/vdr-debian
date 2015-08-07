@@ -17,6 +17,8 @@ vdr (2.2.0-1) UNRELEASED; urgency=medium
   * Removed dvb-modules reloading code (Closes: #512362)
   * Added bash completion for svdrpesend (taken from yaVDR / Lars Hanisch)
   * Added systemd support
+  * Removed ENABLED setting from /etc/default/vdr - the vdr daemon is now
+    enabled by default and might be disabled manuall via update-rc.d / systemctl
 
  -- Tobias Grimm <etobi@debian.org>  Sat, 07 Mar 2015 13:02:02 +0100
 
