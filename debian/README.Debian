@@ -1,17 +1,6 @@
 vdr for Debian
 --------------
 
-The vdr package comes with a SysVinit and a systemd service to run VDR as
-a backround service daemon. Both are disabled by default.
-
-Depending on your init system, you might want to enable VDR via
-`sudo systemctl enable vdr` for systemd or by setting ENABLED=1 in
-/etc/default/vdr for SysVinit.
-
-
-Additional configuration options
--------------------------------
-
 The following options can be configured in /etc/default/vdr.
 
 KEYB_TTY="<CONSOLE>"
@@ -21,12 +10,16 @@ KEYB_TTY="<CONSOLE>"
     Console for controlling VDR by keyboard (e.g. /dev/tty8). On startup VDR
     will automatically switch to this console.
 
+    NOTE: This setting only works with the SysVinit-Script.
+
 KEYB_TTY_SWITCH=<0|1>
 
     Default: 0
 
     Set this to 1, to make VDR switch to the console specified in KEYB_TTY
     on startup.
+
+    NOTE: This setting only works with the SysVinit-Script.
 
 SHUTDOWNCMD="<COMMAND>"
 
