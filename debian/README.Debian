@@ -11,6 +11,15 @@ KEYB_TTY="<CONSOLE>"
     will automatically switch to this console.
 
     NOTE: This setting only works with the SysVinit-Script.
+    For systemd copy /usr/share/doc/vdr/examples/switch-tty.conf to
+    /etc/systemd/system/vdr.service.d/
+
+    e.g.:
+
+    sudo mkdir -p /etc/systemd/system/vdr.service.d/ && \
+    sudo cp /usr/share/doc/vdr/examples/switch-tty.conf /etc/systemd/system/vdr.service.d/ && \
+    sudo systemctl daemon-reload && \
+    sudo systemctl restart vdr
 
 KEYB_TTY_SWITCH=<0|1>
 
@@ -20,6 +29,7 @@ KEYB_TTY_SWITCH=<0|1>
     on startup.
 
     NOTE: This setting only works with the SysVinit-Script.
+    Seen the note above for setting this up for systemd.
 
 SHUTDOWNCMD="<COMMAND>"
 
