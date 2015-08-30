@@ -27,9 +27,6 @@ test -x $VDRPRG || exit 0
 
 . /usr/lib/vdr/config-loader.sh
 
-. /usr/lib/vdr/commands-loader.sh
-
-
 clean_console()
 {
     if [ "$KEYB_TTY" != "" ]; then
@@ -69,8 +66,8 @@ startvdr()
     if start-stop-daemon --start --startas $DAEMON --test \
         --name $(basename $DAEMON) --pidfile $PIDFILE >/dev/null
     then
-        mergecommands "commands"
-        mergecommands "reccmds"
+        /bin/sh /usr/lib/vdr/merge-commands.sh "commands"
+        /bin/sh /usr/lib/vdr/merge-commands.sh "reccmds"
         configure_console_input
 
         start-stop-daemon --start --quiet --startas $DAEMON --background -d /tmp \

@@ -3,6 +3,8 @@ Description=Video Disk Recorder
 
 [Service]
 Type=notify
+ExecStartPre=/bin/sh /usr/lib/vdr/merge-commands.sh "commands"
+ExecStartPre=/bin/sh /usr/lib/vdr/merge-commands.sh "recmds"
 ExecStart=/usr/bin/vdr
 Restart=on-failure
 RestartPreventExitStatus=0 2
