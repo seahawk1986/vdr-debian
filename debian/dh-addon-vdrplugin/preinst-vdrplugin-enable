@@ -17,6 +17,7 @@ dh_vdrplugin_prepare_enable() {
     shift 2
     local old_md5sum="$(dpkg-query -W -f='${Conffiles}' $pkgname | sed -n -e "\' $config ' { s/ obsolete$//; s/.* //; p }")"
     if [ -z "$old_md5sum" ] ; then
+      mkdir -p "/etc/vdr/conf.d"
       touch "/etc/vdr/conf.d/$priority-$config.dpkg-vdrplugin-enable"
     fi
   done
