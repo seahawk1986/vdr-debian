@@ -1,4 +1,4 @@
-vdr (2.2.0-1) UNRELEASED; urgency=medium
+vdr (2.2.0-1) unstable; urgency=medium
 
   * New upstream release
   * Dropped upgrade code for pre-Squeeze releases
@@ -20,7 +20,7 @@ vdr (2.2.0-1) UNRELEASED; urgency=medium
   * Removed ENABLED setting from /etc/default/vdr - the vdr daemon is now
     enabled by default and might be disabled manuall via update-rc.d / systemctl
 
- -- Tobias Grimm <etobi@debian.org>  Sat, 07 Mar 2015 13:02:02 +0100
+ -- Tobias Grimm <etobi@debian.org>  Tue, 15 Sep 2015 23:53:12 +0200
 
 vdr (2.0.6-2) unstable; urgency=medium
 

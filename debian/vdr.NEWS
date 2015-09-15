@@ -19,7 +19,14 @@ vdr (2.2.0-1) unstable; urgency=medium
   The default video directory for VDR now is /var/lib/video. This can be changed
   by modifying the --video setting in /etc/vdr/conf.d/00-vdr.conf.
 
- -- Tobias Grimm <etobi@debian.org>  Thu, 19 Feb 2015 12:18:30 +0100
+  * Systemd support
+
+  The vdr package now ships a systemd unit file. This means where systemd is
+  used, the old SysVInit script and runvdr will be ignored. Some of the old
+  settings available in /etc/default/vdr have been dropped. Most of them, like
+  the LIRC interface can now be configured in /etc/vdr/conf.d/00-vdr.conf.
+
+ -- Tobias Grimm <etobi@debian.org>  Tue, 15 Sep 2015 23:53:12 +0200
 
 vdr (1.7.17-1) unstable; urgency=low
 
