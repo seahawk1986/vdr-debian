@@ -29,7 +29,7 @@ KEYB_TTY_SWITCH=<0|1>
     on startup.
 
     NOTE: This setting only works with the SysVinit-Script.
-    Seen the note above for setting this up for systemd.
+    See the note above for setting this up for systemd.
 
 SHUTDOWNCMD="<COMMAND>"
 
@@ -47,6 +47,13 @@ VDR_LANG=<LANG>
 
     Locale which is used when running vdr.
 
+    NOTE: This setting only works with the SysVinit-Script.
+    To make VDR use a specific locale with systemd, create a file 
+    /etc/systemd/system/vdr.service.d/ with e.g.:
+
+    [Service]
+    Environment="LANG=de_DE.utf8"
+    Environment="LC_ALL=de_DE.utf8"
 
 Automatic Loading of Plugins
 ----------------------------
