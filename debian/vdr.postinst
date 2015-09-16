@@ -102,6 +102,11 @@ ConfigureOwnerShip() {
     fi
 }
 
+# Remove obsolete config files
+if dpkg-maintscript-helper supports rm_conffile 2>/dev/null; then
+    dpkg-maintscript-helper rm_conffile /etc/vdr/plugins/order.conf 2.2.0-1 -- "$@"
+fi
+
 case "$1" in
     configure)
         db_get vdr/select_dvb_card
