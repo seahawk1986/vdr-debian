@@ -120,10 +120,6 @@ case "$1" in
         InstallUserAndGroupVdr
 
         ConfigureOwnerShip
-
-        if [ -n "$2" ] && dpkg --compare-versions "$2" lt "2.2.0-1"; then
-            sh /usr/share/vdr/migrate-old-config.sh || true
-        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

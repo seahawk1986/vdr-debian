@@ -1,14 +1,34 @@
 vdr (2.2.0-1) unstable; urgency=medium
 
+  * New VDR configuration file
+
+  All command line options are now configured in /etc/vdr/conf.d/00-vdr.conf.
+  The following config options formerly configured in /etc/default/vdr must
+  manually be moved to 00-vdr.conf:
+
+  VIDEO_DIR (--video), SVDRP_PORT (--port), USER (--user), LIRC (--lirc),
+  VFAT (--vfat), VDR_CHARSET_OVERRID (--chartab)
+
+  See man(1) vdr. You can also run the following command, which will try to
+  migrate these options automatically:
+
+  sh /usr/share/vdr/migrate-old-config.sh || true
+
   * Now using /etc/vdr/conf.d for loading plugins
 
   VDR plugin packages now install a config file to /etc/vdr/conf.avail/.
   This is basically the same as the old config file
-  /etc/vdr/plugins/plugin-<name>.conf and contains contains the command line
+  /etc/vdr/plugins/plugin-<name>.conf and contains the command line
   arguments passed to the plugin.
   By creating a symlink in /etc/vdr.conf.d/ which points to the config in
   conf.avail/ the plugin gets enabled for loading when the vdr daemon is
   started.
+
+  The changed settings from the old config are not automatically migrated to
+  the new config files. You have to do this manually. Basically you can simply
+  copy all options from /etc/vdr/plugins/plugin-<name>.conf to
+  /etc/vdr/conf.avail/<name>.conf. You just have to retain the [<name>] section
+  marker at the top of the new config file.
 
   * Support for multiple video directories dropped
 

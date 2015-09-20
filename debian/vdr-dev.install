@@ -12,4 +12,3 @@ debian/dh-addon-vdrplugin/postinst-vdrplugin*        usr/share/debhelper/autoscr
 debian/dh-addon-vdrplugin/postrm-vdrplugin*          usr/share/debhelper/autoscripts/
 debian/dh-addon-vdrplugin/dh_vdrplugin_depends       usr/bin/
 debian/dh-addon-vdrplugin/dh_vdrplugin_enable        usr/bin/
-debian/dh-addon-vdrplugin/dh_vdrplugin_migrate       usr/bin/
