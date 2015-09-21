@@ -21,7 +21,7 @@ vdr (2.2.0-1) unstable; urgency=medium
     enabled by default and might be disabled manuall via update-rc.d / systemctl
   * Removed bashism from merge-commands.conf (Closes: #799483)
 
- -- Tobias Grimm <etobi@debian.org>  Tue, 15 Sep 2015 23:53:12 +0200
+ -- Tobias Grimm <etobi@debian.org>  Mon, 21 Sep 2015 21:45:53 +0200
 
 vdr (2.0.6-2) unstable; urgency=medium
 
