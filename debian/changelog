@@ -1,3 +1,9 @@
+vdr (2.2.0-2) unstable; urgency=medium
+
+  * Use debhelper addon for dvb(sd|hd)device plugins
+
+ -- Tobias Grimm <etobi@debian.org>  Wed, 23 Sep 2015 22:17:04 +0200
+
 vdr (2.2.0-1) unstable; urgency=medium
 
   * New upstream release
