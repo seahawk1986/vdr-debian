@@ -1,8 +1,10 @@
-vdr (2.2.0-3) UNRELEASED; urgency=medium
+vdr (2.2.0-3) unstable; urgency=medium
 
-  * 
+  * Build-depend on libsystemd-dev
+  * Force sorting of files in dh_vdrplugin_enable to get a reproducible build
+  * Mark the plugin packages as enhancements to the vdr package
 
- -- Tobias Grimm <etobi@debian.org>  Mon, 05 Oct 2015 19:03:12 +0200
+ -- Tobias Grimm <etobi@debian.org>  Mon, 05 Oct 2015 21:36:30 +0200
 
 vdr (2.2.0-2) unstable; urgency=medium
 
