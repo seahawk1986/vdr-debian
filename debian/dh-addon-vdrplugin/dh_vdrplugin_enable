@@ -160,7 +160,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
   #
   # Now pass the configs to be symlinked to the postinst/postrm templates
   #
-  my @enabled_configs = grep { looks_like_number($config_files{$_}) } (keys %config_files);
+  my @enabled_configs = grep { looks_like_number($config_files{$_}) } (sort keys %config_files);
   if (@enabled_configs) {
     my $configs = join(' ', map { (basename($_), $config_files{$_}) } (@enabled_configs));
     autoscript($package, "preinst", "preinst-vdrplugin-enable", "s/#PKGNAME#/$package/; s/#ENABLEDCONFIGS#/$configs/");
