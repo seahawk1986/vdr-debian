@@ -3,3 +3,4 @@
 12_osdbase-maxitems.patch
 
 99_ncursesw-include.patch
+systemd.patch
