@@ -60,6 +60,7 @@ Description: Debug symbols for the VDR Video Disc Recorder
 Package: vdr-plugin-dvbsddevice
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, vdr (= ${binary:Version})
+Enhances: vdr
 Description: Plugin that adds support for full featured SD-DVB cards to VDR
  Video Disk Recorder (VDR) is a digital sat-receiver program using
  Linux and DVB technologies. It allows one to record MPEG2 streams,
@@ -86,6 +87,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, vdr (= ${binary:Version})
 Replaces: vdr (<< 2.0.1-1)
 Breaks: vdr (<< 2.0.1-1)
+Enhances: vdr
 Description: Plugin that adds support for full featured HD-DVB cards to VDR
  Video Disk Recorder (VDR) is a digital sat-receiver program using
  Linux and DVB technologies. It allows one to record MPEG2 streams,
@@ -111,6 +113,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, vdr (= ${binary:Version})
 Replaces: vdr (<< 2.0.1-1)
 Breaks: vdr (<< 2.0.1-1)
+Enhances: vdr
 Description: Plugins for vdr to show some possible features
  Video Disk Recorder (VDR) is a digital sat-receiver program using
  Linux and DVB technologies. It allows one to record MPEG2 streams,
