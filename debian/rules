@@ -37,6 +37,7 @@ override_dh_install:
 	for example in hello osddemo pictures servicedemo skincurses status svdrpdemo rcu; do \
 	    install -D PLUGINS/src/$$example/README debian/vdr-plugin-examples/usr/share/doc/vdr-plugin-examples/README.$$example; \
 	done
+	DH_AUTOSCRIPTDIR=debian/dh-addon-vdrplugin debian/dh-addon-vdrplugin/dh_vdrplugin_enable
 
 override_dh_installinit:
 	dh_installinit --error-handler true
@@ -53,10 +54,6 @@ override_dh_installchangelogs:
 	dh_installchangelogs -pvdr-plugin-dvbhddevice PLUGINS/src/dvbhddevice/HISTORY
 	dh_installchangelogs -pvdr-plugin-examples
 	dh_installchangelogs
-
-override_dh_installdeb:
-	DH_AUTOSCRIPTDIR=debian/dh-addon-vdrplugin debian/dh-addon-vdrplugin/dh_vdrplugin_enable
-	dh_installdeb
 
 check-patches:
 	python debian/patchcheck.py -c
