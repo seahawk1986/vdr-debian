@@ -1,7 +1,9 @@
-vdr (2.2.0-4) UNRELEASED; urgency=medium
+vdr (2.2.0-4) unstable; urgency=medium
 
+  * Fixed installation of auto generated plugin config to happen before
+    dh_fixperms
 
- -- Tobias Grimm <etobi@debian.org>  Tue, 06 Oct 2015 22:58:02 +0200
+ -- Tobias Grimm <etobi@debian.org>  Tue, 06 Oct 2015 23:25:03 +0200
 
 vdr (2.2.0-3) unstable; urgency=medium
 
