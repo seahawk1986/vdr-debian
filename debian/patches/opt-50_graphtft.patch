@@ -1,34 +1,9 @@
 Description: Patch required for the GraphTFT plugin.
-Author: Jörg Wendel (Horchi)
-Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
+Author: JÃ¶rg Wendel (Horchi)
 
 --- a/menu.c
 +++ b/menu.c
-@@ -168,6 +168,7 @@
- public:
-   cMenuEditChannel(cChannel *Channel, bool New = false);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuEditChannel"; }
-   };
- 
- cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
-@@ -357,6 +358,7 @@
-   cMenuChannels(void);
-   ~cMenuChannels();
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuChannels"; }
-   };
- 
- cMenuChannels::cMenuChannels(void)
-@@ -1141,6 +1143,7 @@
-   cMenuTimers(void);
-   virtual ~cMenuTimers();
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuTimers"; }
-   };
- 
- cMenuTimers::cMenuTimers(void)
-@@ -1303,6 +1306,7 @@
+@@ -1466,6 +1466,7 @@
  {
    cOsdMenu::Display();
    DisplayMenu()->SetEvent(event);
@@ -36,23 +11,22 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (event->Description())
       cStatus::MsgOsdTextItem(event->Description());
  }
-@@ -1433,6 +1437,8 @@
+@@ -1595,6 +1596,7 @@
    static void SetCurrentChannel(int ChannelNr) { currentChannel = ChannelNr; }
    static const cEvent *ScheduleEvent(void);
    virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return now ? "MenuWhatsOnNow" : "MenuWhatsOnNext"; }
 +  virtual void Display(void);
    };
  
  int cMenuWhatsOn::currentChannel = 0;
-@@ -1462,6 +1468,18 @@
+@@ -1620,6 +1622,18 @@
    SetHelpKeys();
  }
  
 +void cMenuWhatsOn::Display(void)
 +{
 +   cOsdMenu::Display();
-+
++   
 +   if (Count() > 0) {
 +      int ni = 0;
 +      for (cOsdItem *item = First(); item; item = Next(item)) {
@@ -64,23 +38,22 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  bool cMenuWhatsOn::Update(void)
  {
    bool result = false;
-@@ -1615,6 +1633,8 @@
+@@ -1789,6 +1803,7 @@
    cMenuSchedule(void);
    virtual ~cMenuSchedule();
    virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSchedule"; }
 +  virtual void Display(void);
    };
  
  cMenuSchedule::cMenuSchedule(void)
-@@ -1641,6 +1661,18 @@
-   cMenuWhatsOn::ScheduleEvent(); // makes sure any posted data is cleared
+@@ -1847,6 +1862,18 @@
+      }
  }
  
 +void cMenuSchedule::Display(void)
 +{
 +   cOsdMenu::Display();
-+
++   
 +   if (Count() > 0) {
 +      int ni = 0;
 +      for (cOsdItem *item = First(); item; item = Next(item)) {
@@ -89,144 +62,12 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 +   }
 +}
 +
- void cMenuSchedule::PrepareScheduleAllThis(const cEvent *Event, const cChannel *Channel)
+ bool cMenuSchedule::PrepareScheduleAllThis(const cTimers *Timers, const cSchedules *Schedules, const cEvent *Event, const cChannel *Channel)
  {
-   Clear();
-@@ -2011,6 +2043,7 @@
-   cMenuCam(cCamSlot *CamSlot);
-   virtual ~cMenuCam();
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuCam"; }
-   };
- 
- cMenuCam::cMenuCam(cCamSlot *CamSlot)
-@@ -2527,6 +2560,7 @@
-   cMenuRecording(cRecording *Recording, bool WithButtons = false);
-   virtual void Display(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuRecording"; }
- };
- 
- cMenuRecording::cMenuRecording(cRecording *Recording, bool WithButtons)
-@@ -2562,6 +2596,7 @@
-      }
-   cOsdMenu::Display();
-   DisplayMenu()->SetRecording(recording);
-+  cStatus::MsgOsdSetRecording(recording);
-   if (recording->Info()->Description())
-      cStatus::MsgOsdTextItem(recording->Info()->Description());
- }
-@@ -3023,6 +3058,7 @@
-   cMenuSetupOSD(void);
-   virtual ~cMenuSetupOSD();
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupOsd"; }
-   };
- 
- cMenuSetupOSD::cMenuSetupOSD(void)
-@@ -3176,6 +3212,7 @@
- public:
-   cMenuSetupEPG(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupEpg"; }
-   };
- 
- cMenuSetupEPG::cMenuSetupEPG(void)
-@@ -3273,6 +3310,7 @@
- public:
-   cMenuSetupDVB(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupDvb"; }
-   };
- 
- cMenuSetupDVB::cMenuSetupDVB(void)
-@@ -3419,6 +3457,7 @@
- public:
-   cMenuSetupLNB(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupLnb"; }
-   };
- 
- cMenuSetupLNB::cMenuSetupLNB(void)
-@@ -3539,6 +3578,7 @@
- public:
-   cMenuSetupCAM(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupCam"; }
-   };
- 
- cMenuSetupCAM::cMenuSetupCAM(void)
-@@ -3793,6 +3833,7 @@
- public:
-   cMenuSetupPlugins(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetupPlugins"; }
-   };
- 
- cMenuSetupPlugins::cMenuSetupPlugins(void)
-@@ -3848,6 +3889,7 @@
- public:
-   cMenuSetup(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuSetup"; }
-   };
- 
- cMenuSetup::cMenuSetup(void)
---- a/menu.h
-+++ b/menu.h
-@@ -29,6 +29,7 @@
-   void SetText(const char *Text);
-   virtual void Display(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuText"; }
-   };
- 
- class cMenuFolder : public cOsdMenu {
-@@ -86,6 +87,7 @@
-   cMenuEditTimer(cTimer *Timer, bool New = false);
-   virtual ~cMenuEditTimer();
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuTimerEdit"; }
-   };
- 
- class cMenuEvent : public cOsdMenu {
-@@ -95,6 +97,7 @@
-   cMenuEvent(const cEvent *Event, bool CanSwitch = false, bool Buttons = false);
-   virtual void Display(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuEvent"; }
-   };
- 
- class cMenuMain : public cOsdMenu {
-@@ -111,6 +114,7 @@
-   cMenuMain(eOSState State = osUnknown, bool OpenSubMenus = false);
-   virtual eOSState ProcessKey(eKeys Key);
-   static cOsdObject *PluginOsdObject(void);
-+  virtual const char* MenuKind() { return "MenuMain"; }
-   };
- 
- class cDisplayChannel : public cOsdObject {
-@@ -227,6 +231,7 @@
-   virtual eOSState ProcessKey(eKeys Key);
-   static void SetPath(const char *Path);
-   static void SetRecording(const char *FileName);
-+  virtual const char* MenuKind() { return "MenuRecordings"; }
-   };
- 
- class cRecordControl {
---- a/menuitems.h
-+++ b/menuitems.h
-@@ -220,6 +220,7 @@
-   cMenuSetupPage(void);
-   virtual eOSState ProcessKey(eKeys Key);
-   void SetPlugin(cPlugin *Plugin);
-+  const char* MenuKind() { return "MenuSetupPage"; }
-   };
- 
- #endif //__MENUITEMS_H
+   if (const cSchedule *Schedule = Schedules->GetSchedule(Channel)) {
 --- a/osdbase.c
 +++ b/osdbase.c
-@@ -106,6 +106,7 @@
+@@ -107,6 +107,7 @@
    free(status);
    displayMenu->Clear();
    cStatus::MsgOsdClear();
@@ -234,34 +75,14 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (!--displayMenuCount)
       DELETENULL(displayMenu);
  }
-@@ -230,6 +231,7 @@
-   cStatus::MsgOsdClear();
-   if (menuCategory != displayMenu->MenuCategory())
-      displayMenu->SetMenuCategory(menuCategory);
-+  cStatus::MsgOsdMenuDisplay(MenuKind());
-   displayMenu->SetMenuSortMode(menuSortMode);
+@@ -236,6 +237,7 @@
    displayMenuItems = displayMenu->MaxItems();
    displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
---- a/osdbase.h
-+++ b/osdbase.h
-@@ -138,6 +138,7 @@
-   void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
-   virtual void Display(void);
-   virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuUnknown"; }
-   };
- 
- #endif //__OSDBASE_H
---- a/recording.h
-+++ b/recording.h
-@@ -84,6 +84,7 @@
-   const cEvent *GetEvent(void) const { return event; }
-   const char *Title(void) const { return event->Title(); }
-   const char *ShortText(void) const { return event->ShortText(); }
-+  tEventID EventID(void) const { return event->EventID(); }
-   const char *Description(void) const { return event->Description(); }
-   const cComponents *Components(void) const { return event->Components(); }
-   const char *Aux(void) const { return aux; }
+   displayMenu->SetTitle(title);
++  cStatus::MsgOsdMenuDisplay(menuCategory);
+   cStatus::MsgOsdTitle(title);
+   DisplayHelp(true);
+   int count = Count();
 --- a/status.c
 +++ b/status.c
 @@ -130,3 +130,32 @@
@@ -281,10 +102,10 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 +      sm->OsdSetRecording(recording);
 +}
 +
-+void cStatus::MsgOsdMenuDisplay(const char* kind)
++void cStatus::MsgOsdMenuDisplay(eMenuCategory menuCategory)
 +{
 +  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-+      sm->OsdMenuDisplay(kind);
++      sm->OsdMenuDisplay(menuCategory);
 +}
 +
 +void cStatus::MsgOsdMenuDestroy()
@@ -299,7 +120,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 +}
 --- a/status.h
 +++ b/status.h
-@@ -84,6 +84,17 @@
+@@ -81,6 +81,17 @@
                 // The OSD displays the single line Text with the current channel information.
    virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) {}
                 // The OSD displays the given programme information.
@@ -307,7 +128,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 +               // The OSD displays the recording information.
 +  virtual void OsdSetEvent(const cEvent* event) {}
 +               // The OSD displays the event information.
-+  virtual void OsdMenuDisplay(const char* kind) {}
++  virtual void OsdMenuDisplay(eMenuCategory menuCategory) {}
 +               // report menu creation
 +  virtual void OsdMenuDestroy() {}
 +               // report menu destruvtion
@@ -317,13 +138,13 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  public:
    cStatus(void);
    virtual ~cStatus();
-@@ -106,6 +117,11 @@
+@@ -103,6 +114,11 @@
    static void MsgOsdTextItem(const char *Text,  bool Scroll = false);
    static void MsgOsdChannel(const char *Text);
    static void MsgOsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);
 +  static void MsgOsdSetEvent(const cEvent* event);
 +  static void MsgOsdSetRecording(const cRecording* recording);
-+  static void MsgOsdMenuDisplay(const char* kind);
++  static void MsgOsdMenuDisplay(eMenuCategory menuCategory);
 +  static void MsgOsdMenuDestroy();
 +  static void MsgOsdEventItem(const cEvent* Event, const char *Text, int Index, int Count);
    };

@@ -1,3 +1,9 @@
+vdr (2.3.1-0yavdr0~trusty) trusty; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 28 Oct 2015 20:19:15 +0100
+
 vdr (2.2.0-6yavdr0~trusty) trusty; urgency=medium
 
   * remove osdbase-maxitems patch

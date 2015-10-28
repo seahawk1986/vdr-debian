@@ -161,9 +161,9 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 @@ -830,19 +885,27 @@
  {
    if (!cTransferControl::ReceiverDevice()) {
-      cChannel *Channel = Channels.GetByNumber(CurrentChannel());
--     if (Channel)
-+     if (Channel) {
+      LOCK_CHANNELS_READ;
+-     if (const cChannel *Channel = Channels->GetByNumber(CurrentChannel()))
++     if (const cChannel *Channel = Channels->GetByNumber(CurrentChannel())) {
 +        SetIdle(false);
          SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
 +        }
@@ -687,7 +687,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // --- cDvbSourceParam -------------------------------------------------------
  
  class cDvbSourceParam : public cSourceParam {
-@@ -1089,7 +1138,8 @@
+@@ -1090,7 +1139,8 @@
    NULL
    };
  
@@ -697,7 +697,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    adapter = Adapter;
    frontend = Frontend;
-@@ -1109,7 +1159,7 @@
+@@ -1110,7 +1160,7 @@
  
    fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
    if (fd_ca >= 0)
@@ -706,7 +706,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1349,7 +1399,11 @@
+@@ -1350,7 +1400,11 @@
           if (d >= 0) {
              int ErrorDevice = 0;
              if (cDevice *Device1 = cDevice::GetDevice(i)) {
@@ -718,7 +718,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                    if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                       if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
                          if (!DvbDevice1->Bond(DvbDevice2))
-@@ -1383,7 +1437,10 @@
+@@ -1384,7 +1438,10 @@
  void cDvbDevice::UnBondDevices(void)
  {
    for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -730,7 +730,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
           d->UnBond();
        }
  }
-@@ -1437,6 +1494,26 @@
+@@ -1438,6 +1495,26 @@
    return true;
  }
  
@@ -757,7 +757,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1606,7 +1683,7 @@
+@@ -1607,7 +1684,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {
@@ -777,7 +777,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    static cString DvbName(const char *Name, int Adapter, int Frontend);
    static int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError = false);
  private:
-@@ -191,12 +191,14 @@
+@@ -192,12 +192,14 @@
    mutable bool needsDetachBondedReceivers;
    bool QueryDeliverySystems(int fd_frontend);
  public:
