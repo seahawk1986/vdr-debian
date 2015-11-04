@@ -8,4 +8,5 @@ opt-50_graphtft.patch:835be65b6c650245360d762958247f16
 opt-56_eventdetails_v3.patch:8b9f94bb59d6ff3c5068a6ec855fe790
 opt-61_dynamite.patch:b25b1d521d65afb6e4a5cc9efeb887b4
 opt-65_pin.patch:36d917bd0dc846d2edf94a2adf9308b7
+vdr-2.3.1-hide-first-recording-level-v1.patch:7dca47c124ec3eb1193b7ac783007360
 vdr-2.2.0-missing-plugin.patch:4dcd9323530dcd19f45eea608fb34955

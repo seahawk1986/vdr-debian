@@ -12,7 +12,7 @@ opt-56_eventdetails_v3.patch
 opt-61_dynamite.patch
 opt-65_pin.patch
 
-#vdr-2.3.1-hide-first-recording-level-v1.patch
+vdr-2.3.1-hide-first-recording-level-v1.patch
 
 #vdr-2.2.0-permashift.patch
 

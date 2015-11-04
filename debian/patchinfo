@@ -57,6 +57,12 @@ opt-65_pin.patch
 
     patch for the pin plugin
 
+vdr-2.3.1-hide-first-recording-level-v1.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    Hide the first level of directories in the recordings menu, all recordings
+    are stored at the "local" directory
+
 vdr-2.2.0-missing-plugin.patch
     Ville Skyttä <ville.skytta@iki.fi>
 
